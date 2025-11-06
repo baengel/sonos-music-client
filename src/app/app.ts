@@ -25,8 +25,8 @@ export class App implements OnInit {
   protected readonly title = signal('sonos-music-client');
   protected readonly filteredFiles = signal<FileInfo[]>([]);
   protected readonly isLoading = signal(false);
-  protected readonly searchTerm = signal('snap');
-  protected searchInput = 'snap';
+  protected readonly searchTerm = signal('');
+  protected searchInput = '';
   private searchTimeout: any = null;
   protected openDropdownIndex: number | null = null;
 
@@ -45,9 +45,17 @@ export class App implements OnInit {
   constructor(private sonosService: SonosService) {}
 
   ngOnInit() {
-    // Rufe loadAndFilterFile beim Laden der Komponente auf
-    this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
-      .catch(error => console.error('Fehler beim Laden und Filtern:', error));
+    // URL-Parameter auslesen
+    const params = new URLSearchParams(window.location.search);
+    const urlSearch = params.get('search');
+    if (urlSearch && urlSearch.trim().length > 0) {
+      this.searchInput = urlSearch;
+      this.searchTerm.set(urlSearch);
+      // Nur wenn Suchparameter vorhanden, initial suchen
+      this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
+        .catch(error => console.error('Fehler beim Laden und Filtern:', error));
+    }
+    // Keine Initialsuche ohne Suchparameter
   }
 
   protected toggleDropdown(index: number) {
@@ -126,12 +134,12 @@ export class App implements OnInit {
     // Setze einen neuen Timeout für 500ms
     this.searchTimeout = setTimeout(() => {
       const trimmedInput = this.searchInput.trim();
-      if (trimmedInput) {
+      if (trimmedInput.length >= 2) {
         this.searchTerm.set(trimmedInput);
         this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
           .catch(error => console.error('Fehler beim Laden und Filtern:', error));
       } else {
-        // Wenn leer, zeige alle Dateien oder leere die Liste
+        // Wenn weniger als 2 Zeichen, leere die Liste und setze isLoading auf false
         this.filteredFiles.set([]);
         this.isLoading.set(false);
       }
