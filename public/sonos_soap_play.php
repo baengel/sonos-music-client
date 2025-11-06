@@ -33,8 +33,13 @@ if (!isset($input['fileUrl'], $input['playerIp'])) {
     exit;
 }
 
-$fileUrl = $input['fileUrl'];
+$fileUrl = trim($input['fileUrl']);
 $playerIp = $input['playerIp'];
+
+// Pfad für Sonos anpassen: /volume1/... -> x-file-cifs://asustor/volume1/...
+if (strpos($fileUrl, '/volume1/') === 0) {
+    $fileUrl = 'x-file-cifs://asustor' . $fileUrl;
+}
 
 $soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
     . '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
@@ -62,12 +67,33 @@ $options = [
 ];
 $context  = stream_context_create($options);
 
-$result = @file_get_contents($url, false, $context);
+// Fehler-Handler für file_get_contents
+$errorMsg = null;
+set_error_handler(function($errno, $errstr) use (&$errorMsg) {
+    $errorMsg = $errstr;
+});
+$result = file_get_contents($url, false, $context); // kein @, damit $result ggf. Body enthält
+$sonosHeaders = isset($http_response_header) ? $http_response_header : null;
+restore_error_handler();
 
-if ($result === FALSE) {
+if ($result === FALSE || (is_array($sonosHeaders) && strpos($sonosHeaders[0], '500') !== false)) {
     http_response_code(502);
-    echo json_encode(['error' => 'Fehler beim Senden des SOAP-Requests']);
+    echo json_encode([
+        'error' => 'Fehler beim Senden des SOAP-Requests',
+        'php_error' => $errorMsg,
+        'sonos_headers' => $sonosHeaders,
+        'sonos_body' => $result, // gibt ggf. die XML-Fehlermeldung von Sonos aus
+        'result' => $result,
+        'called_url' => $url, // gibt die aufgerufene URL aus
+        'soap_body' => $soapBody // gibt den gesendeten SOAP-Body aus
+    ]);
     exit;
 }
 
-echo json_encode(['success' => true, 'response' => $result]);
+echo json_encode([
+    'success' => true,
+    'response' => $result,
+    'sonos_headers' => $sonosHeaders,
+    'called_url' => $url, // gibt die aufgerufene URL aus
+    'soap_body' => $soapBody // gibt den gesendeten SOAP-Body aus
+]);
