@@ -140,14 +140,21 @@ export class App implements OnInit {
     // Setze einen neuen Timeout für 500ms
     this.searchTimeout = setTimeout(() => {
       const trimmedInput = this.searchInput.trim();
+      const url = new URL(window.location.href);
       if (trimmedInput.length >= 2) {
         this.searchTerm.set(trimmedInput);
+        // URL-Parameter setzen/aktualisieren
+        url.searchParams.set('search', trimmedInput);
+        window.history.replaceState({}, '', url.toString());
         this.loadAndFilterFile(this.getUrl(), this.searchTerm())
           .catch(error => console.error('Fehler beim Laden und Filtern:', error));
       } else {
         // Wenn weniger als 2 Zeichen, leere die Liste und setze isLoading auf false
         this.filteredFiles.set([]);
         this.isLoading.set(false);
+        // URL-Parameter entfernen
+        url.searchParams.delete('search');
+        window.history.replaceState({}, '', url.toString());
       }
     }, 500);
   }
