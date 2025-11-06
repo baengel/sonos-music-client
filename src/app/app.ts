@@ -52,10 +52,16 @@ export class App implements OnInit {
       this.searchInput = urlSearch;
       this.searchTerm.set(urlSearch);
       // Nur wenn Suchparameter vorhanden, initial suchen
-      this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
+      this.loadAndFilterFile(this.getUrl(), this.searchTerm())
         .catch(error => console.error('Fehler beim Laden und Filtern:', error));
     }
     // Keine Initialsuche ohne Suchparameter
+  }
+
+  private getUrl() {
+    let url = this.sonosService.getApiBaseUrl().replace('sonos-music-client/', '').replace('public/', '') + 'files_and_size.txt';
+    console.log("url=", url);
+    return url;
   }
 
   protected toggleDropdown(index: number) {
@@ -136,7 +142,7 @@ export class App implements OnInit {
       const trimmedInput = this.searchInput.trim();
       if (trimmedInput.length >= 2) {
         this.searchTerm.set(trimmedInput);
-        this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
+        this.loadAndFilterFile(this.getUrl(), this.searchTerm())
           .catch(error => console.error('Fehler beim Laden und Filtern:', error));
       } else {
         // Wenn weniger als 2 Zeichen, leere die Liste und setze isLoading auf false
