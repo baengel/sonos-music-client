@@ -1,5 +1,7 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SonosService } from './sonos.service';
+import { HttpClientModule } from '@angular/common/http';
 
 interface FileInfo {
   path: string;
@@ -15,7 +17,7 @@ interface Player {
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule],
+  imports: [FormsModule, HttpClientModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -39,6 +41,8 @@ export class App implements OnInit {
 
   // Globale ausgewählte Player (Set von IPs)
   protected selectedPlayerIps = signal<Set<string>>(new Set());
+
+  constructor(private sonosService: SonosService) {}
 
   ngOnInit() {
     // Rufe loadAndFilterFile beim Laden der Komponente auf
@@ -92,34 +96,22 @@ export class App implements OnInit {
 
   protected async playOnDevice(file: FileInfo, playerIp: string) {
     this.closeDropdown();
-
     try {
       const fullPath = `${file.path}/${file.fileName}`;
-
       console.log('Spiele ab:', {
         file: fullPath,
         player: playerIp
       });
-
-      // Hier den API-Request an deinen Server/Player senden
-      const response = await fetch('/api/play', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+      this.sonosService.play(fullPath, playerIp).subscribe({
+        next: () => {
+          console.log('Erfolgreich gestartet!');
+          // Optional: Erfolgs-Benachrichtigung anzeigen
         },
-        body: JSON.stringify({
-          filePath: fullPath,
-          playerIp: playerIp
-        })
+        error: (err) => {
+          console.error('Fehler beim Abspielen:', err);
+          // Optional: Fehler-Benachrichtigung anzeigen
+        }
       });
-
-      if (response.ok) {
-        console.log('Erfolgreich gestartet!');
-        // Optional: Erfolgs-Benachrichtigung anzeigen
-      } else {
-        console.error('Fehler beim Abspielen:', await response.text());
-        // Optional: Fehler-Benachrichtigung anzeigen
-      }
     } catch (error) {
       console.error('Fehler beim Senden des Play-Requests:', error);
     }
