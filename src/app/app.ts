@@ -2,6 +2,7 @@ import { Component, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
+import { Router, ActivatedRoute } from '@angular/router';
 
 interface FileInfo {
   path: string;
@@ -41,18 +42,20 @@ export class App implements OnInit {
 
   // Globale ausgewählte Player (Set von IPs)
   protected selectedPlayerIps = signal<Set<string>>(new Set());
+  private apiUrl: string = '';
 
-  constructor(private sonosService: SonosService) {}
+  constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
     // URL-Parameter auslesen
+    this.apiUrl = this.getUrl(); // URL nur einmal bestimmen
     const params = new URLSearchParams(window.location.search);
     const urlSearch = params.get('search');
     if (urlSearch && urlSearch.trim().length > 0) {
       this.searchInput = urlSearch;
       this.searchTerm.set(urlSearch);
       // Nur wenn Suchparameter vorhanden, initial suchen
-      this.loadAndFilterFile(this.getUrl(), this.searchTerm())
+      this.loadAndFilterFile(this.apiUrl, this.searchTerm())
         .catch(error => console.error('Fehler beim Laden und Filtern:', error));
     }
     // Keine Initialsuche ohne Suchparameter
@@ -132,29 +135,32 @@ export class App implements OnInit {
   }
 
   protected onSearch() {
-    // Lösche den vorherigen Timeout
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
-
-    // Setze einen neuen Timeout für 500ms
     this.searchTimeout = setTimeout(() => {
       const trimmedInput = this.searchInput.trim();
-      const url = new URL(window.location.href);
       if (trimmedInput.length >= 2) {
         this.searchTerm.set(trimmedInput);
-        // URL-Parameter setzen/aktualisieren
-        url.searchParams.set('search', trimmedInput);
-        window.history.replaceState({}, '', url.toString());
-        this.loadAndFilterFile(this.getUrl(), this.searchTerm())
+        // Query-Parameter per Router setzen
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { search: trimmedInput },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
+        this.loadAndFilterFile(this.apiUrl, this.searchTerm())
           .catch(error => console.error('Fehler beim Laden und Filtern:', error));
       } else {
-        // Wenn weniger als 2 Zeichen, leere die Liste und setze isLoading auf false
         this.filteredFiles.set([]);
         this.isLoading.set(false);
-        // URL-Parameter entfernen
-        url.searchParams.delete('search');
-        window.history.replaceState({}, '', url.toString());
+        // Query-Parameter entfernen
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { search: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
       }
     }, 500);
   }
