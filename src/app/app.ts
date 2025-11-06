@@ -1,7 +1,9 @@
-import { Component, signal, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { SonosService } from './sonos.service';
-import { HttpClientModule } from '@angular/common/http';
+import {Component, signal, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {SonosService} from './sonos.service';
+import {HttpClientModule} from '@angular/common/http';
+import {environment} from '../environments/environment';
+import { Router } from '@angular/router';
 
 interface FileInfo {
   path: string;
@@ -32,17 +34,18 @@ export class App implements OnInit {
 
   // Player-Liste
   protected readonly availablePlayers: Player[] = [
-    { name: 'Len', ip: '192.168.188.36' },
-    { name: 'Juna', ip: '192.168.188.43' },
-    { name: 'Maxim', ip: '192.168.188.35' },
-    { name: 'Kueche', ip: '192.168.188.146' },
-    { name: 'Wohnzimmer', ip: '192.168.188.86' }
+    {name: 'Len', ip: '192.168.188.36'},
+    {name: 'Juna', ip: '192.168.188.43'},
+    {name: 'Maxim', ip: '192.168.188.35'},
+    {name: 'Kueche', ip: '192.168.188.146'},
+    {name: 'Wohnzimmer', ip: '192.168.188.86'}
   ];
 
   // Globale ausgewählte Player (Set von IPs)
   protected selectedPlayerIps = signal<Set<string>>(new Set());
 
-  constructor(private sonosService: SonosService) {}
+  constructor(private sonosService: SonosService, private router: Router) {
+  }
 
   ngOnInit() {
     // URL-Parameter auslesen
@@ -52,10 +55,17 @@ export class App implements OnInit {
       this.searchInput = urlSearch;
       this.searchTerm.set(urlSearch);
       // Nur wenn Suchparameter vorhanden, initial suchen
-      this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
+      this.loadAndFilterFile(this.getFilesAndSizeUrl(), this.searchTerm())
         .catch(error => console.error('Fehler beim Laden und Filtern:', error));
     }
     // Keine Initialsuche ohne Suchparameter
+  }
+
+  private getFilesAndSizeUrl(): string {
+    let url = this.sonosService.getApiBaseUrl().replace('sonos-music-client/', '')
+      + 'files_and_size.txt';
+    console.log("url=" + url)
+    return url;
   }
 
   protected toggleDropdown(index: number) {
@@ -135,13 +145,25 @@ export class App implements OnInit {
     this.searchTimeout = setTimeout(() => {
       const trimmedInput = this.searchInput.trim();
       if (trimmedInput.length >= 2) {
+        // URL aktualisieren: Suchbegriff als Query-Parameter setzen
+        this.router.navigate([], {
+          queryParams: { search: trimmedInput },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
         this.searchTerm.set(trimmedInput);
-        this.loadAndFilterFile('files_and_size.txt', this.searchTerm())
+        this.loadAndFilterFile(this.getFilesAndSizeUrl(), this.searchTerm())
           .catch(error => console.error('Fehler beim Laden und Filtern:', error));
       } else {
         // Wenn weniger als 2 Zeichen, leere die Liste und setze isLoading auf false
         this.filteredFiles.set([]);
         this.isLoading.set(false);
+        // Query-Parameter entfernen
+        this.router.navigate([], {
+          queryParams: { search: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true
+        });
       }
     }, 500);
   }
@@ -217,6 +239,7 @@ export class App implements OnInit {
 
     const searchTerms = this.parseSearchTerms(filterTerm);
 
+    console.log("url=" + url);
     const response = await fetch(url);
 
     if (!response.body) {
@@ -228,11 +251,11 @@ export class App implements OnInit {
     let done = false;
 
     while (!done) {
-      const { value, done: readerDone } = await reader.read();
+      const {value, done: readerDone} = await reader.read();
       done = readerDone;
 
       if (value) {
-        const chunkText = new TextDecoder().decode(value, { stream: true });
+        const chunkText = new TextDecoder().decode(value, {stream: true});
         accumulatedText += chunkText;
 
         const lines = accumulatedText.split('\n');

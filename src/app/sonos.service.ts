@@ -13,7 +13,7 @@ export class SonosService {
    * Wenn im environment eine apiBaseUrl gesetzt ist, wird diese verwendet (z.B. lokal oder für Proxy).
    * Sonst wird Relay-Token-Logik oder Standard-Pfad genutzt.
    */
-  private getApiBaseUrl(): string {
+  public getApiBaseUrl(): string {
     if (window.location.hostname.startsWith('relay-')) {
       const match = window.location.pathname.match(/^\/([^\/]+)\//);
       if (match) {
