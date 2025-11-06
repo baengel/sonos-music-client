@@ -1,0 +1,87 @@
+<div class="container">
+  <h1>{{ title() }}</h1>
+
+  <div class="search-box">
+    <input
+      type="text"
+      [(ngModel)]="searchInput"
+      (ngModelChange)="onSearch()"
+      placeholder="Suchbegriff eingeben..."
+      class="search-input"
+    />
+  </div>
+
+  <div class="global-player-selection">
+    <label class="player-label">Player:</label>
+    <div class="player-checkboxes">
+      @for (player of availablePlayers; track player.ip) {
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="isPlayerSelected(player.ip)"
+            (change)="togglePlayerSelection(player.ip)"
+            class="player-checkbox"
+          />
+          <span class="checkbox-text">{{ player.name }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="status">
+    @if (isLoading()) {
+      <p class="loading">Lade und filtere Datei...</p>
+    } @else {
+      <p class="success">Filtern abgeschlossen. {{ filteredFiles().length }} Dateien gefunden.</p>
+    }
+  </div>
+
+  <div class="results">
+    <h2>Gefilterte Dateien (mit "{{ searchTerm() }}"):</h2>
+    @if (filteredFiles().length === 0 && !isLoading()) {
+      <p class="no-results">Keine Ergebnisse gefunden.</p>
+    } @else {
+      <div class="file-list">
+        @for (file of filteredFiles(); track $index) {
+          <div class="file-card">
+            <div class="file-content">
+              <div class="file-info">
+                <div class="file-name">
+                  <strong [innerHTML]="highlightText(file.fileName, searchTerm())"></strong>
+                </div>
+                <div class="file-details">
+                  <div class="file-path">
+                    <span class="label">Pfad:</span>
+                    <span class="value" [innerHTML]="highlightText(file.path, searchTerm())"></span>
+                  </div>
+                  <div class="file-size">
+                    <span class="label">Größe:</span>
+                    <span class="value">{{ (file.size / 1024 / 1024).toFixed(2) }} MB ({{ file.size.toLocaleString() }} Bytes)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="play-controls">
+                <div class="dropdown-container">
+                  <button (click)="handlePlayClick(file, $index)" class="play-button">
+                    ▶️
+                  </button>
+                  @if (openDropdownIndex === $index) {
+                    <div class="dropdown-menu">
+                      @for (player of availablePlayers; track player.ip) {
+                        <button
+                          (click)="playOnDevice(file, player.ip)"
+                          class="dropdown-item">
+                          {{ player.name }}
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

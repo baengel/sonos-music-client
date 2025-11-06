@@ -1,0 +1,14 @@
+# IDE und Systemdateien
+.idea/
+*.iml
+
+# Node.js
+node_modules/
+
+# Build-Ausgaben
+dist/
+
+# Sonstiges
+.DS_Store
+Thumbs.db
+
