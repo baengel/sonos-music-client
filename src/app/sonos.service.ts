@@ -45,7 +45,7 @@ export class SonosService {
       ip: playerIp,
       file: fileUrl
     }).subscribe({
-      next: (response) => {
+      next: (response: any) => {
         console.log("MP3 set, now play it.");
         this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
           ip: playerIp
@@ -59,7 +59,14 @@ export class SonosService {
         });
       },
       error: (err) => {
-        console.error('Fehler beim Setzen des MP3-Links:', err);
+        // Versuche, die Fehlermeldung aus dem Response-Body zu extrahieren, falls vorhanden
+        if (err && err.error && err.error.error) {
+          console.error('Fehler beim Setzen des MP3-Links 1:', err.error.error, err);
+        } else if (err && err.error) {
+          console.error('Fehler beim Setzen des MP3-Links 2:', err.error, err);
+        } else {
+          console.error('Fehler beim Setzen des MP3-Links 3:', err);
+        }
       }
     });
   }

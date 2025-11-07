@@ -3,6 +3,7 @@
 // Erwartet POST: ip (Sonos IP), file (MP3-URL)
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Content-Type: application/json');
     http_response_code(405);
     echo json_encode(['error' => 'Nur POST erlaubt']);
     exit;
@@ -25,6 +26,7 @@ if (isset($_POST['ip']) && isset($_POST['file'])) {
 }
 
 if (!$ip || !$file) {
+    header('Content-Type: application/json');
     http_response_code(400);
     echo json_encode(['error' => 'ip und file müssen angegeben werden']);
     exit;
@@ -34,8 +36,6 @@ if (!$ip || !$file) {
 if (strpos($file, '/volume1/') === 0) {
     $file = 'x-file-cifs://asustor/' . substr($file, strlen('/volume1/'));
 }
-
-echo 'start sonos play mp3 ' . $file . ' on ' . $ip . "\n";
 
 // Titel aus Dateiname extrahieren
 $pathParts = pathinfo($file);
@@ -54,11 +54,9 @@ $didl = '<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:
 
 $soapUrl = "http://$ip:1400/MediaRenderer/AVTransport/Control";
 $soapAction = 'urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI';
-echo 'soapUrl=' . ($soapUrl) . "\n";
 
 // 1. SetAVTransportURI
 $body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' . htmlspecialchars($file) . '</CurrentURI><CurrentURIMetaData>' . htmlspecialchars($didl) . '</CurrentURIMetaData></u:SetAVTransportURI></s:Body></s:Envelope>';
-echo '$body=' . $body . "\n\n";
 
 $headersArr = [
     'HOST: ' . $ip . ':1400',
@@ -66,33 +64,22 @@ $headersArr = [
     'Content-Type: text/xml; charset="utf-8"',
     'SOAPACTION: "' . $soapAction . '"'
 ];
-echo 'headers=' . print_r($headersArr, true) . "\n";
 
 $ch = curl_init();
-echo 'curl_init done' . "\n";
 curl_setopt($ch, CURLOPT_URL, $soapUrl);
-echo 'CURLOPT_URL done' . "\n";
 curl_setopt($ch, CURLOPT_POST, true);
-echo 'CURLOPT_POST done' . "\n";
 curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-echo 'CURLOPT_POSTFIELDS done' . "\n";
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headersArr);
-echo 'CURLOPT_HTTPHEADER done' . "\n";
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-echo 'CURLOPT_RETURNTRANSFER done' . "\n";
 
 $response = curl_exec($ch);
-echo 'curl_exec done' . "\n";
 $err = curl_error($ch);
-echo 'curl_error done' . "\n";
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-echo '$response=' . ($response) . "\n";
-echo '$err=' . ($err) . "\n";
-echo '$httpcode=' . ($httpcode) . "\n";
 
 curl_close($ch);
 
+// Vor der finalen Ausgabe nur noch JSON!
+header('Content-Type: application/json');
 if ($err || $httpcode >= 400) {
     http_response_code(500);
     echo json_encode(['error' => 'Fehler bei SetAVTransportURI', 'details' => $err, 'httpcode' => $httpcode, 'response' => $response]);
