@@ -115,20 +115,11 @@ export class App implements OnInit {
     this.closeDropdown();
     try {
       const fullPath = `${file.path}/${file.fileName}`;
-      console.log('Spiele ab:', {
+      console.log('play song:', {
         file: fullPath,
         player: playerIp
       });
-      this.sonosService.play(fullPath, playerIp).subscribe({
-        next: () => {
-          console.log('Erfolgreich gestartet!');
-          // Optional: Erfolgs-Benachrichtigung anzeigen
-        },
-        error: (err) => {
-          console.error('Fehler beim Abspielen:', err);
-          // Optional: Fehler-Benachrichtigung anzeigen
-        }
-      });
+      this.sonosService.play(fullPath, playerIp)
     } catch (error) {
       console.error('Fehler beim Senden des Play-Requests:', error);
     }
