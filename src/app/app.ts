@@ -148,6 +148,7 @@ export class App implements OnInit {
     this.searchTimeout = setTimeout(() => {
       const trimmedInput = this.searchInput.trim();
       if (trimmedInput.length >= 2) {
+        this.playedFIles = [];
         this.searchTerm.set(trimmedInput);
         // Query-Parameter per Router setzen
         this.router.navigate([], {
