@@ -302,4 +302,19 @@ export class App implements OnInit {
       await Promise.all(volumePromises);
     }
   }
+
+  async stopAllSelectedPlayers() {
+    const selectedIps = this.selectedPlayerIps();
+    if (selectedIps.size > 0) {
+      const stopPromises = Array.from(selectedIps).map(ip => {
+        return new Promise<void>((resolve) => {
+          this.sonosService.stop(ip).subscribe({
+            next: () => resolve(),
+            error: () => resolve()
+          });
+        });
+      });
+      await Promise.all(stopPromises);
+    }
+  }
 }
