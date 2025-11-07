@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Mobile Optimierung */
+@media (max-width: 600px) {
+  body {
+    font-size: 17px;
+    padding: 0 4px;
+  }
+  .container {
+    padding: 4px;
+    max-width: 100vw;
+  }
+  h1, h2 {
+    font-size: 1.3em;
+  }
+  .search-box, .player-checkboxes, .file-list {
+    flex-direction: column;
+    gap: 4px;
+    align-items: stretch;
+  }
+  .search-input, .global-player-select {
+    font-size: 1em;
+    padding: 10px 8px;
+  }
+  button, input[type="button"], input[type="submit"] {
+    font-size: 1em;
+    padding: 10px 8px;
+  }
+}

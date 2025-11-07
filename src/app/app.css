@@ -264,59 +264,20 @@ mark {
 /* Mobile Optimierung */
 @media (max-width: 600px) {
   .container {
-    padding: 0.5rem;
+    padding: 4px !important;
+    max-width: 100vw !important;
   }
-
-  h1 {
-    font-size: 1.3rem;
-    text-align: center;
+  h1, h2 {
+    font-size: 1.3em !important;
   }
-
-  .search-box {
-    margin-bottom: 1rem;
+  .search-box, .player-checkboxes, .file-list {
+    flex-direction: column !important;
+    gap: 4px !important;
+    align-items: stretch !important;
   }
-
-  .search-input {
-    width: 100%;
-    font-size: 1rem;
-    padding: 0.5rem;
-  }
-
-  .global-player-selection {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 1rem;
-  }
-
-  .player-checkboxes {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .file-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
-
-  .file-card {
-    padding: 0.7rem;
-    font-size: 0.95rem;
-  }
-
-  .file-details {
-    flex-direction: column;
-    gap: 0.2rem;
-  }
-
-  .play-controls {
-    margin-top: 0.5rem;
-    text-align: right;
-  }
-
-  .dropdown-menu {
-    min-width: 120px;
-    font-size: 0.95rem;
+  .search-input, .global-player-select {
+    font-size: 1em !important;
+    padding: 10px 8px !important;
   }
 }
 
