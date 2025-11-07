@@ -7,6 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { PlayerSelectionComponent } from './player-selection.component';
 import { VolumeControlComponent } from './volume-control.component';
 import { StopButtonComponent } from './stop-button.component';
+import { SeekButtonsComponent } from './seek-buttons.component';
 
 interface FileInfo {
   path: string;
@@ -22,7 +23,7 @@ interface Player {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent, SeekButtonsComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -322,5 +323,17 @@ export class App implements OnInit {
       await Promise.all(stopPromises);
     }
     this.stopLoading = false;
+  }
+
+  async seekAllSelectedPlayers(seconds: number) {
+    const selectedIps = this.selectedPlayerIps();
+    if (selectedIps.size === 0) return;
+    for (const ip of selectedIps) {
+      try {
+        await this.sonosService.seek(ip, seconds);
+      } catch (err) {
+        console.error('Fehler beim Seek für', ip, err);
+      }
+    }
   }
 }

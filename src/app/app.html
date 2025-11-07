@@ -37,15 +37,16 @@
                [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
         <span>{{ volume }}</span>
       </div>
-      <div class="global-stop">
-        <button class="stop-all-btn"
-                (click)="stopAllSelectedPlayers()"
-                [disabled]="selectedPlayerIps().size === 0">
-          <ng-container *ngIf="stopLoading; else stopIcon">
-            <span class="spinner"></span>
-          </ng-container>
-          <ng-template #stopIcon>⏹️ Stop</ng-template>
-        </button>
+      <div class="global-stop" style="display: flex; align-items: center; gap: 8px;">
+        <seek-buttons
+          [disabled]="selectedPlayerIps().size === 0"
+          (seek)="seekAllSelectedPlayers($event)">
+        </seek-buttons>
+        <stop-button
+          [disabled]="selectedPlayerIps().size === 0"
+          [loading]="stopLoading"
+          (stop)="stopAllSelectedPlayers()">
+        </stop-button>
       </div>
     </div>
   </div>

@@ -83,4 +83,16 @@ export class SonosService {
       volume
     });
   }
+
+  seek(ip: string, seconds: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.http.post(this.getApiBaseUrl() + 'sonos_soap_seek.php', {
+        ip,
+        duration: seconds
+      }).subscribe({
+        next: () => resolve(),
+        error: (err) => reject(err)
+      });
+    });
+  }
 }
