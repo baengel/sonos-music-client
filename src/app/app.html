@@ -26,6 +26,16 @@
         </label>
       }
     </div>
+    <div class="volume-control">
+      <label for="volume-slider">Lautstärke:</label>
+      <input id="volume-slider"
+             type="range"
+             min="1" max="100"
+             [value]="volume"
+             (input)="onVolumeChange($event, true)"
+             [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
+      <span>{{ volume }}</span>
+    </div>
   </div>
 
   <div class="status">
@@ -61,22 +71,15 @@
                 </div>
               </div>
               <div class="play-controls">
-                <div class="dropdown-container">
-                  <button (click)="handlePlayClick(file, $index)" class="play-button">
-                    ▶️
-                  </button>
-                  @if (openDropdownIndex === $index) {
-                    <div class="dropdown-menu">
-                      @for (player of availablePlayers; track player.ip) {
-                        <button
-                          (click)="playOnDevice(file, player.ip)"
-                          class="dropdown-item">
-                          {{ player.name }}
-                        </button>
-                      }
-                    </div>
-                  }
-                </div>
+                <button (click)="handlePlayClick(file, $index)"
+                        class="play-button"
+                        [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex === $index"
+                        [ngClass]="{ 'loading': playLoadingIndex === $index }">
+                  <ng-container *ngIf="playLoadingIndex === $index; else playIcon">
+                    <span class="spinner"></span>
+                  </ng-container>
+                  <ng-template #playIcon>▶️</ng-template>
+                </button>
               </div>
             </div>
           </div>
@@ -85,4 +88,3 @@
     }
   </div>
 </div>
-

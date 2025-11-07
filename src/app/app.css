@@ -111,6 +111,15 @@ h1 {
   background: #0056b3;
 }
 
+.play-button:disabled {
+  background: #bfc5cc !important;
+  color: #e9ecef !important;
+  cursor: not-allowed !important;
+  opacity: 0.7;
+  box-shadow: none;
+  border: none;
+}
+
 .status, .loading, .success {
   margin: 16px 0;
   padding: 10px;
@@ -257,46 +266,73 @@ mark {
   .container {
     padding: 0.5rem;
   }
+
   h1 {
     font-size: 1.3rem;
     text-align: center;
   }
+
   .search-box {
     margin-bottom: 1rem;
   }
+
   .search-input {
     width: 100%;
     font-size: 1rem;
     padding: 0.5rem;
   }
+
   .global-player-selection {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 1rem;
   }
+
   .player-checkboxes {
     flex-wrap: wrap;
     gap: 0.5rem;
   }
+
   .file-list {
     display: flex;
     flex-direction: column;
     gap: 0.7rem;
   }
+
   .file-card {
     padding: 0.7rem;
     font-size: 0.95rem;
   }
+
   .file-details {
     flex-direction: column;
     gap: 0.2rem;
   }
+
   .play-controls {
     margin-top: 0.5rem;
     text-align: right;
   }
+
   .dropdown-menu {
     min-width: 120px;
     font-size: 0.95rem;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

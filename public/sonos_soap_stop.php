@@ -32,7 +32,16 @@ if (!isset($input['playerIp'])) {
     exit;
 }
 
-$playerIp = $input['playerIp'];
+$ip = null;
+if (isset($_POST['ip'])) {
+  $ip = $_POST['ip'];
+} else {
+  $raw = file_get_contents('php://input');
+  $data = json_decode($raw, true);
+  if (isset($data['ip'])) {
+    $ip = $data['ip'];
+  }
+}
 
 $soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
     . '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'

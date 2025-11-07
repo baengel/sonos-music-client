@@ -25,18 +25,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 header('Content-Type: application/json');
 
-$input = json_decode(file_get_contents('php://input'), true);
-if (!isset($input['playerIp'], $input['volume'])) {
+// Entferne die alte playerIp/volume-Validierung und prüfe nur auf ip und volume
+$ip = null;
+$volume = null;
+
+if (isset($_POST['ip']) && isset($_POST['volume'])) {
+  $ip = $_POST['ip'];
+  $volume = $_POST['volume'];
+} else {
+  $raw = file_get_contents('php://input');
+  $data = json_decode($raw, true);
+  if (isset($data['ip']) && isset($data['volume'])) {
+    $ip = $data['ip'];
+    $volume = $data['volume'];
+  }
+}
+
+if (!$ip || $volume === null) {
     http_response_code(400);
-    echo json_encode(['error' => 'playerIp und volume erforderlich']);
+    echo json_encode(['error' => 'ip und volume erforderlich']);
     exit;
 }
 
-$playerIp = $input['playerIp'];
-$volume = (int)$input['volume'];
-
-$soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
-    . '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
+// SOAP-Body wie gewünscht (ohne \n)
+$soapBody = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
     . '<s:Body>'
     . '<u:SetVolume xmlns:u="urn:schemas-upnp-org:service:RenderingControl:1">'
     . '<InstanceID>0</InstanceID>'
@@ -46,27 +58,30 @@ $soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
     . '</s:Body>'
     . '</s:Envelope>';
 
-$url = "http://$playerIp:1400/MediaRenderer/RenderingControl/Control";
+$url = "http://$ip:1400/MediaRenderer/RenderingControl/Control";
 
-$options = [
-    'http' => [
-        'header'  => [
-            "Content-type: text/xml; charset=utf-8",
-            "SOAPACTION: \"urn:schemas-upnp-org:service:RenderingControl:1#SetVolume\""
-        ],
-        'method'  => 'POST',
-        'content' => $soapBody,
-        'timeout' => 5
-    ]
+$headersArr = [
+    'HOST: ' . $ip . ':1400',
+    'Accept: application/text',
+    'Content-type: text/xml; charset="utf-8"',
+    'SOAPACTION: urn:schemas-upnp-org:service:RenderingControl:1#SetVolume'
 ];
-$context  = stream_context_create($options);
 
-$result = @file_get_contents($url, false, $context);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $soapBody);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headersArr);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$err = curl_error($ch);
+$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
 
-if ($result === FALSE) {
+if ($err || $httpcode >= 400) {
     http_response_code(502);
-    echo json_encode(['error' => 'Fehler beim Senden des SOAP-Volume-Requests']);
+    echo json_encode(['error' => 'Fehler beim Senden des SOAP-Volume-Requests', 'details' => $err, 'httpcode' => $httpcode, 'response' => $response]);
     exit;
 }
 
-echo json_encode(['success' => true, 'response' => $result]);
+echo json_encode(['success' => true, 'response' => $response]);

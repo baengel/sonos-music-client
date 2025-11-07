@@ -1,4 +1,5 @@
 import { Component, signal, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +19,7 @@ interface Player {
 
 @Component({
   selector: 'app-root',
-  imports: [FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -43,6 +44,8 @@ export class App implements OnInit {
   // Globale ausgewählte Player (Set von IPs)
   protected selectedPlayerIps = signal<Set<string>>(new Set());
   private apiUrl: string = '';
+  playLoadingIndex: number | null = null;
+  volume: number = 30;
 
   constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
 
@@ -75,17 +78,23 @@ export class App implements OnInit {
     this.openDropdownIndex = null;
   }
 
-  protected handlePlayClick(file: FileInfo, index: number) {
+  protected async handlePlayClick(file: FileInfo, index: number) {
+    if (this.playLoadingIndex !== null) return;
+    this.playLoadingIndex = index;
+
     const selectedIps = this.selectedPlayerIps();
     if (selectedIps.size > 0) {
-      // Wenn Player global ausgewählt sind, auf allen abspielen
-      selectedIps.forEach(ip => {
-        this.playOnDevice(file, ip);
+      // Alle Requests als Promises sammeln
+      const playPromises = Array.from(selectedIps).map(ip => {
+        return new Promise<void>((resolve) => {
+          this.sonosService.play(`${file.path}/${file.fileName}`, ip);
+          // Simuliere asynchrones Verhalten, falls play kein Promise/Observable ist
+          setTimeout(resolve, 1200);
+        });
       });
-    } else {
-      // Wenn kein Player ausgewählt ist, Dropdown öffnen
-      this.toggleDropdown(index);
+      await Promise.all(playPromises);
     }
+    this.playLoadingIndex = null;
   }
 
   protected togglePlayerSelection(playerIp: string) {
@@ -270,5 +279,27 @@ export class App implements OnInit {
 
     this.isLoading.set(false);
     console.log('Filtern abgeschlossen.');
+  }
+
+  onVolumeChange(event: any, setImmediately = false) {
+    this.volume = Number(event.target.value);
+    if (setImmediately) {
+      this.setVolumeForSelectedPlayers();
+    }
+  }
+
+  async setVolumeForSelectedPlayers() {
+    const selectedIps = this.selectedPlayerIps();
+    if (selectedIps.size > 0) {
+      const volumePromises = Array.from(selectedIps).map(ip => {
+        return new Promise<void>((resolve) => {
+          this.sonosService.setVolume(ip, this.volume).subscribe({
+            next: () => resolve(),
+            error: () => resolve()
+          });
+        });
+      });
+      await Promise.all(volumePromises);
+    }
   }
 }

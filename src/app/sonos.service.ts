@@ -71,15 +71,15 @@ export class SonosService {
     });
   }
 
-  stop(playerIp: string): Observable<any> {
+  stop(ip: string): Observable<any> {
     return this.http.post(this.getApiBaseUrl() + 'sonos_soap_stop.php', {
-      playerIp
+      ip
     });
   }
 
-  setVolume(playerIp: string, volume: number): Observable<any> {
+  setVolume(ip: string, volume: number): Observable<any> {
     return this.http.post(this.getApiBaseUrl() + 'sonos_soap_volume.php', {
-      playerIp,
+      ip,
       volume
     });
   }
