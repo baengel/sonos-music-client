@@ -25,13 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 header('Content-Type: application/json');
 
-$input = json_decode(file_get_contents('php://input'), true);
-if (!isset($input['playerIp'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'playerIp erforderlich']);
-    exit;
-}
-
+// Akzeptiere nur 'ip' (nicht mehr 'playerIp') als Parameter
 $ip = null;
 if (isset($_POST['ip'])) {
   $ip = $_POST['ip'];
@@ -43,8 +37,13 @@ if (isset($_POST['ip'])) {
   }
 }
 
-$soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
-    . '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
+if (!$ip) {
+    http_response_code(400);
+    echo json_encode(['error' => 'ip erforderlich']);
+    exit;
+}
+
+$soapBody = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">'
     . '<s:Body>'
     . '<u:Stop xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">'
     . '<InstanceID>0</InstanceID>'
@@ -52,27 +51,30 @@ $soapBody = '<?xml version="1.0" encoding="utf-8"?>\n'
     . '</s:Body>'
     . '</s:Envelope>';
 
-$url = "http://$playerIp:1400/MediaRenderer/AVTransport/Control";
+$url = "http://$ip:1400/MediaRenderer/AVTransport/Control";
 
-$options = [
-    'http' => [
-        'header'  => [
-            "Content-type: text/xml; charset=utf-8",
-            "SOAPACTION: \"urn:schemas-upnp-org:service:AVTransport:1#Stop\""
-        ],
-        'method'  => 'POST',
-        'content' => $soapBody,
-        'timeout' => 5
-    ]
+$headersArr = [
+    'HOST: ' . $ip . ':1400',
+    'Accept: application/text',
+    'Content-type: text/xml; charset="utf-8"',
+    'SOAPACTION: urn:schemas-upnp-org:service:AVTransport:1#Stop'
 ];
-$context  = stream_context_create($options);
 
-$result = @file_get_contents($url, false, $context);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $soapBody);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headersArr);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$err = curl_error($ch);
+$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
 
-if ($result === FALSE) {
+if ($err || $httpcode >= 400) {
     http_response_code(502);
-    echo json_encode(['error' => 'Fehler beim Senden des SOAP-Stop-Requests']);
+    echo json_encode(['error' => 'Fehler beim Senden des SOAP-Stop-Requests', 'details' => $err, 'httpcode' => $httpcode, 'response' => $response]);
     exit;
 }
 
-echo json_encode(['success' => true, 'response' => $result]);
+echo json_encode(['success' => true, 'response' => $response]);

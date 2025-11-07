@@ -26,17 +26,27 @@
         </label>
       }
     </div>
-    <div class="volume-control">
-      <label for="volume-slider">Lautstärke:</label>
-      <input id="volume-slider"
-             type="range"
-             min="1" max="100"
-             [value]="volume"
-             (input)="onVolumeChange($event, true)"
-             [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
-      <span>{{ volume }}</span>
+    <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px;">
+      <div class="volume-control">
+        <label for="volume-slider">Lautstärke:</label>
+        <input id="volume-slider"
+               type="range"
+               min="1" max="100"
+               [value]="volume"
+               (input)="onVolumeChange($event, true)"
+               [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
+        <span>{{ volume }}</span>
+      </div>
+      <div class="global-stop">
+        <button class="stop-all-btn"
+                (click)="stopAllSelectedPlayers()"
+                [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
+          ⏹️ Stop
+        </button>
+      </div>
     </div>
   </div>
+
 
   <div class="status">
     @if (isLoading()) {
@@ -66,7 +76,8 @@
                   </div>
                   <div class="file-size">
                     <span class="label">Größe:</span>
-                    <span class="value">{{ (file.size / 1024 / 1024).toFixed(2) }} MB ({{ file.size.toLocaleString() }} Bytes)</span>
+                    <span class="value">{{ (file.size / 1024 / 1024).toFixed(2) }} MB ({{ file.size.toLocaleString() }}
+                      Bytes)</span>
                   </div>
                 </div>
               </div>
