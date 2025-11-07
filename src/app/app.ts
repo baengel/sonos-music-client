@@ -49,6 +49,7 @@ export class App implements OnInit {
   protected selectedPlayerIps = signal<Set<string>>(new Set());
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
+  playedFIles: number[] = [];
   volume: number = 30;
   stopLoading: boolean = false;
 
@@ -87,6 +88,7 @@ export class App implements OnInit {
     if (this.playLoadingIndex !== null) return;
     this.playLoadingIndex = index;
 
+    this.playedFIles = [...this.playedFIles, index];
     const selectedIps = this.selectedPlayerIps();
     if (selectedIps.size > 0) {
       // Alle Requests als Promises sammeln

@@ -261,6 +261,10 @@ mark {
   color: #007bff;
 }
 
+.active-row {
+  background: #e3f2fd !important;
+}
+
 /* Mobile Optimierung */
 @media (max-width: 600px) {
   .container {
