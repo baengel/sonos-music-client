@@ -33,7 +33,7 @@ export class App implements OnInit {
 
   // Player-Liste
   protected readonly availablePlayers: Player[] = [
-    { name: 'Len', ip: '192.168.188.36' },
+    { name: 'Len', ip: '192.168.188.34' },
     { name: 'Juna', ip: '192.168.188.43' },
     { name: 'Maxim', ip: '192.168.188.35' },
     { name: 'Kueche', ip: '192.168.188.146' },

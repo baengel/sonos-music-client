@@ -41,24 +41,27 @@ export class SonosService {
   }
 
   play(fileUrl: string, playerIp: string): void {
-    // return this.http.get(this.getApiBaseUrl() + 'hello.php');
     this.http.post(this.getApiBaseUrl() + 'sonos_soap_set_mp3.php', {
-      fileUrl,
-      playerIp
-    }).subscribe(response => {
-      return this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
-        playerIp
-      }).subscribe({
-        next: () => {
-          console.log('Erfolgreich gestartet!');
-          // Optional: Erfolgs-Benachrichtigung anzeigen
-        },
-        error: (err) => {
-          console.error('Fehler beim Abspielen:', err);
-        }
-      });
+      ip: playerIp,
+      file: fileUrl
+    }).subscribe({
+      next: (response) => {
+        console.log("MP3 set, now play it.");
+        this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
+          ip: playerIp
+        }).subscribe({
+          next: () => {
+            console.log('playing file=' + fileUrl + ' on player=' + playerIp);
+          },
+          error: (err) => {
+            console.error('Fehler beim Abspielen:', err);
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Fehler beim Setzen des MP3-Links:', err);
+      }
     });
-
   }
 
   stop(playerIp: string): Observable<any> {

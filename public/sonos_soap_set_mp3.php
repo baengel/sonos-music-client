@@ -8,14 +8,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$ip = isset($_POST['ip']) ? $_POST['ip'] : null;
-$file = isset($_POST['file']) ? $_POST['file'] : null;
+// Unterstützt sowohl application/x-www-form-urlencoded als auch application/json
+$ip = null;
+$file = null;
+
+if (isset($_POST['ip']) && isset($_POST['file'])) {
+    $ip = $_POST['ip'];
+    $file = $_POST['file'];
+} else {
+    $raw = file_get_contents('php://input');
+    $data = json_decode($raw, true);
+    if (isset($data['ip']) && isset($data['file'])) {
+        $ip = $data['ip'];
+        $file = $data['file'];
+    }
+}
 
 if (!$ip || !$file) {
     http_response_code(400);
     echo json_encode(['error' => 'ip und file müssen angegeben werden']);
     exit;
 }
+
+// Pfad für Sonos umwandeln: /volume1/ -> x-file-cifs://asustor/
+if (strpos($file, '/volume1/') === 0) {
+    $file = 'x-file-cifs://asustor/' . substr($file, strlen('/volume1/'));
+}
+
+echo 'start sonos play mp3 ' . $file . ' on ' . $ip . "\n";
 
 // Titel aus Dateiname extrahieren
 $pathParts = pathinfo($file);
@@ -34,27 +54,43 @@ $didl = '<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:upnp="urn:
 
 $soapUrl = "http://$ip:1400/MediaRenderer/AVTransport/Control";
 $soapAction = 'urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI';
+echo 'soapUrl=' . ($soapUrl) . "\n";
 
 // 1. SetAVTransportURI
-$body = '<?xml version="1.0" encoding="utf-8"?>
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">\n  <s:Body>\n    <u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">\n      <InstanceID>0</InstanceID>\n      <CurrentURI>' . htmlspecialchars($file) . '</CurrentURI>\n      <CurrentURIMetaData>' . htmlspecialchars($didl) . '</CurrentURIMetaData>\n    </u:SetAVTransportURI>\n  </s:Body>\n</s:Envelope>';
+$body = '<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1"><InstanceID>0</InstanceID><CurrentURI>' . htmlspecialchars($file) . '</CurrentURI><CurrentURIMetaData>' . htmlspecialchars($didl) . '</CurrentURIMetaData></u:SetAVTransportURI></s:Body></s:Envelope>';
+echo '$body=' . $body . "\n\n";
 
-$headers = [
+$headersArr = [
     'HOST: ' . $ip . ':1400',
     'Accept: application/text',
     'Content-Type: text/xml; charset="utf-8"',
-    'SOAPAction: "' . $soapAction . '"',
+    'SOAPACTION: "' . $soapAction . '"'
 ];
+echo 'headers=' . print_r($headersArr, true) . "\n";
 
 $ch = curl_init();
+echo 'curl_init done' . "\n";
 curl_setopt($ch, CURLOPT_URL, $soapUrl);
+echo 'CURLOPT_URL done' . "\n";
 curl_setopt($ch, CURLOPT_POST, true);
+echo 'CURLOPT_POST done' . "\n";
 curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+echo 'CURLOPT_POSTFIELDS done' . "\n";
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headersArr);
+echo 'CURLOPT_HTTPHEADER done' . "\n";
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+echo 'CURLOPT_RETURNTRANSFER done' . "\n";
+
 $response = curl_exec($ch);
+echo 'curl_exec done' . "\n";
 $err = curl_error($ch);
+echo 'curl_error done' . "\n";
 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+echo '$response=' . ($response) . "\n";
+echo '$err=' . ($err) . "\n";
+echo '$httpcode=' . ($httpcode) . "\n";
+
 curl_close($ch);
 
 if ($err || $httpcode >= 400) {
@@ -64,3 +100,4 @@ if ($err || $httpcode >= 400) {
 }
 
 echo json_encode(['success' => true, 'message' => 'SetAVTransportURI erfolgreich']);
+

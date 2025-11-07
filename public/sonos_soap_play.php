@@ -8,7 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$ip = isset($_POST['ip']) ? $_POST['ip'] : null;
+// Unterstützt sowohl application/x-www-form-urlencoded als auch application/json
+$ip = null;
+if (isset($_POST['ip'])) {
+    $ip = $_POST['ip'];
+} else {
+    $raw = file_get_contents('php://input');
+    $data = json_decode($raw, true);
+    if (isset($data['ip'])) {
+        $ip = $data['ip'];
+    }
+}
 
 if (!$ip) {
     http_response_code(400);
@@ -47,4 +57,3 @@ if ($errPlay || $httpcodePlay >= 400) {
 }
 
 echo json_encode(['success' => true, 'message' => 'Play-Befehl gesendet']);
-
