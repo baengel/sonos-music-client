@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { PlayerSelectionComponent } from './player-selection.component';
+import { VolumeControlComponent } from './volume-control.component';
+import { StopButtonComponent } from './stop-button.component';
 
 interface FileInfo {
   path: string;
@@ -19,7 +22,7 @@ interface Player {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -46,6 +49,7 @@ export class App implements OnInit {
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
   volume: number = 30;
+  stopLoading: boolean = false;
 
   constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
 
@@ -304,6 +308,7 @@ export class App implements OnInit {
   }
 
   async stopAllSelectedPlayers() {
+    this.stopLoading = true;
     const selectedIps = this.selectedPlayerIps();
     if (selectedIps.size > 0) {
       const stopPromises = Array.from(selectedIps).map(ip => {
@@ -316,5 +321,6 @@ export class App implements OnInit {
       });
       await Promise.all(stopPromises);
     }
+    this.stopLoading = false;
   }
 }

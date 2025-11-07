@@ -78,6 +78,10 @@ $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 curl_close($ch);
 
+//echo 'response: ' . $response . "\n";
+//echo '$err: ' . $err . "\n";
+//echo '$httpcode: ' . $httpcode . "\n";
+
 // Vor der finalen Ausgabe nur noch JSON!
 header('Content-Type: application/json');
 if ($err || $httpcode >= 400) {

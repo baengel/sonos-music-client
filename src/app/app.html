@@ -40,8 +40,11 @@
       <div class="global-stop">
         <button class="stop-all-btn"
                 (click)="stopAllSelectedPlayers()"
-                [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
-          ⏹️ Stop
+                [disabled]="selectedPlayerIps().size === 0">
+          <ng-container *ngIf="stopLoading; else stopIcon">
+            <span class="spinner"></span>
+          </ng-container>
+          <ng-template #stopIcon>⏹️ Stop</ng-template>
         </button>
       </div>
     </div>
