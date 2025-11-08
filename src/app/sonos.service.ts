@@ -29,9 +29,12 @@ export class SonosService {
         } else {
           this.baseUrl = environment.apiBaseUrl;
         }
-      } else if (window.location.pathname.startsWith('asustor')) {
+      } else if (window.location.hostname.startsWith('asustor')) {
+        console.log("as environment.apiBaseUrl=", environment.apiBaseUrl);
         this.baseUrl = environment.apiBaseUrl.replace('www/', '');
+        console.log("as this.baseUrl=", this.baseUrl);
       } else {
+        console.log("else");
         this.baseUrl = environment.apiBaseUrl;
       }
     }
