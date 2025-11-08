@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import './styles/button.css';
 
 /* Mobile Optimierung */
 @media (max-width: 600px) {
@@ -27,3 +28,4 @@
     padding: 10px 8px;
   }
 }
+

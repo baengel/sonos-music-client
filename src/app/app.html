@@ -63,16 +63,16 @@
   <div class="results" style="display: flex; align-items: center; justify-content: space-between;">
     <h2 style="margin: 0;">Gefilterte Dateien (mit "{{ searchTerm() }}"):</h2>
     <div class="sort-buttons" style="display: flex; gap: 8px;">
-      <button (click)="sortKey === 'pfad' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('pfad')"
-              [class.active]="sortKey === 'pfad'">
+      <button class="btn" (click)="sortKey === 'pfad' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('pfad')"
+              [class.btn-active]="sortKey === 'pfad'">
         Pfad+Name {{ sortKey === 'pfad' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
-      <button (click)="sortKey === 'name' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('name')"
-              [class.active]="sortKey === 'name'">
+      <button class="btn" (click)="sortKey === 'name' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('name')"
+              [class.btn-active]="sortKey === 'name'">
         Name {{ sortKey === 'name' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
-      <button (click)="sortKey === 'größe' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('größe')"
-              [class.active]="sortKey === 'größe'">
+      <button class="btn" (click)="sortKey === 'größe' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('größe')"
+              [class.btn-active]="sortKey === 'größe'">
         Größe {{ sortKey === 'größe' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
     </div>
