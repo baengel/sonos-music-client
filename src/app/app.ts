@@ -52,6 +52,8 @@ export class App implements OnInit {
   playedFIles: number[] = [];
   volume: number = 30;
   stopLoading: boolean = false;
+  sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
 
@@ -338,5 +340,40 @@ export class App implements OnInit {
         console.error('Fehler beim Seek für', ip, err);
       }
     }
+  }
+
+  setSortKey(key: 'pfad' | 'name' | 'größe') {
+    this.sortKey = key;
+  }
+
+  setSortDirection(direction: 'asc' | 'desc') {
+    this.sortDirection = direction;
+  }
+
+  getSortedFiles(): FileInfo[] {
+    const files = [...this.filteredFiles()];
+    switch (this.sortKey) {
+      case 'größe':
+        files.sort((a, b) => this.sortDirection === 'asc' ? a.size - b.size : b.size - a.size);
+        break;
+      case 'name':
+        files.sort((a, b) => this.sortDirection === 'asc'
+          ? a.fileName.localeCompare(b.fileName)
+          : b.fileName.localeCompare(a.fileName));
+        break;
+      case 'pfad':
+      default:
+        files.sort((a, b) => {
+          const pathCompare = this.sortDirection === 'asc'
+            ? a.path.localeCompare(b.path)
+            : b.path.localeCompare(a.path);
+          if (pathCompare !== 0) return pathCompare;
+          return this.sortDirection === 'asc'
+            ? a.fileName.localeCompare(b.fileName)
+            : b.fileName.localeCompare(a.fileName);
+        });
+        break;
+    }
+    return files;
   }
 }

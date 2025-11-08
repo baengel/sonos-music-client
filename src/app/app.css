@@ -296,8 +296,44 @@ mark {
   vertical-align: middle;
 }
 
+.sort-spin-btn {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  border: 2px solid #b00;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1em;
+  margin: 0 2px;
+  transition: background 0.2s;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sort-buttons button {
+  margin: 0 2px;
+  padding: 4px 10px;
+  font-size: 1em;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  background: #f7f7f7;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sort-buttons button.active {
+  background: lightblue;
+  border-color: lightblue;
+}
+
+.sort-buttons button:focus {
+  outline: 2px solid deepskyblue;
+}
+
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
