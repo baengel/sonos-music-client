@@ -1,21 +1,32 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { StopButtonComponent } from './stop-button.component';
+import { PlayButtonsComponent } from './play-buttons.component';
+import { SonosService } from '../sonos.service';
 
 @Component({
   selector: 'seek-buttons',
   standalone: true,
-  imports: [StopButtonComponent],
+  imports: [PlayButtonsComponent],
   template: `
+    <button class="seek-btn"
+            (click)="playTrackRelative(-1)"
+            [disabled]="disabled">
+      ⏮️
+    </button>
     <button class="seek-btn"
             (click)="seek.emit(-10)"
             [disabled]="disabled">
-      «
+      ⏪
     </button>
     <stop-button [disabled]="disabled" (stop)="stop.emit()"></stop-button>
     <button class="seek-btn"
             (click)="seek.emit(10)"
             [disabled]="disabled">
-       »
+      ⏩
+    </button>
+    <button class="seek-btn"
+            (click)="playTrackRelative(1)"
+            [disabled]="disabled">
+      ⏭️
     </button>
   `,
   styles: [
@@ -42,4 +53,16 @@ export class SeekButtonsComponent {
   @Input() disabled: boolean = false;
   @Output() seek = new EventEmitter<number>();
   @Output() stop = new EventEmitter<void>();
+
+  @Input() playerIp: string = '';
+  @Input() currentTrack: number = 1;
+
+  constructor(private sonosService: SonosService) {}
+
+  playTrackRelative(offset: number) {
+    if (!this.playerIp) return;
+    const newTrack = this.currentTrack + offset;
+    if (newTrack < 1) return;
+    this.sonosService.playTrack(this.playerIp, newTrack);
+  }
 }

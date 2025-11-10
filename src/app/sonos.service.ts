@@ -3,6 +3,16 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
 
+/**
+ * Enum für die Zuordnung von Player-IP zu RINCON-ID
+ */
+const RINCON_ID_MAP: Record<string, string> = {
+  '192.168.188.34': 'RINCON_7828CAB5D9D201400', // Len
+  '192.168.188.43': 'RINCON_7828CAB5D9D202400', // Juna
+  '192.168.188.35': 'RINCON_7828CAB5D9D203400', // Maxim
+  '192.168.188.146': 'RINCON_7828CAB5D9D204400', // Kueche
+  '192.168.188.86': 'RINCON_7828CAB5D9D205400', // Wohnzimmer
+};
 
 @Injectable({providedIn: 'root'})
 export class SonosService {
@@ -100,6 +110,44 @@ export class SonosService {
         next: () => resolve(),
         error: (err) => reject(err)
       });
+    });
+  }
+
+  addToQueue(ip: string, uri: string, meta: string = '') {
+    const url = '/public/sonos_soap_add_to_queue.php';
+    const params = new URLSearchParams({ ip, uri, meta });
+    return this.http.get(url + '?' + params.toString(), { responseType: 'text' });
+  }
+
+  setQueueAndPlay(ip: string, uri: string, track: number = 0) {
+    // Setzt die Queue und spielt den ersten Track ab
+    const url = '/public/sonos_soap_set_queue.php';
+    const params = new URLSearchParams({ ip, rincon: this.getRinconId(ip), track: track.toString() });
+    this.http.post(url, params, { responseType: 'text' }).subscribe({
+      next: () => {
+        this.playOnly(ip);
+      },
+      error: (err) => {
+        console.error('Fehler beim Setzen der Queue:', err);
+      }
+    });
+  }
+
+
+  getRinconId(ip: string): string {
+    // Ermittelt die RINCON-ID anhand der IP-Adresse
+    return RINCON_ID_MAP[ip] || '';
+  }
+
+  playTrack(ip: string, track: number) {
+    // Ruft das PHP-Skript zum Track-Wechsel auf
+    return this.http.post('/public/sonos_soap_play_track.php', { ip, track }, { responseType: 'text' }).subscribe({
+      next: (response) => {
+        console.log('Track gewechselt:', response);
+      },
+      error: (err) => {
+        console.error('Fehler beim Track-Wechsel:', err);
+      }
     });
   }
 }

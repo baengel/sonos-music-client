@@ -13,7 +13,7 @@ import { SonosService } from '../sonos.service';
       <ng-container *ngIf="loading; else stopIcon">
         <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #b00; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
       </ng-container>
-      <ng-template #stopIcon>stop</ng-template>
+      <ng-template #stopIcon>⏹️</ng-template>
     </button>
     <button class="seek-btn play-btn"
             (click)="onPlay()"
@@ -21,7 +21,15 @@ import { SonosService } from '../sonos.service';
       <ng-container *ngIf="playLoading; else playIcon">
         <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #0b0; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
       </ng-container>
-      <ng-template #playIcon>play</ng-template>
+      <ng-template #playIcon>▶️</ng-template>
+    </button>
+    <button class="seek-btn queue-btn"
+            (click)="onSetQueue()"
+            [disabled]="queueLoading || disabled">
+      <ng-container *ngIf="queueLoading; else queueIcon">
+        <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+      </ng-container>
+      <ng-template #queueIcon>▶️ queue</ng-template>
     </button>
   `,
   styles: [`
@@ -45,13 +53,17 @@ import { SonosService } from '../sonos.service';
       color: #0b0;
       border-color: #0b0;
     }
+    .queue-btn {
+      color: #00b;
+      border-color: #00b;
+    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
   `]
 })
-export class StopButtonComponent {
+export class PlayButtonsComponent {
   @Input() disabled: boolean = false;
   @Input() loading: boolean = false;
   @Input() playerIp: string = '';
@@ -59,6 +71,7 @@ export class StopButtonComponent {
   @Output() stop = new EventEmitter<void>();
 
   playLoading: boolean = false;
+  queueLoading: boolean = false;
 
   constructor(private sonosService: SonosService) {}
 
@@ -67,5 +80,12 @@ export class StopButtonComponent {
     this.playLoading = true;
     this.sonosService.playOnly(this.playerIp);
     setTimeout(() => this.playLoading = false, 1000); // Dummy, besser: im subscribe
+  }
+
+  onSetQueue() {
+    if (!this.playerIp || !this.fileUrl) return;
+    this.queueLoading = true;
+    this.sonosService.setQueueAndPlay(this.playerIp, this.fileUrl);
+    setTimeout(() => this.queueLoading = false, 1000); // Dummy, besser: im subscribe
   }
 }

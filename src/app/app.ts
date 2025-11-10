@@ -41,6 +41,7 @@ export class App implements OnInit {
   protected selectedPlayerIp: string | null = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : null;
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
+  addQueueLoadingIndex: number | null = null;
   playedFIles: number[] = [];
   volume: number = 30;
   stopLoading: boolean = false;
@@ -96,6 +97,25 @@ export class App implements OnInit {
       await Promise.all(playPromises);
     }
     this.playLoadingIndex = null;
+  }
+
+  protected async handleAddToQueue(file: FileInfo, index: number) {
+    if (this.addQueueLoadingIndex !== null) return;
+    this.addQueueLoadingIndex = index;
+    const selectedIps = this.selectedPlayerIps();
+    if (selectedIps.size > 0) {
+      const addPromises = Array.from(selectedIps).map(ip => {
+        // Metadaten können hier ggf. generiert werden, aktuell leer
+        return this.sonosService.addToQueue(ip, `${file.path}/${file.fileName}`, '').toPromise();
+      });
+      try {
+        await Promise.all(addPromises);
+        // Optional: Erfolgsmeldung anzeigen
+      } catch (err) {
+        console.error('Fehler beim Hinzufügen zur Queue:', err);
+      }
+    }
+    this.addQueueLoadingIndex = null;
   }
 
   protected onSearch() {
