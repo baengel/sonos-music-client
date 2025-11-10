@@ -3,9 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
 
-/**
- * Enum für die Zuordnung von Player-IP zu RINCON-ID
- */
+// TODO ids etmitteln http://<SONOS-IP>:1400/status or http://<sonos-ip>:1400/status/rincon.xml
 const RINCON_ID_MAP: Record<string, string> = {
   '192.168.188.34': 'RINCON_7828CAB5D9D201400', // Len
   '192.168.188.43': 'RINCON_7828CAB5D9D202400', // Juna

@@ -85,13 +85,13 @@
               </button>
               <span style="display:inline-block;width:8px;"></span>
               <button (click)="handleAddToQueue(file, $index)"
-                      class="play-button"
+                      class="play-button queue-white"
                       [disabled]="selectedPlayerIps().size === 0 || addQueueLoadingIndex === $index"
                       [ngClass]="{ 'loading': addQueueLoadingIndex === $index }">
                 <ng-container *ngIf="addQueueLoadingIndex === $index; else queueIcon">
                   <span class="spinner"></span>
                 </ng-container>
-                <ng-template #queueIcon>➕</ng-template>
+                <ng-template #queueIcon><span class="queue-icon-white">➕☰</span></ng-template>
               </button>
             </div>
           </div>

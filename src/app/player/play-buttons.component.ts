@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SonosService } from '../sonos.service';
 
 @Component({
-  selector: 'stop-button',
+  selector: 'play-button',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -29,7 +29,7 @@ import { SonosService } from '../sonos.service';
       <ng-container *ngIf="queueLoading; else queueIcon">
         <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
       </ng-container>
-      <ng-template #queueIcon>▶️ queue</ng-template>
+      <ng-template #queueIcon>▶️☰</ng-template>
     </button>
   `,
   styles: [`

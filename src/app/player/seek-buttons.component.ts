@@ -17,7 +17,7 @@ import { SonosService } from '../sonos.service';
             [disabled]="disabled">
       ⏪
     </button>
-    <stop-button [disabled]="disabled" (stop)="stop.emit()"></stop-button>
+    <play-button [disabled]="disabled" (stop)="stop.emit()"></play-button>
     <button class="seek-btn"
             (click)="seek.emit(10)"
             [disabled]="disabled">
