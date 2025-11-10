@@ -26,29 +26,8 @@
         </label>
       }
     </div>
-    <div style="display: flex; gap: 16px; align-items: center; margin-top: 8px;">
-      <div class="volume-control">
-        <label for="volume-slider">Lautstärke:</label>
-        <input id="volume-slider"
-               type="range"
-               min="1" max="100"
-               [value]="volume"
-               (input)="onVolumeChange($event, true)"
-               [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex !== null">
-        <span>{{ volume }}</span>
-      </div>
-      <div class="global-stop" style="display: flex; align-items: center; gap: 8px;">
-        <seek-buttons
-          [disabled]="selectedPlayerIps().size === 0"
-          (seek)="seekAllSelectedPlayers($event)">
-        </seek-buttons>
-        <stop-button
-          [disabled]="selectedPlayerIps().size === 0"
-          [loading]="stopLoading"
-          (stop)="stopAllSelectedPlayers()">
-        </stop-button>
-      </div>
-    </div>
+    <!-- Neue zentrale Player-Komponente -->
+    <app-player></app-player>
   </div>
 
 

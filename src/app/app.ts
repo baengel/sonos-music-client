@@ -5,9 +5,10 @@ import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlayerSelectionComponent } from './player-selection.component';
-import { VolumeControlComponent } from './volume-control.component';
-import { StopButtonComponent } from './stop-button.component';
-import { SeekButtonsComponent } from './seek-buttons.component';
+import { VolumeControlComponent } from './player/volume-control.component';
+import { StopButtonComponent } from './player/stop-button.component';
+import { SeekButtonsComponent } from './player/seek-buttons.component';
+import { PlayerComponent } from './player/player.component';
 
 interface FileInfo {
   path: string;
@@ -23,7 +24,7 @@ interface Player {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent, SeekButtonsComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent, SeekButtonsComponent, PlayerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
