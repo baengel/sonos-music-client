@@ -1,8 +1,10 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'player-selection',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <label class="player-label">Player:</label>
     <div class="player-checkboxes">
@@ -23,4 +25,3 @@ export class PlayerSelectionComponent {
   @Input() selectedPlayerIps: Set<string> = new Set();
   @Output() togglePlayerSelection = new EventEmitter<string>();
 }
-

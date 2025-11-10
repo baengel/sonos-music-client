@@ -12,19 +12,14 @@
   </div>
 
   <div class="global-player-selection">
-    <label class="player-label">Player:</label>
-    <div class="player-checkboxes">
-      @for (player of availablePlayers; track player.ip) {
-        <label class="checkbox-label">
-          <input
-            type="checkbox"
-            [checked]="isPlayerSelected(player.ip)"
-            (change)="togglePlayerSelection(player.ip)"
-            class="player-checkbox"
-          />
-          <span class="checkbox-text">{{ player.name }}</span>
-        </label>
-      }
+    <div class="player-tabs">
+      <ul class="tab-list">
+        @for (player of availablePlayers; track player.ip) {
+          <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }" (click)="selectPlayerTab(player.ip)">
+            {{ player.name }}
+          </li>
+        }
+      </ul>
     </div>
     <!-- Neue zentrale Player-Komponente -->
     <app-player></app-player>

@@ -4,10 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PlayerSelectionComponent } from './player-selection.component';
-import { VolumeControlComponent } from './player/volume-control.component';
-import { StopButtonComponent } from './player/stop-button.component';
-import { SeekButtonsComponent } from './player/seek-buttons.component';
 import { PlayerComponent } from './player/player.component';
 
 interface FileInfo {
@@ -17,14 +13,9 @@ interface FileInfo {
   fullLine: string;
 }
 
-interface Player {
-  name: string;
-  ip: string;
-}
-
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerSelectionComponent, VolumeControlComponent, StopButtonComponent, SeekButtonsComponent, PlayerComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, PlayerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -38,7 +29,7 @@ export class App implements OnInit {
   protected openDropdownIndex: number | null = null;
 
   // Player-Liste
-  protected readonly availablePlayers: Player[] = [
+  protected readonly availablePlayers = [
     { name: 'Len', ip: '192.168.188.34' },
     { name: 'Juna', ip: '192.168.188.43' },
     { name: 'Maxim', ip: '192.168.188.35' },
@@ -46,8 +37,8 @@ export class App implements OnInit {
     { name: 'Wohnzimmer', ip: '192.168.188.86' }
   ];
 
-  // Globale ausgewählte Player (Set von IPs)
-  protected selectedPlayerIps = signal<Set<string>>(new Set());
+  // Globale ausgewählte Player (nur eine IP für Tabs)
+  protected selectedPlayerIp: string | null = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : null;
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
   playedFIles: number[] = [];
@@ -105,43 +96,6 @@ export class App implements OnInit {
       await Promise.all(playPromises);
     }
     this.playLoadingIndex = null;
-  }
-
-  protected togglePlayerSelection(playerIp: string) {
-    const currentSelection = new Set(this.selectedPlayerIps());
-    if (currentSelection.has(playerIp)) {
-      currentSelection.delete(playerIp);
-    } else {
-      currentSelection.add(playerIp);
-    }
-    this.selectedPlayerIps.set(currentSelection);
-  }
-
-  protected isPlayerSelected(playerIp: string): boolean {
-    return this.selectedPlayerIps().has(playerIp);
-  }
-
-  protected clearPlayerSelection() {
-    this.selectedPlayerIps.set(new Set());
-  }
-
-  protected getSelectedPlayerNames(): string {
-    const selected = this.availablePlayers.filter(p => this.selectedPlayerIps().has(p.ip));
-    return selected.map(p => p.name).join(', ');
-  }
-
-  protected async playOnDevice(file: FileInfo, playerIp: string) {
-    this.closeDropdown();
-    try {
-      const fullPath = `${file.path}/${file.fileName}`;
-      console.log('play song:', {
-        file: fullPath,
-        player: playerIp
-      });
-      this.sonosService.play(fullPath, playerIp)
-    } catch (error) {
-      console.error('Fehler beim Senden des Play-Requests:', error);
-    }
   }
 
   protected onSearch() {
@@ -376,5 +330,16 @@ export class App implements OnInit {
         break;
     }
     return files;
+  }
+
+  // Methode zum Auswählen eines Players per Tab
+  selectPlayerTab(ip: string) {
+    this.selectedPlayerIp = ip;
+  }
+
+  // Hilfsmethode für Template-Kompatibilität
+  selectedPlayerIps() {
+    // Für die Tab-Variante: gibt ein Set mit der ausgewählten IP zurück, falls vorhanden
+    return new Set(this.selectedPlayerIp ? [this.selectedPlayerIp] : []);
   }
 }
