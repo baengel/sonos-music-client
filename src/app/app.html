@@ -6,7 +6,7 @@
       type="text"
       [(ngModel)]="searchInput"
       (ngModelChange)="onSearch()"
-      placeholder="Suchbegriff eingeben..."
+      placeholder="search..."
       class="search-input"
     />
   </div>
@@ -21,7 +21,6 @@
         }
       </ul>
     </div>
-    <!-- Neue zentrale Player-Komponente -->
     <app-player></app-player>
   </div>
 
@@ -30,24 +29,24 @@
     @if (isLoading()) {
       <p class="loading">Lade und filtere Datei...</p>
     } @else {
-      <p class="success">Filtern abgeschlossen. {{ filteredFiles().length }} Dateien gefunden.</p>
+      <p class="success">filter done: {{ filteredFiles().length }} files.</p>
     }
   </div>
 
   <div class="results" style="display: flex; align-items: center; justify-content: space-between;">
-    <h2 style="margin: 0;">Gefilterte Dateien (mit "{{ searchTerm() }}"):</h2>
+    <h2 style="margin: 0;">result ("{{ searchTerm() }}"):</h2>
     <div class="sort-buttons" style="display: flex; gap: 8px;">
       <button class="btn" (click)="sortKey === 'pfad' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('pfad')"
               [class.btn-active]="sortKey === 'pfad'">
-        Pfad+Name {{ sortKey === 'pfad' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        path {{ sortKey === 'pfad' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
       <button class="btn" (click)="sortKey === 'name' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('name')"
               [class.btn-active]="sortKey === 'name'">
-        Name {{ sortKey === 'name' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        name {{ sortKey === 'name' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
       <button class="btn" (click)="sortKey === 'größe' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('größe')"
               [class.btn-active]="sortKey === 'größe'">
-        Größe {{ sortKey === 'größe' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        size {{ sortKey === 'größe' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
       </button>
     </div>
   </div>

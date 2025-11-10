@@ -1,7 +1,8 @@
 
 .player-container {
   display: flex;
-  gap: 12px;
+  flex-flow: column nowrap;
+  gap: 16px;
   align-items: center;
   justify-content: center;
 }

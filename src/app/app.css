@@ -37,10 +37,6 @@ h1 {
 }
 
 .global-player-selection {
-  background: #f8f9fa;
-  border-radius: 4px;
-  padding: 10px;
-  margin: 16px 0;
 }
 
 .player-label, .checkbox-text, .player-names, .player-name {
@@ -315,7 +311,6 @@ mark {
   padding: 28px 24px 24px 24px;
   position: relative;
   z-index: 1;
-  min-height: 120px;
   display: block;
   border: 1px solid #cfd8dc;
 }
@@ -349,6 +344,20 @@ mark {
   .search-input, .global-player-select {
     font-size: 1em !important;
     padding: 10px 8px !important;
+  }
+  .tab-item {
+    min-width: 40px;
+    max-width: 60px;
+    padding: 10px 6px 8px 6px;
+    font-size: 1em;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tab-item .tab-label {
+    display: inline-block;
+    width: 100%;
   }
 }
 
