@@ -1,9 +1,18 @@
 <div class="player-container">
-  <seek-buttons></seek-buttons>
+  <seek-buttons
+    [playerIp]="playerIp"
+    [fileUrl]="fileUrl"
+    (seek)="onSeek($event)"
+    (stop)="onStop()"
+    (playTrack)="onPlayTrack($event)"
+    (play)="onPlay()"
+    (queuePlay)="onQueuePlay()"
+  ></seek-buttons>
   <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
 
   <!-- Anzeige der Player-Informationen -->
   <div class="player-info">
     <div>{{ track }} - {{ title }} - {{ position }}</div>
   </div>
+
 </div>

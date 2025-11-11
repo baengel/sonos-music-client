@@ -17,7 +17,7 @@ import { SonosService } from '../sonos.service';
             [disabled]="disabled">
       ⏪
     </button>
-    <play-button [disabled]="disabled" (stop)="stop.emit()"></play-button>
+    <play-button [playerIp]="playerIp" [fileUrl]="fileUrl" (play)="onPlay()" (stop)="onStop()" (queuePlay)="onQueuePlay()"></play-button>
     <button class="seek-btn"
             (click)="seek.emit(10)"
             [disabled]="disabled">
@@ -53,9 +53,13 @@ export class SeekButtonsComponent {
   @Input() disabled: boolean = false;
   @Output() seek = new EventEmitter<number>();
   @Output() stop = new EventEmitter<void>();
+  @Output() playTrack = new EventEmitter<number>();
+  @Output() play = new EventEmitter<void>();
+  @Output() queuePlay = new EventEmitter<void>();
 
   @Input() playerIp: string = '';
   @Input() currentTrack: number = 1;
+  @Input() fileUrl: string = '';
 
   constructor(private sonosService: SonosService) {}
 
@@ -64,5 +68,19 @@ export class SeekButtonsComponent {
     const newTrack = this.currentTrack + offset;
     if (newTrack < 1) return;
     this.sonosService.playTrack(this.playerIp, newTrack);
+    this.playTrack.emit(newTrack);
+  }
+
+  onPlay() {
+    this.play.emit();
+  }
+
+  onStop() {
+    this.stop.emit();
+  }
+
+  onQueuePlay() {
+    console.log("onQueuePlay");
+    this.queuePlay.emit();
   }
 }

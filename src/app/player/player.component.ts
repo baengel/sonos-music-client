@@ -12,6 +12,7 @@ import { SonosService } from '../sonos.service';
 export class PlayerComponent implements OnInit, OnChanges {
   @Input() playerIp: string = '';
   @Input() refreshTrigger: number = 0;
+  @Input() fileUrl: string = '';
   track: string = '';
   title: string = '';
   position: string = '';
@@ -52,5 +53,40 @@ export class PlayerComponent implements OnInit, OnChanges {
         this.loadPlayerStatus();
       }
     });
+  }
+
+  onSeek(offset: number): void {
+    if (!this.playerIp) return;
+    this.sonosService.seek(this.playerIp, offset).then(() => {
+      this.loadPlayerStatus();
+    });
+  }
+
+  onStop(): void {
+    if (!this.playerIp) return;
+    this.sonosService.stop(this.playerIp).subscribe({
+      next: () => {
+        this.loadPlayerStatus();
+      }
+    });
+  }
+
+  onPlay(): void {
+    if (!this.playerIp) return;
+    this.sonosService.playOnly(this.playerIp);
+    setTimeout(() => this.loadPlayerStatus(), 500);
+  }
+
+  onQueuePlay(): void {
+    console.log("onQueuePlay ip=" + this.playerIp + " fileUrl=" + this.fileUrl);
+    if (!this.playerIp || !this.fileUrl) return;
+    this.sonosService.setQueueAndPlay(this.playerIp, this.fileUrl);
+    setTimeout(() => this.loadPlayerStatus(), 500);
+  }
+
+  onPlayTrack(newTrack: number): void {
+    if (!this.playerIp) return;
+    this.sonosService.playTrack(this.playerIp, newTrack);
+    setTimeout(() => this.loadPlayerStatus(), 500);
   }
 }

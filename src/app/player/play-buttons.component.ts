@@ -15,6 +15,7 @@ import { SonosService } from '../sonos.service';
       </ng-container>
       <ng-template #stopIcon>⏹️</ng-template>
     </button>
+
     <button class="seek-btn play-btn"
             (click)="onPlay()"
             [disabled]="playLoading || disabled">
@@ -23,6 +24,7 @@ import { SonosService } from '../sonos.service';
       </ng-container>
       <ng-template #playIcon>▶️</ng-template>
     </button>
+
     <button class="seek-btn queue-btn"
             (click)="onSetQueue()"
             [disabled]="queueLoading || disabled">
@@ -69,6 +71,8 @@ export class PlayButtonsComponent {
   @Input() playerIp: string = '';
   @Input() fileUrl: string = '';
   @Output() stop = new EventEmitter<void>();
+  @Output() play = new EventEmitter<void>();
+  @Output() queuePlay = new EventEmitter<void>();
 
   playLoading: boolean = false;
   queueLoading: boolean = false;
@@ -76,16 +80,19 @@ export class PlayButtonsComponent {
   constructor(private sonosService: SonosService) {}
 
   onPlay() {
-    if (!this.playerIp || !this.fileUrl) return;
+    console.log('playing' +this.playerIp );
+    if (!this.playerIp ) return;
     this.playLoading = true;
     this.sonosService.playOnly(this.playerIp);
-    setTimeout(() => this.playLoading = false, 1000); // Dummy, besser: im subscribe
+    this.playLoading = false;
+    this.play.emit();
   }
 
   onSetQueue() {
-    if (!this.playerIp || !this.fileUrl) return;
+    if (!this.playerIp) return;
     this.queueLoading = true;
     this.sonosService.setQueueAndPlay(this.playerIp, this.fileUrl);
-    setTimeout(() => this.queueLoading = false, 1000); // Dummy, besser: im subscribe
+    this.queueLoading = false;
+    this.queuePlay.emit();
   }
 }
