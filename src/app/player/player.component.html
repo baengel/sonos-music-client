@@ -1,4 +1,9 @@
 <div class="player-container">
   <seek-buttons></seek-buttons>
-  <volume-control></volume-control>
+  <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
+
+  <!-- Anzeige der Player-Informationen -->
+  <div class="player-info">
+    <div>{{ track }} - {{ title }} - {{ position }}</div>
+  </div>
 </div>

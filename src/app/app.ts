@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SonosService } from './sonos.service';
@@ -38,7 +38,7 @@ export class App implements OnInit {
   ];
 
   // Globale ausgewählte Player (nur eine IP für Tabs)
-  protected selectedPlayerIp: string | null = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : null;
+  protected selectedPlayerIp: string = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : '';
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
   addQueueLoadingIndex: number | null = null;
@@ -47,6 +47,10 @@ export class App implements OnInit {
   stopLoading: boolean = false;
   sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
   sortDirection: 'asc' | 'desc' = 'asc';
+  playerRefreshCounter: number = 0;
+
+  // EventEmitter für Player-Info-Refresh
+  refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
 
@@ -86,7 +90,6 @@ export class App implements OnInit {
     this.playedFIles = [...this.playedFIles, index];
     const selectedIps = this.selectedPlayerIps();
     if (selectedIps.size > 0) {
-      // Alle Requests als Promises sammeln
       const playPromises = Array.from(selectedIps).map(ip => {
         return new Promise<void>((resolve) => {
           this.sonosService.play(`${file.path}/${file.fileName}`, ip);
@@ -95,6 +98,7 @@ export class App implements OnInit {
         });
       });
       await Promise.all(playPromises);
+      this.playerRefreshCounter++;
     }
     this.playLoadingIndex = null;
   }

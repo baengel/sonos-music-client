@@ -21,7 +21,7 @@
         }
       </ul>
     </div>
-    <app-player></app-player>
+    <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
   </div>
 
 

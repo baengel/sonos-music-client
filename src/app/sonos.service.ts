@@ -112,14 +112,14 @@ export class SonosService {
   }
 
   addToQueue(ip: string, uri: string, meta: string = '') {
-    const url = '/public/sonos_soap_add_to_queue.php';
+    const url = this.getApiBaseUrl() + 'sonos_soap_add_to_queue.php';
     const params = new URLSearchParams({ ip, uri, meta });
     return this.http.get(url + '?' + params.toString(), { responseType: 'text' });
   }
 
   setQueueAndPlay(ip: string, uri: string, track: number = 0) {
     // Setzt die Queue und spielt den ersten Track ab
-    const url = '/public/sonos_soap_set_queue.php';
+    const url = this.getApiBaseUrl() + 'sonos_soap_set_queue.php';
     const params = new URLSearchParams({ ip, rincon: this.getRinconId(ip), track: track.toString() });
     this.http.post(url, params, { responseType: 'text' }).subscribe({
       next: () => {
@@ -139,7 +139,7 @@ export class SonosService {
 
   playTrack(ip: string, track: number) {
     // Ruft das PHP-Skript zum Track-Wechsel auf
-    return this.http.post('/public/sonos_soap_play_track.php', { ip, track }, { responseType: 'text' }).subscribe({
+    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_play_track.php', { ip, track }, { responseType: 'text' }).subscribe({
       next: (response) => {
         console.log('Track gewechselt:', response);
       },
@@ -147,5 +147,12 @@ export class SonosService {
         console.error('Fehler beim Track-Wechsel:', err);
       }
     });
+  }
+
+  /**
+   * Holt den aktuellen Status des Players (Track, Titel, Position, Lautstärke)
+   */
+  getStatus(ip: string): Observable<any> {
+    return this.http.get(this.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
   }
 }
