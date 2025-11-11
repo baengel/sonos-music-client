@@ -6,10 +6,10 @@ import {environment} from '../environments/environment';
 // TODO ids etmitteln http://<SONOS-IP>:1400/status or http://<sonos-ip>:1400/status/rincon.xml
 const RINCON_ID_MAP: Record<string, string> = {
   '192.168.188.34': 'RINCON_7828CAB5D9D201400', // Len
-  '192.168.188.43': 'RINCON_7828CAB5D9D202400', // Juna
-  '192.168.188.35': 'RINCON_7828CAB5D9D203400', // Maxim
-  '192.168.188.146': 'RINCON_7828CAB5D9D204400', // Kueche
-  '192.168.188.86': 'RINCON_7828CAB5D9D205400', // Wohnzimmer
+  '192.168.188.43': 'RINCON_7828CAB5D82401400', // Juna
+  '192.168.188.35': 'RINCON_7828CA0CD13A01400', // Maxim
+  '192.168.188.146': 'RINCON_38420B10415001400', // Kueche // r: RINCON_7828CA0CC1C201400
+  '192.168.188.86': 'RINCON_949F3ECAC7FD01400', // Wohnzimmer
 };
 
 @Injectable({providedIn: 'root'})
