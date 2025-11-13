@@ -118,10 +118,14 @@ export class SonosService {
   }
 
   setQueueAndPlay(ip: string, uri: string, track: number = 0) {
-    // Setzt die Queue und spielt den ersten Track ab
+    // Setzt die Queue und spielt den gewünschten Track ab
     const url = this.getApiBaseUrl() + 'sonos_soap_set_queue.php';
-    const params = new URLSearchParams({ ip, rincon: this.getRinconId(ip), track: track.toString() });
-    this.http.post(url, params, { responseType: 'text' }).subscribe({
+    const body = {
+      ip,
+      rincon: this.getRinconId(ip),
+      track
+    };
+    this.http.post(url, body, { responseType: 'text' }).subscribe({
       next: () => {
         this.playOnly(ip);
       },
@@ -162,6 +166,15 @@ export class SonosService {
   getQueue(ip: string): Observable<SonosQueueResponse> {
     // GET-Request, damit es mit Proxy/Relay und direktem Aufruf funktioniert
     return this.http.get<SonosQueueResponse>(this.getApiBaseUrl() + 'sonos_soap_get_queue.php?ip=' + encodeURIComponent(ip));
+  }
+
+  /**
+   * Entfernt einen Track aus der Queue
+   */
+  removeFromQueue(ip: string, track: number) {
+    const url = this.getApiBaseUrl() + 'sonos_soap_remove_from_queue.php';
+    const body = { ip, track };
+    return this.http.post(url, body, { responseType: 'text' });
   }
 }
 

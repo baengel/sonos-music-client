@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'sonos-queue',
@@ -16,13 +16,16 @@ import { Component, Input } from '@angular/core';
         <ul>
           @for (item of queue; track item; let i = $index) {
             <li>
-              {{ i + 1 }}. {{ item.title || 'Unbekannt' }}
-              @if (item.artist) {
-                <span> - {{ item.artist }}</span>
-              }
-              @if (item.album) {
-                <span> ({{ item.album }})</span>
-              }
+              <span (click)="playTrack.emit(i+1)">
+                {{ i + 1 }}. {{ item.title || 'Unbekannt' }}
+                @if (item.artist) {
+                  <span> - {{ item.artist }}</span>
+                }
+                @if (item.album) {
+                  <span> ({{ item.album }})</span>
+                }
+              </span>
+              <button class="remove-btn" (click)="removeTrack.emit(i+1)">-</button>
             </li>
           }
         </ul>
@@ -38,4 +41,6 @@ export class QueueComponent {
   @Input() queue: any[] = [];
   @Input() queueLoading: boolean = false;
   @Input() queueError: string = '';
+  @Output() playTrack = new EventEmitter<number>();
+  @Output() removeTrack = new EventEmitter<number>();
 }

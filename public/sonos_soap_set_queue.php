@@ -30,7 +30,16 @@ if (isset($_POST['ip']) && isset($_POST['rincon'])) {
 if (!$ip || !$rincon) {
   header('Content-Type: application/json');
   http_response_code(400);
-  echo json_encode(['error' => 'ip und rincon müssen angegeben werden']);
+  // Debug-Ausgaben für Fehlersuche
+  $debug = [
+    '_POST' => $_POST,
+    'php://input' => file_get_contents('php://input'),
+    'parsed_json' => isset($data) ? $data : null
+  ];
+  echo json_encode([
+    'error' => 'ip und rincon müssen angegeben werden',
+    'debug' => $debug
+  ]);
   exit;
 }
 

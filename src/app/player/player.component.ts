@@ -118,4 +118,18 @@ export class PlayerComponent implements OnInit, OnChanges {
       this.loadQueue();
     }, 500);
   }
+
+  onRemoveTrack(trackIndex: number): void {
+    if (!this.playerIp) return;
+    this.queueLoading = true;
+    this.sonosService.removeFromQueue(this.playerIp, trackIndex).subscribe({
+      next: () => {
+        this.loadQueue();
+      },
+      error: (err) => {
+        this.queueError = 'Fehler beim Entfernen des Tracks';
+        this.queueLoading = false;
+      }
+    });
+  }
 }

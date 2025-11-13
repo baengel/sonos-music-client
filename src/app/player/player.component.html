@@ -20,6 +20,12 @@
   </div>
   <div class="player-queue">
     <!-- Queue ausgelagert in eigene Komponente -->
-    <sonos-queue [queue]="queue" [queueLoading]="queueLoading" [queueError]="queueError"></sonos-queue>
+    <sonos-queue
+      [queue]="queue"
+      [queueLoading]="queueLoading"
+      [queueError]="queueError"
+      (playTrack)="onPlayTrack($event)"
+      (removeTrack)="onRemoveTrack($event)"
+    ></sonos-queue>
   </div>
 </div>
