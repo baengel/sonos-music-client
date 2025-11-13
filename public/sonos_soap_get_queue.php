@@ -2,22 +2,24 @@
 // sonos_soap_get_queue.php
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Nur GET erlaubt']);
-    exit;
-}
-
-// Unterstützt sowohl application/x-www-form-urlencoded als auch application/json
+$method = $_SERVER['REQUEST_METHOD'];
 $ip = null;
-if (isset($_GET['ip'])) {
-    $ip = $_GET['ip'];
-} else {
+if ($method === 'GET') {
+    if (isset($_GET['ip'])) {
+        $ip = $_GET['ip'];
+    }
+} elseif ($method === 'POST') {
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
     if (isset($data['ip'])) {
         $ip = $data['ip'];
+    } elseif (isset($_POST['ip'])) {
+        $ip = $_POST['ip'];
     }
+} else {
+    http_response_code(405);
+    echo json_encode(['error' => 'Nur GET oder POST erlaubt']);
+    exit;
 }
 
 if (!$ip) {
@@ -90,4 +92,3 @@ try {
     http_response_code(500);
     echo json_encode(['error' => $e->getMessage()]);
 }
-

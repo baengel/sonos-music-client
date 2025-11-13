@@ -159,7 +159,20 @@ export class SonosService {
   /**
    * Holt die aktuelle Queue des Players
    */
-  getQueue(ip: string): Observable<any> {
-    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_get_queue.php', { ip });
+  getQueue(ip: string): Observable<SonosQueueResponse> {
+    // GET-Request, damit es mit Proxy/Relay und direktem Aufruf funktioniert
+    return this.http.get<SonosQueueResponse>(this.getApiBaseUrl() + 'sonos_soap_get_queue.php?ip=' + encodeURIComponent(ip));
   }
+}
+
+export interface SonosQueueTrack {
+  title: string;
+  artist: string;
+  album: string;
+  uri: string;
+}
+
+export interface SonosQueueResponse {
+  success: boolean;
+  tracks: SonosQueueTrack[];
 }
