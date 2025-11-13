@@ -30,3 +30,9 @@ POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www
 GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_status.php?ip=192.168.188.34
 
 
+
+
+### get queue
+GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_get_queue.php?ip=192.168.188.34
+
+

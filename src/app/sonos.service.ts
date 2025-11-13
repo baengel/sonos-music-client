@@ -155,4 +155,11 @@ export class SonosService {
   getStatus(ip: string): Observable<any> {
     return this.http.get(this.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
   }
+
+  /**
+   * Holt die aktuelle Queue des Players
+   */
+  getQueue(ip: string): Observable<any> {
+    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_get_queue.php', { ip });
+  }
 }

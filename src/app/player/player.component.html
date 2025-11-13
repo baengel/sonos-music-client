@@ -1,18 +1,25 @@
-<div class="player-container">
-  <seek-buttons
-    [playerIp]="playerIp"
-    [fileUrl]="fileUrl"
-    (seek)="onSeek($event)"
-    (stop)="onStop()"
-    (playTrack)="onPlayTrack($event)"
-    (play)="onPlay()"
-    (queuePlay)="onQueuePlay()"
-  ></seek-buttons>
-  <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
+<div class="player-layout">
+  <div class="player-main">
+    <seek-buttons
+      [playerIp]="playerIp"
+      [fileUrl]="fileUrl"
+      (seek)="onSeek($event)"
+      (stop)="onStop()"
+      (playTrack)="onPlayTrack($event)"
+      (play)="onPlay()"
+      (queuePlay)="onQueuePlay()"
+    ></seek-buttons>
+    <div class="player-volume">
+      <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
+    </div>
 
-  <!-- Anzeige der Player-Informationen -->
-  <div class="player-info">
-    <div>{{ track }} - {{ title }} - {{ position }}</div>
+    <!-- Anzeige der Player-Informationen -->
+    <div class="player-info">
+      <div>{{ track }} - {{ title }} - {{ position }}</div>
+    </div>
   </div>
-
+  <div class="player-queue">
+    <!-- Queue ausgelagert in eigene Komponente -->
+    <sonos-queue [queue]="queue" [queueLoading]="queueLoading" [queueError]="queueError"></sonos-queue>
+  </div>
 </div>
