@@ -154,14 +154,7 @@ export class SonosService {
       ip,
       room: this.playerMap.getRoomByIp(ip),
       track
-    }, {responseType: 'text'}).subscribe({
-      next: (response) => {
-        console.log('Track gewechselt:', response);
-      },
-      error: (err) => {
-        console.error('Fehler beim Track-Wechsel:', err);
-      }
-    });
+    }, {responseType: 'text'});
   }
 
   /**

@@ -30,8 +30,8 @@ import {AsyncPipe} from '@angular/common';
       @if (!(queueLoading$ | async) && !(queueError$ | async) && queue && queue.length > 0) {
         <ul>
           @for (item of queue; track item; let i = $index) {
-            <li>
-              <span (click)="playTrack.emit(i+1)">
+            <li style="display: flex; align-items: center; justify-content: space-between;">
+              <span (click)="playTrack.emit(i+1)" style="cursor: pointer;">
                 {{ i + 1 }}. {{ item.title || 'Unbekannt' }}
                 @if (item.artist) {
                   <span> - {{ item.artist }}</span>
@@ -40,7 +40,7 @@ import {AsyncPipe} from '@angular/common';
                   <span> ({{ item.album }})</span>
                 }
               </span>
-              <button class="remove-btn" (click)="removeTrack.emit(i+1)">-</button>
+              <button class="remove-btn" (click)="onRemoveTrack(i+1); $event.stopPropagation()">-</button>
             </li>
           }
         </ul>
@@ -61,16 +61,17 @@ export class QueueComponent {
   queueError$ = this.queueService.getError$();
   @Output() playTrack = new EventEmitter<number>();
   @Output() removeTrack = new EventEmitter<number>();
-  @Output() queuePlay = new EventEmitter<{ track: number, fileUrl: string }>();
+  @Output() queuePlay = new EventEmitter<number>();
 
   constructor(private queueService: QueueService) {}
 
+  onRemoveTrack(trackIndex: number) {
+    console.log("remove track " + trackIndex);
+    this.removeTrack.emit(trackIndex)
+  }
+
   onPlayQueue() {
-    this.queue$.subscribe(queue => {
-      if (!queue || queue.length === 0) return;
-      const first = queue[0];
-      const fileUrl = first.uri || first.fileUrl;
-      this.queuePlay.emit({track: 1, fileUrl});
-    });
+    console.log("play queue");
+    this.queuePlay.emit(1);
   }
 }

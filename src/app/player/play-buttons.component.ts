@@ -74,12 +74,4 @@ export class PlayButtonsComponent {
     this.playLoading = false;
     this.play.emit();
   }
-
-  onSetQueue() {
-    if (!this.playerIp) return;
-    this.queueLoading = true;
-    this.sonosService.setQueueAndPlay(this.playerIp, this.fileUrl);
-    this.queueLoading = false;
-    this.queuePlay.emit();
-  }
 }

@@ -129,11 +129,10 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   onPlayTrack(newTrack: number): void {
     if (!this.playerIp) return;
-    this.sonosService.playTrack(this.playerIp, newTrack);
-    setTimeout(() => {
+    this.sonosService.playTrack(this.playerIp, newTrack).subscribe(_ => {
       this.loadPlayerStatus();
       this.queueService.loadQueue(this.playerIp);
-    }, 500);
+    });
   }
 
   onRemoveTrack(trackIndex: number): void {
@@ -146,8 +145,12 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.sonosService.play(item.fileUrl, this.playerIp);
   }
 
-  onQueuePlayItem(event: { track: number, fileUrl: string }): void {
-    if (!this.playerIp || !event?.fileUrl) return;
-    this.sonosService.setQueueAndPlay(this.playerIp, event.fileUrl, event.track);
+  onQueuePlayItem(track: number): void {
+    console.log("onQueuePlayItem ip=" + this.playerIp);
+    if (!this.playerIp ) return;
+    this.sonosService.playTrack(this.playerIp, track).subscribe(_ => {
+      this.loadPlayerStatus();
+      this.queueService.loadQueue(this.playerIp);
+    });
   }
 }

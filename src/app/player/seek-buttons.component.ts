@@ -67,7 +67,10 @@ export class SeekButtonsComponent {
     if (!this.playerIp) return;
     const newTrack = this.currentTrack + offset;
     if (newTrack < 1) return;
-    this.sonosService.playTrack(this.playerIp, newTrack);
+    this.sonosService.playTrack(this.playerIp, newTrack).subscribe(t => {
+      console.log("Playing track " + t);
+      this.currentTrack = this.currentTrack + offset;
+    });
     this.playTrack.emit(newTrack);
   }
 
