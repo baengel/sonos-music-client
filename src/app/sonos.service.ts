@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from '../environments/environment';
+import {PlayerMapService} from './player-map.service';
 
 // TODO ids etmitteln http://<SONOS-IP>:1400/status or http://<sonos-ip>:1400/status/rincon.xml
 const RINCON_ID_MAP: Record<string, string> = {
@@ -16,7 +17,7 @@ const RINCON_ID_MAP: Record<string, string> = {
 export class SonosService {
   baseUrl: string | undefined = undefined;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private playerMap: PlayerMapService) {
   }
 
   /**
@@ -111,21 +112,33 @@ export class SonosService {
     });
   }
 
-  addToQueue(ip: string, uri: string, meta: string = '') {
-    const url = this.getApiBaseUrl() + 'sonos_soap_add_to_queue.php';
-    const params = new URLSearchParams({ ip, uri, meta });
-    return this.http.get(url + '?' + params.toString(), { responseType: 'text' });
+  addToQueue(ip: string, uri: string, meta: string = '', onQueueUpdated?: (tracks: any[]) => void) {
+    const url = this.getApiBaseUrl() + 'sonos_duncan_add_mp3_to_queue.php';
+    const body = {
+      ip,
+      room: this.playerMap.getRoomByIp(ip),
+      file: uri
+    };
+    this.http.post(url, body, {responseType: 'text'}).subscribe({
+      next: () => {
+        this.playOnly(ip);
+      },
+      error: (err) => {
+        console.error('error while add to queue', err);
+      }
+    });
   }
 
   setQueueAndPlay(ip: string, uri: string, track: number = 1) {
     // Setzt die Queue und spielt den gewünschten Track ab
-    const url = this.getApiBaseUrl() + 'sonos_soap_set_queue.php';
+    const url = this.getApiBaseUrl() + 'sonos_duncan_play_mp3.php';
     const body = {
       ip,
-      rincon: this.getRinconId(ip),
+      room: this.playerMap.getRoomByIp(ip),
+      file: uri,
       track
     };
-    this.http.post(url, body, { responseType: 'text' }).subscribe({
+    this.http.post(url, body, {responseType: 'text'}).subscribe({
       next: () => {
         this.playOnly(ip);
       },
@@ -143,7 +156,11 @@ export class SonosService {
 
   playTrack(ip: string, track: number) {
     // Ruft das PHP-Skript zum Track-Wechsel auf
-    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_play_track.php', { ip, track }, { responseType: 'text' }).subscribe({
+    return this.http.post(this.getApiBaseUrl() + 'sonos_duncan_play_queue_track.php', {
+      ip,
+      room: this.playerMap.getRoomByIp(ip),
+      track
+    }, {responseType: 'text'}).subscribe({
       next: (response) => {
         console.log('Track gewechselt:', response);
       },
@@ -172,9 +189,13 @@ export class SonosService {
    * Entfernt einen Track aus der Queue
    */
   removeFromQueue(ip: string, track: number) {
-    const url = this.getApiBaseUrl() + 'sonos_soap_remove_from_queue.php';
-    const body = { ip, track };
-    return this.http.post(url, body, { responseType: 'text' });
+    const url = this.getApiBaseUrl() + 'sonos_duncan_remove_from_queue.php';
+    const body = {
+      ip,
+      room: this.playerMap.getRoomByIp(ip),
+      track
+    };
+    return this.http.post(url, body, {responseType: 'text'});
   }
 
   /**
@@ -183,6 +204,10 @@ export class SonosService {
   public getPlayedTitles(): Observable<any[]> {
     const url = this.getApiBaseUrl() + '/read_titles.php';
     return this.http.get<any[]>(url);
+  }
+
+  public mapIpToRoom(ip: string): string {
+    return this.playerMap.getRoomByIp(ip);
   }
 }
 

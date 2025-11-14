@@ -42,6 +42,11 @@ if (!$trackFile) {
   exit(1);
 }
 
+// Pfad-Konvertierung: /volume1/ → x-file-cifs://asustor/
+if (strpos($trackFile, '/volume1/') === 0) {
+  $trackFile = 'x-file-cifs://asustor/' . substr($trackFile, strlen('/volume1/'));
+}
+
 $sonos = new Network();
 $controller = $sonos->getControllerByRoom($room);
 
@@ -52,6 +57,3 @@ if (!$controller->isUsingQueue()) {
 
 // Track hinzufügen (lokale Playlist oder URL)
 $controller->getQueue()->addTrack($trackFile);
-
-// Wiedergabe starten
-$controller->play();

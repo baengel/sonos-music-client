@@ -5,40 +5,39 @@ if (!file_exists($autoloadPath)) {
   echo "Bitte im Projektverzeichnis 'composer install' ausführen.\n";
   exit(1);
 }
-//echo "vendor/autoload.php gefunden und wird geladen...\n";
 require $autoloadPath;
 
 use duncan3dc\Sonos\Network;
 
-// Raumname und Track-URL als Input-Parameter
+// Raumname und Track-Nummer als Input-Parameter
 $room = null;
-$trackFile = null;
+$trackNumber = null;
 if (isset($_POST['room'])) {
   $room = $_POST['room'];
 }
-if (isset($_POST['file'])) {
-  $trackFile = $_POST['file'];
+if (isset($_POST['track'])) {
+  $trackNumber = $_POST['track'];
 }
-if ($room === null || $trackFile === null) {
+if ($room === null || $trackNumber === null) {
   $raw = file_get_contents('php://input');
   $data = json_decode($raw, true);
   if ($room === null && isset($data['room'])) {
     $room = $data['room'];
   }
-  if ($trackFile === null && isset($data['file'])) {
-    $trackFile = $data['file'];
+  if ($trackNumber === null && isset($data['track'])) {
+    $trackNumber = $data['track'];
   }
 }
 if ($room !== null) $room = trim($room);
-if ($trackFile !== null) $trackFile = trim($trackFile);
+if ($trackNumber !== null) $trackNumber = (int)trim($trackNumber);
 if (!$room) {
   echo "FEHLER: Raumname muss als 'room' übergeben werden!\n";
   echo "Debug: empfangener Wert: '" . ($room ?? '') . "'\n";
   exit(1);
 }
-if (!$trackFile) {
-  echo "FEHLER: Track-File muss als 'file' übergeben werden!\n";
-  echo "Debug: empfangener Wert: '" . ($trackFile ?? '') . "'\n";
+if (!$trackNumber) {
+  echo "FEHLER: Track-Nummer muss als 'track' übergeben werden!\n";
+  echo "Debug: empfangener Wert: '" . ($trackNumber ?? '') . "'\n";
   exit(1);
 }
 
@@ -50,8 +49,8 @@ if (!$controller->isUsingQueue()) {
   $controller->useQueue();
 }
 
-// Track hinzufügen (lokale Playlist oder URL)
-$controller->getQueue()->addTrack($trackFile);
+// Track aus der Queue entfernen
+$controller->getQueue()->removeTrack($trackNumber - 1); // 0-basiert
 
-// Wiedergabe starten
-$controller->play();
+echo json_encode(["success" => true, "removedTrack" => $trackNumber]);
+

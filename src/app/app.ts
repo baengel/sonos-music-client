@@ -30,11 +30,11 @@ export class App implements OnInit {
 
   // Player-Liste
   protected readonly availablePlayers = [
-    { name: 'Len', ip: '192.168.188.34' },
-    { name: 'Juna', ip: '192.168.188.43' },
-    { name: 'Maxim', ip: '192.168.188.35' },
-    { name: 'Kueche', ip: '192.168.188.146' },
-    { name: 'Wohnzimmer', ip: '192.168.188.86' }
+    { name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer' },
+    { name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer' },
+    { name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer' },
+    { name: 'Kueche', ip: '192.168.188.146', room: 'Kueche' },
+    { name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer' }
   ];
 
   // Globale ausgewählte Player (nur eine IP für Tabs)
@@ -110,7 +110,7 @@ export class App implements OnInit {
     if (selectedIps.size > 0) {
       const addPromises = Array.from(selectedIps).map(ip => {
         // Metadaten können hier ggf. generiert werden, aktuell leer
-        return this.sonosService.addToQueue(ip, `${file.path}/${file.fileName}`, '').toPromise();
+        return this.sonosService.addToQueue(ip, `${file.path}/${file.fileName}`, '');
       });
       try {
         await Promise.all(addPromises);
