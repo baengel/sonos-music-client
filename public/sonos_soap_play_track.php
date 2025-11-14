@@ -40,7 +40,7 @@ $enqueue_as_next = 0;
 
 // SOAP XML Body
 $soap_body = <<<XML
- <s:Envelope
+<s:Envelope
         xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
         s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
         <s:Body>
@@ -63,11 +63,19 @@ XML;
 // Ziel-URL
 $url = "http://$ip:$sonos_port/MediaRenderer/AVTransport/Control";
 
+// Zusätzliche Sonos-Header aus POST/JSON übernehmen
+$api_key = isset($_POST['api_key']) ? $_POST['api_key'] : (isset($data['api_key']) ? $data['api_key'] : '');
+$corr_id = isset($_POST['corr_id']) ? $_POST['corr_id'] : (isset($data['corr_id']) ? $data['corr_id'] : '');
+$target_udn = isset($_POST['target_udn']) ? $_POST['target_udn'] : (isset($data['target_udn']) ? $data['target_udn'] : '');
+
 // Header
 $headers = [
     'Content-Type: text/xml; charset="utf-8"',
     'SOAPACTION: "urn:schemas-upnp-org:service:AVTransport:1#Seek"'
 ];
+if ($api_key) $headers[] = 'X-Sonos-Api-Key: ' . $api_key;
+if ($corr_id) $headers[] = 'X-Sonos-Corr-Id: ' . $corr_id;
+if ($target_udn) $headers[] = 'X-SONOS-TARGET-UDN: ' . $target_udn;
 
 // cURL initialisieren
 $ch = curl_init($url);

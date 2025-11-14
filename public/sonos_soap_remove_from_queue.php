@@ -43,22 +43,43 @@ $sonos_port = 1400;
 $instance_id = 0;
 $object_id = $track + 1; // Sonos Queue ist 1-basiert
 
+// Zusätzliche Header aus POST/JSON übernehmen
+$api_key = isset($_POST['api_key']) ? $_POST['api_key'] : (isset($data['api_key']) ? $data['api_key'] : '');
+$corr_id = isset($_POST['corr_id']) ? $_POST['corr_id'] : (isset($data['corr_id']) ? $data['corr_id'] : '');
+$target_udn = isset($_POST['target_udn']) ? $_POST['target_udn'] : (isset($data['target_udn']) ? $data['target_udn'] : '');
+
 $soap_body = <<<XML
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <s:Body>
-    <u:RemoveTrackFromQueue xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">
-      <InstanceID>$instance_id</InstanceID>
-      <ObjectID>$object_id</ObjectID>
-    </u:RemoveTrackFromQueue>
-  </s:Body>
-</s:Envelope>
+<s:Envelope
+        xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
+        s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <s:Body>
+            <u:RemoveTrackRangeFromQueue
+                xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">
+                <InstanceID>
+                    $instance_id
+                    </InstanceID>
+                <UpdateID>
+                    0
+                    </UpdateID>
+                <StartingIndex>
+                    $object_id
+                    </StartingIndex>
+                <NumberOfTracks>
+                    1
+                    </NumberOfTracks>
+                </u:RemoveTrackRangeFromQueue>
+            </s:Body>
+        </s:Envelope>
 XML;
 
 $url = "http://$ip:$sonos_port/MediaRenderer/AVTransport/Control";
 $headers = [
     'Content-Type: text/xml; charset="utf-8"',
-    'SOAPACTION: "urn:schemas-upnp-org:service:AVTransport:1#RemoveTrackFromQueue"'
+    'SOAPACTION: "urn:schemas-upnp-org:service:AVTransport:1#RemoveTrackRangeFromQueue"'
 ];
+if ($api_key) $headers[] = 'X-Sonos-Api-Key: ' . $api_key;
+if ($corr_id) $headers[] = 'X-Sonos-Corr-Id: ' . $corr_id;
+if ($target_udn) $headers[] = 'X-SONOS-TARGET-UDN: ' . $target_udn;
 
 $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_POST, true);
@@ -78,4 +99,3 @@ if ($error) {
     echo $response;
 }
 ?>
-

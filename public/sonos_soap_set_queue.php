@@ -49,15 +49,30 @@ $current_uri = "x-rincon-queue:$rincon#$track";
 $current_uri_metadata = '';
 
 $soap_body = <<<XML
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
-  <s:Body>
-    <u:SetAVTransportURI xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">
-      <InstanceID>$instance_id</InstanceID>
-      <CurrentURI>$current_uri</CurrentURI>
-      <CurrentURIMetaData>$current_uri_metadata</CurrentURIMetaData>
-    </u:SetAVTransportURI>
-  </s:Body>
-</s:Envelope>
+ <s:Envelope
+        xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
+        s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <s:Body>
+            <u:AddURIToQueue
+                xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">
+                <InstanceID>
+                    $instance_id
+                    </InstanceID>
+                <EnqueuedURI>
+                    $current_uri
+                    </EnqueuedURI>
+                <EnqueuedURIMetaData>
+                    $current_uri_metadata
+                    </EnqueuedURIMetaData>
+                <DesiredFirstTrackNumberEnqueued>
+                    0
+                    </DesiredFirstTrackNumberEnqueued>
+                <EnqueueAsNext>
+                    0
+                    </EnqueueAsNext>
+                </u:AddURIToQueue>
+            </s:Body>
+        </s:Envelope>
 XML;
 
 $url = "http://$ip:$sonos_port/MediaRenderer/AVTransport/Control";
