@@ -1,0 +1,16 @@
+<div class="played-list">
+  <h3>Played List</h3>
+  @if (loading) {
+    <div>Lade gespielt Titel...</div>
+  } @else if (error) {
+    <div class="error">{{ error }}</div>
+  } @else {
+    <ul>
+      @for (item of playedSorted; track item) {
+        <li (click)="playItem.emit(item)" class="played-item">
+          {{ item.count }}x {{ item.title }} - {{ item.artist }}
+        </li>
+      }
+    </ul>
+  }
+</div>

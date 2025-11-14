@@ -2,11 +2,12 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/cor
 import { VolumeControlComponent } from './volume-control.component';
 import { SeekButtonsComponent } from './seek-buttons.component';
 import { QueueComponent } from './queue.component';
+import { PlayedListComponent } from './played-list.component';
 import { SonosService } from '../sonos.service';
 
 @Component({
   selector: 'app-player',
-  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent],
+  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, PlayedListComponent],
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
@@ -21,6 +22,10 @@ export class PlayerComponent implements OnInit, OnChanges {
   queue: any[] = [];
   queueLoading: boolean = false;
   queueError: string = '';
+  played: any[] = [];
+  playedSorted: any[] = [];
+  playedLoading: boolean = false;
+  playedError: string | null = null;
 
   constructor(private sonosService: SonosService) {}
 
@@ -28,18 +33,23 @@ export class PlayerComponent implements OnInit, OnChanges {
     if (this.playerIp) {
       this.loadPlayerStatus();
       this.loadQueue();
+      this.loadPlayedList();
     }
+    this.sortPlayed();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['playerIp'] && changes['playerIp'].currentValue) {
       this.loadPlayerStatus();
       this.loadQueue();
+      this.loadPlayedList();
     }
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
       this.loadPlayerStatus();
       this.loadQueue();
+      this.loadPlayedList();
     }
+    this.sortPlayed();
   }
 
   loadPlayerStatus(): void {
@@ -66,6 +76,26 @@ export class PlayerComponent implements OnInit, OnChanges {
         this.queueLoading = false;
       }
     });
+  }
+
+  loadPlayedList(): void {
+    this.playedLoading = true;
+    this.playedError = null;
+    this.sonosService.getPlayedTitles().subscribe({
+      next: (data) => {
+        this.played = data;
+        this.sortPlayed();
+        this.playedLoading = false;
+      },
+      error: (err) => {
+        this.playedError = 'Fehler beim Laden der Played List';
+        this.playedLoading = false;
+      }
+    });
+  }
+
+  sortPlayed(): void {
+    this.playedSorted = [...this.played].sort((a, b) => b.count - a.count);
   }
 
   handleVolumeChange(event: any): void {
@@ -131,5 +161,15 @@ export class PlayerComponent implements OnInit, OnChanges {
         this.queueLoading = false;
       }
     });
+  }
+
+  onPlayedItemClick(item: any): void {
+    if (!this.playerIp || !item?.fileUrl) return;
+    this.sonosService.play(item.fileUrl, this.playerIp);
+  }
+
+  onQueuePlayItem(event: { track: number, fileUrl: string }): void {
+    if (!this.playerIp || !event?.fileUrl) return;
+    this.sonosService.setQueueAndPlay(this.playerIp, event.fileUrl, event.track);
   }
 }

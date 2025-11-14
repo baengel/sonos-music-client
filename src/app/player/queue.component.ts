@@ -5,7 +5,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: true,
   template: `
     <section class="queue-section">
-      <h3>Queue</h3>
+      <div class="queue-header" style="display: flex; align-items: center; justify-content: space-between;">
+        <h3 style="margin: 0;">Queue</h3>
+        <button class="seek-btn queue-btn"
+                (click)="onSetQueue()"
+                [disabled]="queueLoading">
+          @if (queueLoading) {
+            <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+          } @else {
+            ▶️☰
+          }
+        </button>
+      </div>
       @if (queueLoading) {
         <div>Lade Queue...</div>
       }
@@ -43,4 +54,14 @@ export class QueueComponent {
   @Input() queueError: string = '';
   @Output() playTrack = new EventEmitter<number>();
   @Output() removeTrack = new EventEmitter<number>();
+  @Output() queuePlay = new EventEmitter<{ track: number, fileUrl: string }>();
+
+  onSetQueue() {
+    // Finde den ersten Eintrag in der Queue
+    if (!this.queue || this.queue.length === 0) return;
+    // Standard: spiele den ersten Track ab
+    const first = this.queue[0];
+    const fileUrl = first.uri || first.fileUrl;
+    this.queuePlay.emit({ track: 1, fileUrl });
+  }
 }

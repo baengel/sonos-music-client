@@ -24,15 +24,6 @@ import { SonosService } from '../sonos.service';
       </ng-container>
       <ng-template #playIcon>▶️</ng-template>
     </button>
-
-    <button class="seek-btn queue-btn"
-            (click)="onSetQueue()"
-            [disabled]="queueLoading || disabled">
-      <ng-container *ngIf="queueLoading; else queueIcon">
-        <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
-      </ng-container>
-      <ng-template #queueIcon>▶️☰</ng-template>
-    </button>
   `,
   styles: [`
     .seek-btn {
@@ -54,10 +45,6 @@ import { SonosService } from '../sonos.service';
     .play-btn {
       color: #0b0;
       border-color: #0b0;
-    }
-    .queue-btn {
-      color: #00b;
-      border-color: #00b;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }

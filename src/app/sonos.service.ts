@@ -176,6 +176,14 @@ export class SonosService {
     const body = { ip, track };
     return this.http.post(url, body, { responseType: 'text' });
   }
+
+  /**
+   * Holt die Liste der zuletzt gespielten Titel
+   */
+  public getPlayedTitles(): Observable<any[]> {
+    const url = this.getApiBaseUrl() + '/read_titles.php';
+    return this.http.get<any[]>(url);
+  }
 }
 
 export interface SonosQueueTrack {

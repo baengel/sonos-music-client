@@ -1,4 +1,14 @@
 <div class="player-layout">
+  <div class="player-played">
+    <!-- Played List links -->
+    <played-list
+      [played]="played"
+      [playedSorted]="playedSorted"
+      [loading]="playedLoading"
+      [error]="playedError"
+      (playItem)="onPlayedItemClick($event)"
+    ></played-list>
+  </div>
   <div class="player-main">
     <seek-buttons
       [playerIp]="playerIp"
