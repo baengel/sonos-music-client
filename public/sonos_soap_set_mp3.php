@@ -90,5 +90,30 @@ if ($err || $httpcode >= 400) {
     exit;
 }
 
+// Nach erfolgreichem Setzen des MP3-Tracks (hier am Ende des Skripts einfügen):
+$datei = 'played_titles.txt';
+$link = $file;
+
+$linkListe = [];
+if (file_exists($datei)) {
+    $zeilen = file($datei, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($zeilen as $zeile) {
+        list($url, $count) = explode('|', $zeile, 2);
+        $linkListe[$url] = (int)$count;
+    }
+}
+
+if (isset($linkListe[$link])) {
+    $linkListe[$link]++;
+} else {
+    $linkListe[$link] = 1;
+}
+
+$fp = fopen($datei, 'w');
+foreach ($linkListe as $url => $count) {
+    fwrite($fp, $url . '|' . $count . "\n");
+}
+fclose($fp);
+
 echo json_encode(['success' => true, 'message' => 'SetAVTransportURI erfolgreich']);
 
