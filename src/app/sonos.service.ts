@@ -17,7 +17,8 @@ const RINCON_ID_MAP: Record<string, string> = {
 export class SonosService {
   baseUrl: string | undefined = undefined;
 
-  constructor(private http: HttpClient, private playerMap: PlayerMapService) {
+  constructor(private http: HttpClient,
+              private playerMap: PlayerMapService) {
   }
 
   /**
@@ -112,21 +113,14 @@ export class SonosService {
     });
   }
 
-  addToQueue(ip: string, uri: string, meta: string = '', onQueueUpdated?: (tracks: any[]) => void) {
+  addToQueue(ip: string, uri: string, meta: string = ''): Observable<any> {
     const url = this.getApiBaseUrl() + 'sonos_duncan_add_mp3_to_queue.php';
     const body = {
       ip,
       room: this.playerMap.getRoomByIp(ip),
       file: uri
     };
-    this.http.post(url, body, {responseType: 'text'}).subscribe({
-      next: () => {
-        this.playOnly(ip);
-      },
-      error: (err) => {
-        console.error('error while add to queue', err);
-      }
-    });
+    return this.http.post(url, body, {responseType: 'text'});
   }
 
   setQueueAndPlay(ip: string, uri: string, track: number = 1) {

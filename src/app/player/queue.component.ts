@@ -1,4 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Output, EventEmitter} from '@angular/core';
+import {QueueService} from '../queue.service';
+import {AsyncPipe} from '@angular/common';
 
 @Component({
   selector: 'sonos-queue',
@@ -8,22 +10,24 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
       <div class="queue-header" style="display: flex; align-items: center; justify-content: space-between;">
         <h3 style="margin: 0;">Queue</h3>
         <button class="seek-btn queue-btn"
-                (click)="onSetQueue()"
-                [disabled]="queueLoading">
-          @if (queueLoading) {
-            <span class="spinner" style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                (click)="onPlayQueue()"
+                [disabled]="(queueLoading$ | async)">
+          @if (queueLoading$ | async) {
+            <span class="spinner"
+                  style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
           } @else {
             ▶️☰
           }
         </button>
       </div>
-      @if (queueLoading) {
+      @if (queueLoading$ | async) {
         <div>Lade Queue...</div>
       }
-      @if (queueError) {
-        <div>{{ queueError }}</div>
+      @if (queueError$ | async) {
+        <div>{{ queueError$ | async }}</div>
       }
-      @if (!queueLoading && !queueError && !!queue.length) {
+      @let queue = (queue$ | async);
+      @if (!(queueLoading$ | async) && !(queueError$ | async) && queue && queue.length > 0) {
         <ul>
           @for (item of queue; track item; let i = $index) {
             <li>
@@ -41,27 +45,32 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
           }
         </ul>
       }
-      @if (!queueLoading && !queueError && !(queue && queue.length > 0)) {
+      @if (!(queueLoading$ | async) && !(queueError$ | async) && (!queue || queue.length === 0)) {
         <div>Keine Einträge in der Queue.</div>
       }
     </section>
   `,
+  imports: [
+    AsyncPipe
+  ],
   styleUrls: ['./queue.component.css']
 })
 export class QueueComponent {
-  @Input() queue: any[] = [];
-  @Input() queueLoading: boolean = false;
-  @Input() queueError: string = '';
+  queue$ = this.queueService.getQueue$();
+  queueLoading$ = this.queueService.getLoading$();
+  queueError$ = this.queueService.getError$();
   @Output() playTrack = new EventEmitter<number>();
   @Output() removeTrack = new EventEmitter<number>();
   @Output() queuePlay = new EventEmitter<{ track: number, fileUrl: string }>();
 
-  onSetQueue() {
-    // Finde den ersten Eintrag in der Queue
-    if (!this.queue || this.queue.length === 0) return;
-    // Standard: spiele den ersten Track ab
-    const first = this.queue[0];
-    const fileUrl = first.uri || first.fileUrl;
-    this.queuePlay.emit({ track: 1, fileUrl });
+  constructor(private queueService: QueueService) {}
+
+  onPlayQueue() {
+    this.queue$.subscribe(queue => {
+      if (!queue || queue.length === 0) return;
+      const first = queue[0];
+      const fileUrl = first.uri || first.fileUrl;
+      this.queuePlay.emit({track: 1, fileUrl});
+    });
   }
 }

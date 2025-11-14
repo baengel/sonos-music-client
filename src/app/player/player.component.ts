@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { VolumeControlComponent } from './volume-control.component';
-import { SeekButtonsComponent } from './seek-buttons.component';
-import { QueueComponent } from './queue.component';
-import { PlayedListComponent } from './played-list.component';
-import { SonosService } from '../sonos.service';
+import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {VolumeControlComponent} from './volume-control.component';
+import {SeekButtonsComponent} from './seek-buttons.component';
+import {QueueComponent} from './queue.component';
+import {PlayedListComponent} from './played-list.component';
+import {SonosService} from '../sonos.service';
+import {QueueService} from '../queue.service';
 
 @Component({
   selector: 'app-player',
@@ -19,34 +20,36 @@ export class PlayerComponent implements OnInit, OnChanges {
   title: string = '';
   position: string = '';
   volume: number = 0;
-  queue: any[] = [];
-  queueLoading: boolean = false;
-  queueError: string = '';
   played: any[] = [];
   playedSorted: any[] = [];
   playedLoading: boolean = false;
   playedError: string | null = null;
 
-  constructor(private sonosService: SonosService) {}
+  constructor(private sonosService: SonosService,
+              private queueService: QueueService) {
+  }
 
   ngOnInit(): void {
     if (this.playerIp) {
       this.loadPlayerStatus();
-      this.loadQueue();
+      this.queueService.loadQueue(this.playerIp);
       this.loadPlayedList();
     }
+    this.queueService.getQueue$().subscribe();
+    this.queueService.getLoading$().subscribe();
+    this.queueService.getError$().subscribe();
     this.sortPlayed();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['playerIp'] && changes['playerIp'].currentValue) {
       this.loadPlayerStatus();
-      this.loadQueue();
+      this.queueService.loadQueue(this.playerIp);
       this.loadPlayedList();
     }
     if (changes['refreshTrigger'] && !changes['refreshTrigger'].firstChange) {
       this.loadPlayerStatus();
-      this.loadQueue();
+      this.queueService.loadQueue(this.playerIp);
       this.loadPlayedList();
     }
     this.sortPlayed();
@@ -59,22 +62,6 @@ export class PlayerComponent implements OnInit, OnChanges {
       this.title = data.title || '';
       this.position = data.position || '';
       this.volume = data.volume || 0;
-    });
-  }
-
-  loadQueue(): void {
-    if (!this.playerIp) return;
-    this.queueLoading = true;
-    this.queueError = '';
-    this.sonosService.getQueue(this.playerIp).subscribe({
-      next: (data: any) => {
-        this.queue = data.tracks || [];
-        this.queueLoading = false;
-      },
-      error: (err) => {
-        this.queueError = 'Fehler beim Laden der Queue';
-        this.queueLoading = false;
-      }
     });
   }
 
@@ -136,7 +123,7 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.sonosService.setQueueAndPlay(this.playerIp, this.fileUrl);
     setTimeout(() => {
       this.loadPlayerStatus();
-      this.loadQueue();
+      this.queueService.loadQueue(this.playerIp);
     }, 500);
   }
 
@@ -145,22 +132,13 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.sonosService.playTrack(this.playerIp, newTrack);
     setTimeout(() => {
       this.loadPlayerStatus();
-      this.loadQueue();
+      this.queueService.loadQueue(this.playerIp);
     }, 500);
   }
 
   onRemoveTrack(trackIndex: number): void {
     if (!this.playerIp) return;
-    this.queueLoading = true;
-    this.sonosService.removeFromQueue(this.playerIp, trackIndex).subscribe({
-      next: () => {
-        this.loadQueue();
-      },
-      error: (err) => {
-        this.queueError = 'Fehler beim Entfernen des Tracks';
-        this.queueLoading = false;
-      }
-    });
+    this.queueService.removeFromQueue(this.playerIp, trackIndex);
   }
 
   onPlayedItemClick(item: any): void {

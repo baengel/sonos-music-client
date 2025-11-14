@@ -5,6 +5,7 @@ import { SonosService } from './sonos.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlayerComponent } from './player/player.component';
+import {QueueService} from './queue.service';
 
 interface FileInfo {
   path: string;
@@ -52,7 +53,10 @@ export class App implements OnInit {
   // EventEmitter für Player-Info-Refresh
   refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(private sonosService: SonosService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private sonosService: SonosService,
+              private queueService: QueueService,
+              private router: Router,
+              private route: ActivatedRoute) {}
 
   ngOnInit() {
     // URL-Parameter auslesen
@@ -110,7 +114,7 @@ export class App implements OnInit {
     if (selectedIps.size > 0) {
       const addPromises = Array.from(selectedIps).map(ip => {
         // Metadaten können hier ggf. generiert werden, aktuell leer
-        return this.sonosService.addToQueue(ip, `${file.path}/${file.fileName}`, '');
+        return this.queueService.addToQueue(ip, `${file.path}/${file.fileName}`);
       });
       try {
         await Promise.all(addPromises);
