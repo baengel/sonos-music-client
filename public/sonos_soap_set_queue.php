@@ -13,6 +13,7 @@ $ip = null;
 $rincon = null;
 $track = 0;
 
+
 if (isset($_POST['ip']) && isset($_POST['rincon'])) {
   $ip = $_POST['ip'];
   $rincon = $_POST['rincon'];
@@ -44,41 +45,38 @@ if (!$ip || !$rincon) {
 }
 
 $sonos_port = 1400;
-$instance_id = 0;
-$current_uri = "x-rincon-queue:$rincon#$track";
+
+$track = 0; // Immer mit 0 starten
+$current_uri = "x-rincon-queue:$rincon#0";
 $current_uri_metadata = '';
+$instance_id = 0;
 
 $soap_body = <<<XML
- <s:Envelope
+<s:Envelope
         xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"
         s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
         <s:Body>
-            <u:AddURIToQueue
+            <u:SetAVTransportURI
                 xmlns:u="urn:schemas-upnp-org:service:AVTransport:1">
                 <InstanceID>
-                    $instance_id
+                    0
                     </InstanceID>
-                <EnqueuedURI>
+                <CurrentURI>
                     $current_uri
-                    </EnqueuedURI>
-                <EnqueuedURIMetaData>
-                    $current_uri_metadata
-                    </EnqueuedURIMetaData>
-                <DesiredFirstTrackNumberEnqueued>
-                    0
-                    </DesiredFirstTrackNumberEnqueued>
-                <EnqueueAsNext>
-                    0
-                    </EnqueueAsNext>
-                </u:AddURIToQueue>
+                    </CurrentURI>
+                <CurrentURIMetaData>
+                    </CurrentURIMetaData>
+                </u:SetAVTransportURI>
             </s:Body>
         </s:Envelope>
 XML;
 
 $url = "http://$ip:$sonos_port/MediaRenderer/AVTransport/Control";
 $headers = [
-    'Content-Type: text/xml; charset="utf-8"',
-    'SOAPACTION: "urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"'
+  'Content-Type: text/xml; charset="utf-8"',
+  'SOAPACTION: "urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI"',
+  'X-SONOS-TARGET-UDN: uuid:' . $rincon,
+  'HOST: '.$ip.':1400'
 ];
 
 $ch = curl_init($url);
@@ -89,14 +87,29 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $response = curl_exec($ch);
 $error = curl_error($ch);
+$debug_request = [
+  'url' => $url,
+  'headers' => $headers,
+  'soap_body' => $soap_body
+];
 curl_close($ch);
 
+
+$debug_mode = isset($_POST['debug']) ? $_POST['debug'] : (isset($data['debug']) ? $data['debug'] : false);
+
 header('Content-Type: text/plain; charset=utf-8');
-if ($error) {
-    echo "Fehler beim Senden des SOAP-Requests: $error\n";
+if ($error || strpos($response, '<s:Fault>') !== false || $debug_mode) {
+  echo "Fehler beim Senden des SOAP-Requests:\n";
+  if ($error) echo "$error\n";
+  echo "--- Debug SOAP Request ---\n";
+  echo "URL: $url\n";
+  echo "Headers:\n";
+  foreach ($headers as $h) echo "$h\n";
+  echo "SOAP Body:\n$soap_body\n";
+  echo "--- SOAP Response ---\n";
+  echo $response;
 } else {
-    echo "SOAP-Request gesendet. Antwort:\n\n";
-    echo $response;
+  echo "SOAP-Request gesendet. Antwort:\n\n";
+  echo $response;
 }
 ?>
-

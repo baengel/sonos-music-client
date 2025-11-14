@@ -117,7 +117,7 @@ export class SonosService {
     return this.http.get(url + '?' + params.toString(), { responseType: 'text' });
   }
 
-  setQueueAndPlay(ip: string, uri: string, track: number = 0) {
+  setQueueAndPlay(ip: string, uri: string, track: number = 1) {
     // Setzt die Queue und spielt den gewünschten Track ab
     const url = this.getApiBaseUrl() + 'sonos_soap_set_queue.php';
     const body = {

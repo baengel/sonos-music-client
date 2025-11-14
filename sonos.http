@@ -14,36 +14,28 @@ POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www
 
 {"ip":"192.168.188.34", "volume":"1"}
 
-
-
-
-
 ### seek
 POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_seek.php
 
 {"ip":"192.168.188.34","duration":"30"}
 
 
-
-
-### get
+### get status
 GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_status.php?ip=192.168.188.34
-
-
-
 
 ### get queue
 GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_get_queue.php?ip=192.168.188.34
 
 
+### activate queue
+POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_set_queue.php
 
+{"ip":"192.168.188.34","rincon": "RINCON_7828CAB5D9D201400"}
 
-
-### get queue
+### play track from queue
 POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_play_track.php
 
-{"ip":"192.168.188.34","track":0}
-
+{"ip":"192.168.188.34","track":1}
 
 ### remove 1 queue
 POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_soap_remove_from_queue.php

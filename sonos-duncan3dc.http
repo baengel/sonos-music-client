@@ -1,0 +1,77 @@
+
+#########################################################################
+### duncan3dc lib - get devices
+GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_get_devices.php
+
+### duncan3dc lib - get queue
+GET https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_get_queue.php?room=Len%20Zimmer
+
+### duncan3dc lib - add file to queue
+POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_play_mp3.php
+
+{"room": "Len Zimmer", "file": "x-file-cifs://asustor/Music/best%20mp3/CD3/Allure%20-%20No%20More%20Tears.mp3"}
+
+### duncan3dc lib - play track from queue
+POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_play_queue_track.php
+
+{"room": "Len Zimmer", "track": 1}
+
+
+### lib #############################################################
+#Verfügbare Methoden im Controller: Array
+#(
+#[0] => __construct
+#[1] => getStateName
+#[2] => getState
+#[3] => getStateDetails
+#[4] => setState
+#[5] => play
+#[6] => pause
+#[7] => next
+#[8] => previous
+#[9] => selectTrack
+#[10] => seek
+#[11] => getMediaInfo
+#[12] => isStreaming
+#[13] => useStream
+#[14] => useLineIn
+#[15] => isUsingQueue
+#[16] => useQueue
+#[17] => getSpeakers
+#[18] => addSpeaker
+#[19] => removeSpeaker
+#[20] => getMode
+#[21] => setMode
+#[22] => getRepeat
+#[23] => setRepeat
+#[24] => getShuffle
+#[25] => setShuffle
+#[26] => getCrossfade
+#[27] => setCrossfade
+#[28] => getQueue
+#[29] => exportState
+#[30] => restoreState
+#[31] => interrupt
+#[32] => soap
+#[33] => getIp
+#[34] => getName
+#[35] => getRoom
+#[36] => getGroup
+#[37] => updateGroup
+#[38] => setGroup
+#[39] => isCoordinator
+#[40] => getUuid
+#[41] => getVolume
+#[42] => setVolume
+#[43] => adjustVolume
+#[44] => isMuted
+#[45] => mute
+#[46] => unmute
+#[47] => getIndicator
+#[48] => setIndicator
+#[49] => getTreble
+#[50] => setTreble
+#[51] => getBass
+#[52] => setBass
+#[53] => getLoudness
+#[54] => setLoudness
