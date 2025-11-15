@@ -3,4 +3,3 @@ export const environment = {
   apiBaseUrl: '/public/',
   useMockSonosService: true
 };
-
