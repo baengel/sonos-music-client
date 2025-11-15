@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { SonosQueueTrack, SonosQueueResponse } from './sonos.service';
+import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {SonosQueueResponse, SonosQueueTrack} from './sonos.service';
 
 @Injectable({ providedIn: 'root' })
 export class SonosServiceMock {

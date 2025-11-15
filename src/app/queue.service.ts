@@ -1,6 +1,6 @@
 // ...existing code...
 import {Injectable} from '@angular/core';
-import {SonosQueueResponse, SonosService} from './sonos.service';
+import {SonosQueueResponse} from './sonos.service';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {ApiBaseUrlService} from './api-base-url.service';

@@ -1,4 +1,4 @@
-import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {SonosService} from '../sonos.service';
 import {QueueService} from '../queue.service';
 import {PlaylistService} from '../playlist.service';

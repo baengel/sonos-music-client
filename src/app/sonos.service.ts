@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, tap, switchMap} from 'rxjs';
-import {environment} from '../environments/environment';
+import {Observable, switchMap, tap} from 'rxjs';
 import {PlayerMapService} from './player-map.service';
-import { ApiBaseUrlService } from './api-base-url.service';
+import {ApiBaseUrlService} from './api-base-url.service';
 import {QueueService} from './queue.service';
 
 // TODO ids etmitteln http://<SONOS-IP>:1400/status or http://<sonos-ip>:1400/status/rincon.xml

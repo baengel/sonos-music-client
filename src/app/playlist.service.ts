@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { SonosService } from './sonos.service';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {SonosService} from './sonos.service';
 
 @Injectable({ providedIn: 'root' })
 export class PlaylistService {

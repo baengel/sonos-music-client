@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 export const availablePlayers = [
   { ip: '192.168.188.34', room: 'Len Zimmer' },

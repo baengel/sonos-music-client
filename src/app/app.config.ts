@@ -1,11 +1,11 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import {ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection} from '@angular/core';
+import {provideRouter} from '@angular/router';
+import {provideHttpClient} from '@angular/common/http';
 
-import { routes } from './app.routes';
-import { SonosService } from './sonos.service';
-import { SonosServiceMock } from './sonos.service.mock';
-import { environment } from '../environments/environment';
+import {routes} from './app.routes';
+import {SonosService} from './sonos.service';
+import {SonosServiceMock} from './sonos.service.mock';
+import {environment} from '../environments/environment';
 import {QueueService} from './queue.service';
 import {QueueServiceMock} from './queue.service.mock';
 
