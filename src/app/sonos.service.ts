@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, tap, switchMap} from 'rxjs';
 import {environment} from '../environments/environment';
 import {PlayerMapService} from './player-map.service';
 
@@ -53,38 +53,21 @@ export class SonosService {
     return this.baseUrl;
   }
 
-  play(fileUrl: string, playerIp: string): void {
-    this.http.post(this.getApiBaseUrl() + 'sonos_soap_set_mp3.php', {
+  play(fileUrl: string, playerIp: string) {
+   return  this.http.post(this.getApiBaseUrl() + 'sonos_soap_set_mp3.php', {
       ip: playerIp,
       file: fileUrl
-    }).subscribe({
-      next: (response: any) => {
+    }).pipe(
+      tap(() => {
         console.log("MP3 set, now play it.");
-        this.playOnly(playerIp);
-      },
-      error: (err) => {
-        // Versuche, die Fehlermeldung aus dem Response-Body zu extrahieren, falls vorhanden
-        if (err && err.error && err.error.error) {
-          console.error('Fehler beim Setzen des MP3-Links 1:', err.error.error, err);
-        } else if (err && err.error) {
-          console.error('Fehler beim Setzen des MP3-Links 2:', err.error, err);
-        } else {
-          console.error('Fehler beim Setzen des MP3-Links 3:', err);
-        }
-      }
-    });
+      }),
+      switchMap(() => this.playOnly(playerIp))
+    );
   }
 
   playOnly(playerIp: string) {
-    this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
+    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
       ip: playerIp
-    }).subscribe({
-      next: () => {
-        console.log('playing on player=' + playerIp);
-      },
-      error: (err) => {
-        console.error('Fehler beim Abspielen:', err);
-      }
     });
   }
 
@@ -134,7 +117,7 @@ export class SonosService {
     };
     this.http.post(url, body, {responseType: 'text'}).subscribe({
       next: () => {
-        this.playOnly(ip);
+        this.playOnly(ip).subscribe();
       },
       error: (err) => {
         console.error('Fehler beim Setzen der Queue:', err);

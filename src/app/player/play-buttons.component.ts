@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SonosService } from '../sonos.service';
+import {PlaylistService} from '../playlist.service';
 
 @Component({
   selector: 'play-button',
@@ -64,13 +65,15 @@ export class PlayButtonsComponent {
   playLoading: boolean = false;
   queueLoading: boolean = false;
 
-  constructor(private sonosService: SonosService) {}
+  constructor(private sonosService: SonosService, private playlistService: PlaylistService) {}
 
   onPlay() {
-    console.log('playing' +this.playerIp );
-    if (!this.playerIp ) return;
+    console.log('playing' + this.playerIp);
+    if (!this.playerIp) return;
     this.playLoading = true;
-    this.sonosService.playOnly(this.playerIp);
+    this.sonosService.playOnly(this.playerIp).subscribe(r =>
+      this.playlistService.loadPlayedList()
+    );
     this.playLoading = false;
     this.play.emit();
   }

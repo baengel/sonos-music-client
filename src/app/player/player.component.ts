@@ -4,9 +4,9 @@ import {SeekButtonsComponent} from './seek-buttons.component';
 import {QueueComponent} from './queue.component';
 import {SonosService} from '../sonos.service';
 import {QueueService} from '../queue.service';
-import { PlaylistService } from '../playlist.service';
-import { AsyncPipe } from '@angular/common';
-import { PlayedListComponent } from './played-list.component';
+import {PlaylistService} from '../playlist.service';
+import {AsyncPipe} from '@angular/common';
+import {PlayedListComponent} from './played-list.component';
 
 @Component({
   selector: 'app-player',
@@ -31,7 +31,8 @@ export class PlayerComponent implements OnInit, OnChanges {
     private sonosService: SonosService,
     private queueService: QueueService,
     private playlistService: PlaylistService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     if (this.playerIp) {
@@ -95,8 +96,10 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   onPlay(): void {
     if (!this.playerIp) return;
-    this.sonosService.playOnly(this.playerIp);
-    setTimeout(() => this.loadPlayerStatus(), 500);
+    this.sonosService.playOnly(this.playerIp).subscribe(r => {
+      this.loadPlayerStatus();
+      this.playlistService.loadPlayedList();
+    });
   }
 
   onQueuePlay(): void {
@@ -109,25 +112,20 @@ export class PlayerComponent implements OnInit, OnChanges {
     }, 500);
   }
 
-  async handlePlayClick(file: any, index: number) {
-    if (!this.playerIp) return;
-    await this.sonosService.play(`${file.path}/${file.fileName}`, this.playerIp);
-    this.loadPlayerStatus();
-    this.playlistService.loadPlayedList();
-  }
-
   async onPlayTrack(newTrack: number) {
     if (!this.playerIp) return;
-    await this.sonosService.playTrack(this.playerIp, newTrack);
-    this.loadPlayerStatus();
-    this.queueService.loadQueue(this.playerIp);
-    this.playlistService.loadPlayedList();
+    this.sonosService.playTrack(this.playerIp, newTrack).subscribe(r => {
+      this.loadPlayerStatus();
+      this.queueService.loadQueue(this.playerIp);
+      this.playlistService.loadPlayedList();
+    });
   }
 
   async onPlayedItemClick(item: any) {
     if (!this.playerIp || !item?.fileUrl) return;
-    await this.sonosService.play(item.fileUrl, this.playerIp);
-    this.playlistService.loadPlayedList();
+    this.sonosService.play(item.fileUrl, this.playerIp).subscribe(r =>
+      this.playlistService.loadPlayedList()
+    );
   }
 
   onRemoveTrack(trackIndex: number): void {
@@ -137,7 +135,7 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   onQueuePlayItem(track: number): void {
     console.log("onQueuePlayItem ip=" + this.playerIp);
-    if (!this.playerIp ) return;
+    if (!this.playerIp) return;
     this.sonosService.playTrack(this.playerIp, track).subscribe(_ => {
       this.loadPlayerStatus();
       this.queueService.loadQueue(this.playerIp);

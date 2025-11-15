@@ -1,12 +1,13 @@
-import { Component, signal, OnInit, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { SonosService } from './sonos.service';
-import { HttpClientModule } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
-import { PlayerComponent } from './player/player.component';
+import {Component, EventEmitter, OnInit, signal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {SonosService} from './sonos.service';
+import {HttpClientModule} from '@angular/common/http';
+import {ActivatedRoute, Router} from '@angular/router';
+import {PlayerComponent} from './player/player.component';
 import {QueueService} from './queue.service';
 import {SonosServiceMock} from './sonos.service.mock';
+import {forkJoin} from 'rxjs';
 
 interface FileInfo {
   path: string;
@@ -101,15 +102,17 @@ export class App implements OnInit {
     this.playedFIles = [...this.playedFIles, index];
     const selectedIps = this.selectedPlayerIps();
     if (selectedIps.size > 0) {
-      const playPromises = Array.from(selectedIps).map(ip => {
-        return new Promise<void>((resolve) => {
-          this.sonosService.play(`${file.path}/${file.fileName}`, ip);
-          // Simuliere asynchrones Verhalten, falls play kein Promise/Observable ist
-          setTimeout(resolve, 1200);
-        });
+      const playObservables = Array.from(selectedIps).map(ip =>
+        this.sonosService.play(`${file.path}/${file.fileName}`, ip)
+      );
+      forkJoin(playObservables).subscribe({
+        next: () => {
+          this.playerRefreshCounter++;
+        },
+        error: (err) => {
+          console.error('Fehler beim Abspielen:', err);
+        }
       });
-      await Promise.all(playPromises);
-      this.playerRefreshCounter++;
     }
     this.playLoadingIndex = null;
   }

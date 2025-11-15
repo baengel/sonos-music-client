@@ -25,6 +25,7 @@ export class SonosServiceMock {
 
   playOnly(playerIp: string) {
     console.log(`[MOCK] playOnly: ${playerIp}`);
+    return of({ success: true });
   }
 
   stop(ip: string): Observable<any> {
