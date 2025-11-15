@@ -53,7 +53,7 @@ export class QueueService {
     return this.http.get<SonosQueueResponse>(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_get_queue.php?ip=' + encodeURIComponent(ip));
   }
 
-  removeFromQueueCall(ip: string, track: number) {
+  private removeFromQueueCall(ip: string, track: number) {
     const url = this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_remove_from_queue.php';
     const body = {
       ip,
@@ -88,7 +88,7 @@ export class QueueService {
     });
   }
 
-  addToQueueCall(ip: string, uri: string, meta: string = ''): Observable<any> {
+  private addToQueueCall(ip: string, uri: string, meta: string = ''): Observable<any> {
     const url = this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_add_mp3_to_queue.php';
     const body = {
       ip,

@@ -1,0 +1,9 @@
+
+<label for="volume-slider">Lautstärke:</label>
+<input id="volume-slider"
+       type="range"
+       min="1" max="100"
+       [value]="volume"
+       (input)="onVolumeChange.emit($event)"
+       [disabled]="disabled">
+<span>{{ volume }}</span>

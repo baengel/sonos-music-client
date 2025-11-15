@@ -1,12 +1,12 @@
 import {Component, OnInit, Input, OnChanges, SimpleChanges} from '@angular/core';
-import {VolumeControlComponent} from './volume-control.component';
-import {SeekButtonsComponent} from './seek-buttons.component';
-import {QueueComponent} from './queue.component';
 import {SonosService} from '../sonos.service';
 import {QueueService} from '../queue.service';
 import {PlaylistService} from '../playlist.service';
 import {AsyncPipe} from '@angular/common';
-import {PlayedListComponent} from './played-list.component';
+import {VolumeControlComponent} from './volume-control/volume-control.component';
+import {PlayedListComponent} from './played-list/played-list.component';
+import {SeekButtonsComponent} from './seek-buttons/seek-buttons.component';
+import {QueueComponent} from './queue/queue.component';
 
 @Component({
   selector: 'app-player',

@@ -18,9 +18,10 @@ export class SonosServiceMock {
     return 'http://localhost/mock-api/';
   }
 
-  play(fileUrl: string, playerIp: string): void {
+  play(fileUrl: string, playerIp: string) {
     console.log(`[MOCK] play: ${fileUrl} on ${playerIp}`);
     this.addToPlayedList(fileUrl);
+    return of({ success: true });
   }
 
   playOnly(playerIp: string) {
@@ -57,6 +58,7 @@ export class SonosServiceMock {
 
   setQueueAndPlay(ip: string, uri: string, track: number = 1) {
     console.log(`[MOCK] setQueueAndPlay: ${ip}, ${uri}, track=${track}`);
+    return of({ success: true });
   }
 
   getRinconId(ip: string): string {
@@ -86,6 +88,7 @@ export class SonosServiceMock {
         count: 1
       });
     }
+    return of({ success: true });
   }
 
   getStatus(ip: string): Observable<any> {

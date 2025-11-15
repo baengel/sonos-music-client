@@ -1,0 +1,11 @@
+label {
+  margin-right: 8px;
+}
+input[type="range"] {
+  vertical-align: middle;
+  margin-right: 8px;
+}
+span {
+  font-weight: bold;
+}
+

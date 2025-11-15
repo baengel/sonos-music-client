@@ -1,0 +1,22 @@
+
+<button class="seek-btn"
+        (click)="playTrackRelative(-1)"
+        [disabled]="disabled">
+  ⏮️
+</button>
+<button class="seek-btn"
+        (click)="seek.emit(-10)"
+        [disabled]="disabled">
+  ⏪
+</button>
+<play-button [playerIp]="playerIp" [fileUrl]="fileUrl" (play)="onPlay()" (stop)="onStop()" (queuePlay)="onQueuePlay()"></play-button>
+<button class="seek-btn"
+        (click)="seek.emit(10)"
+        [disabled]="disabled">
+  ⏩
+</button>
+<button class="seek-btn"
+        (click)="playTrackRelative(1)"
+        [disabled]="disabled">
+  ⏭️
+</button>
