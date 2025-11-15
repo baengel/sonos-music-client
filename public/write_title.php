@@ -12,6 +12,9 @@ if ($link === '') {
     }
 }
 
+// Link decoden (z.B. falls URL-encoded)
+$link = urldecode($link);
+
 if ($link === '') {
     echo "Link fehlt.";
     exit;

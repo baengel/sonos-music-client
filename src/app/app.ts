@@ -8,6 +8,7 @@ import {PlayerComponent} from './player/player.component';
 import {QueueService} from './queue.service';
 import {SonosServiceMock} from './sonos.service.mock';
 import {forkJoin} from 'rxjs';
+import {ApiBaseUrlService} from './api-base-url.service';
 
 interface FileInfo {
   path: string;
@@ -57,6 +58,7 @@ export class App implements OnInit {
 
   constructor(private sonosService: SonosService,
               private queueService: QueueService,
+              private apiBaseUrlService: ApiBaseUrlService,
               private router: Router,
               private route: ActivatedRoute) {}
 
@@ -76,7 +78,7 @@ export class App implements OnInit {
   }
 
   private getUrl() {
-    let url = this.sonosService.getApiBaseUrl();
+    let url = this.apiBaseUrlService.getApiBaseUrl();
     if (this.sonosService instanceof SonosServiceMock) {
       url = "http://localhost:4200/";
     } else {

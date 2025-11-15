@@ -55,3 +55,24 @@ $controller->getQueue()->addTrack($trackFile);
 
 // Wiedergabe starten
 $controller->play();
+
+
+
+// Nach erfolgreichem Setzen des MP3-Tracks: Titel über write_title.php registrieren
+$writeTitleUrl = "http://localhost/music/sonos-music-client/write_title.php";
+$ch2 = curl_init();
+curl_setopt($ch2, CURLOPT_URL, $writeTitleUrl);
+curl_setopt($ch2, CURLOPT_POST, true);
+curl_setopt($ch2, CURLOPT_POSTFIELDS, http_build_query(['link' => $trackFile]));
+curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch2, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+$writeTitleResponse = curl_exec($ch2);
+$writeTitleErr = curl_error($ch2);
+$writeTitleHttpCode = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+curl_close($ch2);
+// Logging der Antwort
+if ($writeTitleResponse === false) {
+  error_log('Fehler beim CURL-Aufruf von write_title.php: ' . $writeTitleErr);
+} else {
+  error_log('Antwort von write_title.php (CURL): ' . $writeTitleResponse . ' (HTTP-Code: ' . $writeTitleHttpCode . ')');
+}

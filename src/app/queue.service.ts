@@ -1,7 +1,10 @@
 // ...existing code...
 import {Injectable} from '@angular/core';
-import {SonosService} from './sonos.service';
+import {SonosQueueResponse, SonosService} from './sonos.service';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {ApiBaseUrlService} from './api-base-url.service';
+import {PlayerMapService} from './player-map.service';
 
 @Injectable({providedIn: 'root'})
 export class QueueService {
@@ -9,7 +12,9 @@ export class QueueService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private errorSubject = new BehaviorSubject<string>('');
 
-  constructor(private sonosService: SonosService) {
+  constructor(private http: HttpClient,
+              private apiBaseUrlService: ApiBaseUrlService,
+              private playerMap: PlayerMapService) {
   }
 
   getQueue$(): Observable<any[]> {
@@ -28,7 +33,7 @@ export class QueueService {
     if (!playerIp) return;
     this.loadingSubject.next(true);
     this.errorSubject.next('');
-    this.sonosService.getQueue(playerIp).subscribe({
+    this.getQueue(playerIp).subscribe({
       next: (data: any) => {
         this.queueSubject.next(data.tracks || []);
         this.loadingSubject.next(false);
@@ -40,10 +45,28 @@ export class QueueService {
     });
   }
 
+  /**
+   * Holt die aktuelle Queue des Players
+   */
+  getQueue(ip: string): Observable<SonosQueueResponse> {
+    // GET-Request, damit es mit Proxy/Relay und direktem Aufruf funktioniert
+    return this.http.get<SonosQueueResponse>(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_get_queue.php?ip=' + encodeURIComponent(ip));
+  }
+
+  removeFromQueueCall(ip: string, track: number) {
+    const url = this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_remove_from_queue.php';
+    const body = {
+      ip,
+      room: this.playerMap.getRoomByIp(ip),
+      track
+    };
+    return this.http.post(url, body, {responseType: 'text'});
+  }
+
   removeFromQueue(playerIp: string, trackIndex: number): void {
     if (!playerIp) return;
     this.loadingSubject.next(true);
-    this.sonosService.removeFromQueue(playerIp, trackIndex).subscribe({
+    this.removeFromQueueCall(playerIp, trackIndex).subscribe({
       next: () => {
         this.loadQueue(playerIp);
       },
@@ -55,7 +78,7 @@ export class QueueService {
   }
 
   addToQueue(playerIp: string, trackUri: string): void {
-    this.sonosService.addToQueue(playerIp, trackUri).subscribe({
+    this.addToQueueCall(playerIp, trackUri).subscribe({
       next: () => {
         this.loadQueue(playerIp);
       },
@@ -64,6 +87,17 @@ export class QueueService {
       }
     });
   }
+
+  addToQueueCall(ip: string, uri: string, meta: string = ''): Observable<any> {
+    const url = this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_add_mp3_to_queue.php';
+    const body = {
+      ip,
+      room: this.playerMap.getRoomByIp(ip),
+      file: uri
+    };
+    return this.http.post(url, body, {responseType: 'text'});
+  }
+
 
 }
 

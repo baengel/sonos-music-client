@@ -88,6 +88,7 @@ $response = curl_exec($ch);
 $error = curl_error($ch);
 curl_close($ch);
 
+
 // Ausgabe
 header('Content-Type: text/plain; charset=utf-8');
 if ($error) {

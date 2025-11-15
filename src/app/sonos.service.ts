@@ -3,6 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, tap, switchMap} from 'rxjs';
 import {environment} from '../environments/environment';
 import {PlayerMapService} from './player-map.service';
+import { ApiBaseUrlService } from './api-base-url.service';
+import {QueueService} from './queue.service';
 
 // TODO ids etmitteln http://<SONOS-IP>:1400/status or http://<sonos-ip>:1400/status/rincon.xml
 const RINCON_ID_MAP: Record<string, string> = {
@@ -15,70 +17,41 @@ const RINCON_ID_MAP: Record<string, string> = {
 
 @Injectable({providedIn: 'root'})
 export class SonosService {
-  baseUrl: string | undefined = undefined;
-
   constructor(private http: HttpClient,
-              private playerMap: PlayerMapService) {
-  }
-
-  /**
-   * Ermittelt die dynamische Basis-URL für API-Calls (inkl. Relay-Token, falls vorhanden)
-   * Wenn im environment eine apiBaseUrl gesetzt ist, wird diese verwendet (z.B. lokal oder für Proxy).
-   * Sonst wird Relay-Token-Logik oder Standard-Pfad genutzt.
-   */
-  public getApiBaseUrl(): string {
-    if (!this.baseUrl) {
-      console.log("window.location.hostname=" + window.location.hostname);
-      if (window.location.hostname.startsWith('relay-')) {
-        console.log("evaluate token window.location.pathname=" + window.location.pathname);
-        const match = window.location.pathname.match(/^\/([^\/]+)\//);
-        if (match) {
-          const token = match[1].trim();
-          console.log("token=", token);
-          this.baseUrl = `/${token}${environment.apiBaseUrl}`;
-        } else {
-          this.baseUrl = environment.apiBaseUrl;
-        }
-      } else if (window.location.hostname.startsWith('asustor')) {
-        console.log("as environment.apiBaseUrl=", environment.apiBaseUrl);
-        this.baseUrl = environment.apiBaseUrl.replace('www/', '');
-        console.log("as this.baseUrl=", this.baseUrl);
-      } else {
-        console.log("else");
-        this.baseUrl = environment.apiBaseUrl;
-      }
-    }
-
-    console.log("this.baseUrl=", this.baseUrl);
-    return this.baseUrl;
+              private playerMap: PlayerMapService,
+              private queueService: QueueService,
+              private apiBaseUrlService: ApiBaseUrlService) {
   }
 
   play(fileUrl: string, playerIp: string) {
-   return  this.http.post(this.getApiBaseUrl() + 'sonos_soap_set_mp3.php', {
+    return this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_set_mp3.php', {
       ip: playerIp,
       file: fileUrl
     }).pipe(
       tap(() => {
         console.log("MP3 set, now play it.");
       }),
-      switchMap(() => this.playOnly(playerIp))
+      switchMap(() => this.playOnly(playerIp)),
+      switchMap(() => this.queueService.getQueue(playerIp))
     );
   }
 
   playOnly(playerIp: string) {
-    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_play.php', {
+    return this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_play.php', {
       ip: playerIp
-    });
+    }).pipe(
+      switchMap(() => this.queueService.getQueue(playerIp))
+    );
   }
 
   stop(ip: string): Observable<any> {
-    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_stop.php', {
+    return this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_stop.php', {
       ip
     });
   }
 
   setVolume(ip: string, volume: number): Observable<any> {
-    return this.http.post(this.getApiBaseUrl() + 'sonos_soap_volume.php', {
+    return this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_volume.php', {
       ip,
       volume
     });
@@ -86,7 +59,7 @@ export class SonosService {
 
   seek(ip: string, seconds: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.http.post(this.getApiBaseUrl() + 'sonos_soap_seek.php', {
+      this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_seek.php', {
         ip,
         duration: seconds
       }).subscribe({
@@ -96,19 +69,8 @@ export class SonosService {
     });
   }
 
-  addToQueue(ip: string, uri: string, meta: string = ''): Observable<any> {
-    const url = this.getApiBaseUrl() + 'sonos_duncan_add_mp3_to_queue.php';
-    const body = {
-      ip,
-      room: this.playerMap.getRoomByIp(ip),
-      file: uri
-    };
-    return this.http.post(url, body, {responseType: 'text'});
-  }
-
   setQueueAndPlay(ip: string, uri: string, track: number = 1) {
-    // Setzt die Queue und spielt den gewünschten Track ab
-    const url = this.getApiBaseUrl() + 'sonos_duncan_play_mp3.php';
+    const url = this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_play_mp3.php';
     const body = {
       ip,
       room: this.playerMap.getRoomByIp(ip),
@@ -125,59 +87,34 @@ export class SonosService {
     });
   }
 
-
   getRinconId(ip: string): string {
-    // Ermittelt die RINCON-ID anhand der IP-Adresse
     return RINCON_ID_MAP[ip] || '';
   }
 
   playTrack(ip: string, track: number) {
-    // Ruft das PHP-Skript zum Track-Wechsel auf
-    return this.http.post(this.getApiBaseUrl() + 'sonos_duncan_play_queue_track.php', {
+    return this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_play_queue_track.php', {
       ip,
       room: this.playerMap.getRoomByIp(ip),
       track
-    }, {responseType: 'text'});
+    }, {responseType: 'text'}).pipe(
+      switchMap(() => this.queueService.getQueue(ip))
+    );
   }
 
   /**
    * Holt den aktuellen Status des Players (Track, Titel, Position, Lautstärke)
    */
   getStatus(ip: string): Observable<any> {
-    return this.http.get(this.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
+    return this.http.get(this.apiBaseUrlService.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
   }
 
-  /**
-   * Holt die aktuelle Queue des Players
-   */
-  getQueue(ip: string): Observable<SonosQueueResponse> {
-    // GET-Request, damit es mit Proxy/Relay und direktem Aufruf funktioniert
-    return this.http.get<SonosQueueResponse>(this.getApiBaseUrl() + 'sonos_soap_get_queue.php?ip=' + encodeURIComponent(ip));
-  }
-
-  /**
-   * Entfernt einen Track aus der Queue
-   */
-  removeFromQueue(ip: string, track: number) {
-    const url = this.getApiBaseUrl() + 'sonos_duncan_remove_from_queue.php';
-    const body = {
-      ip,
-      room: this.playerMap.getRoomByIp(ip),
-      track
-    };
-    return this.http.post(url, body, {responseType: 'text'});
-  }
 
   /**
    * Holt die Liste der zuletzt gespielten Titel
    */
   public getPlayedTitles(): Observable<any[]> {
-    const url = this.getApiBaseUrl() + '/read_titles.php';
+    const url = this.apiBaseUrlService.getApiBaseUrl() + '/read_titles.php';
     return this.http.get<any[]>(url);
-  }
-
-  public mapIpToRoom(ip: string): string {
-    return this.playerMap.getRoomByIp(ip);
   }
 }
 
