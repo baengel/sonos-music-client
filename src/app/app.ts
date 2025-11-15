@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlayerComponent } from './player/player.component';
 import {QueueService} from './queue.service';
+import {SonosServiceMock} from './sonos.service.mock';
 
 interface FileInfo {
   path: string;
@@ -74,7 +75,13 @@ export class App implements OnInit {
   }
 
   private getUrl() {
-    let url = this.sonosService.getApiBaseUrl().replace('sonos-music-client/', '').replace('public/', '') + 'files_and_size.txt';
+    let url = this.sonosService.getApiBaseUrl();
+    if (this.sonosService instanceof SonosServiceMock) {
+      url = "http://localhost:4200/";
+    } else {
+      url = url.replace('sonos-music-client/', '').replace('public/', '');
+    }
+    url += 'files_and_size.txt';
     console.log("url=", url);
     return url;
   }
