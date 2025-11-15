@@ -2,10 +2,10 @@
   <div class="player-played">
     <!-- Played List links -->
     <played-list
-      [played]="played"
-      [playedSorted]="playedSorted"
-      [loading]="playedLoading"
-      [error]="playedError"
+      [played]="played$ | async"
+      [playedSorted]="playedSorted$ | async"
+      [loading]="(playedLoading$ | async) ?? false"
+      [error]="playedError$ | async"
       (playItem)="onPlayedItemClick($event)"
     ></played-list>
   </div>
