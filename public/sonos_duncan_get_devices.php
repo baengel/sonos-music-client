@@ -26,3 +26,8 @@ $sonos = new Network();
 foreach ($sonos->getControllers() as $controller) {
   echo $controller->getName() . "\n";
 }
+
+echo "\nSonos Lautsprecher im Netzwerk finden:\n";
+foreach ($sonos->getSpeakers() as $s) {
+  echo $s->getName() . " (" . $s->getIp() . ")\n";
+}

@@ -9,12 +9,17 @@ if (!file_exists($autoloadPath)) {
 require $autoloadPath;
 
 use duncan3dc\Sonos\Network;
+use duncan3dc\Sonos\Controller;
 
-// Raumname und Track-URL als Input-Parameter
+// Raumname, IP und Track-URL als Input-Parameter
 $room = null;
+$ip = null;
 $trackFile = null;
 if (isset($_POST['room'])) {
   $room = $_POST['room'];
+}
+if (isset($_POST['ip'])) {
+  $ip = $_POST['ip'];
 }
 if (isset($_POST['file'])) {
   $trackFile = $_POST['file'];
@@ -25,25 +30,35 @@ if ($room === null || $trackFile === null) {
   if ($room === null && isset($data['room'])) {
     $room = $data['room'];
   }
+  if ($ip === null && isset($data['ip'])) {
+    $ip = $data['ip'];
+  }
   if ($trackFile === null && isset($data['file'])) {
     $trackFile = $data['file'];
   }
 }
 if ($room !== null) $room = trim($room);
+if ($ip !== null) $ip = trim($ip);
 if ($trackFile !== null) $trackFile = trim($trackFile);
-if (!$room) {
-  echo "FEHLER: Raumname muss als 'room' übergeben werden!\n";
-  echo "Debug: empfangener Wert: '" . ($room ?? '') . "'\n";
+if (!$room && !$ip) {
+  echo "FEHLER: Raumname oder IP muss als 'room' oder 'ip' übergeben werden!\n";
   exit(1);
 }
 if (!$trackFile) {
   echo "FEHLER: Track-File muss als 'file' übergeben werden!\n";
-  echo "Debug: empfangener Wert: '" . ($trackFile ?? '') . "'\n";
   exit(1);
 }
 
-$sonos = new Network();
-$controller = $sonos->getControllerByRoom($room);
+if ($ip) {
+  $controller = new \duncan3dc\Sonos\Controller($ip);
+} else {
+  $sonos = new Network();
+  $controller = $sonos->getControllerByRoom($room);
+  if (!$controller) {
+    echo "FEHLER: Raum '$room' nicht gefunden!\n";
+    exit(1);
+  }
+}
 
 // Queue aktivieren
 if (!$controller->isUsingQueue()) {
@@ -55,8 +70,6 @@ $controller->getQueue()->addTrack($trackFile);
 
 // Wiedergabe starten
 $controller->play();
-
-
 
 // Nach erfolgreichem Setzen des MP3-Tracks: Titel über write_title.php registrieren
 $writeTitleUrl = "http://localhost/music/sonos-music-client/write_title.php";

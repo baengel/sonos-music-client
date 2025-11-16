@@ -19,19 +19,23 @@ ini_set('error_log', __DIR__ . '/sonos_duncan_debug.log');
 
 // Raumname und Track-Index als Input-Parameter
 $room = isset($_POST['room']) ? trim($_POST['room']) : null;
+$ip = isset($_POST['ip']) ? trim($_POST['ip']) : null;
 $trackIndex = isset($_POST['track']) ? intval($_POST['track']) : null;
-if ($room === null || $trackIndex === null) {
+if (($room === null && $ip === null) || $trackIndex === null) {
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
     if ($room === null && isset($data['room'])) {
         $room = trim($data['room']);
     }
+    if ($ip === null && isset($data['ip'])) {
+        $ip = trim($data['ip']);
+    }
     if ($trackIndex === null && isset($data['track'])) {
         $trackIndex = intval($data['track']);
     }
 }
-if (!$room) {
-    echo "FEHLER: Raumname muss als 'room' übergeben werden!\n";
+if (!$room && !$ip) {
+    echo "FEHLER: Raumname ('room') oder IP-Adresse ('ip') muss übergeben werden!\n";
     exit(1);
 }
 if ($trackIndex === null || $trackIndex < 1) {
@@ -40,10 +44,25 @@ if ($trackIndex === null || $trackIndex < 1) {
 }
 
 $sonos = new Network();
-$controller = $sonos->getControllerByRoom($room);
-if (!$controller) {
+if ($ip) {
+    $speaker = null;
+    foreach ($sonos->getSpeakers() as $s) {
+        if ($s->getIp() === $ip) {
+            $speaker = $s;
+            break;
+        }
+    }
+    if (!$speaker) {
+        echo "FEHLER: Speaker mit IP '$ip' nicht gefunden!\n";
+        exit(1);
+    }
+    $controller = new \duncan3dc\Sonos\Controller($speaker, $sonos);
+} else {
+  $controller = $sonos->getControllerByRoom($room);
+  if (!$controller) {
     echo "FEHLER: Raum '$room' nicht gefunden!\n";
     exit(1);
+  }
 }
 
 $queue = $controller->getQueue();

@@ -11,7 +11,12 @@ POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www
 
 {"room": "Len Zimmer", "file": "x-file-cifs://asustor/Music/best%20mp3/CD3/Allure%20-%20No%20More%20Tears.mp3"}
 
-### duncan3dc lib - play track from queue
+### duncan3dc lib - play track from queue - by ip
+POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_play_queue_track.php
+
+{"room": "Kueche%20%28L%29", "track": 1}
+
+### duncan3dc lib - play track from queue - by name
 POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_play_queue_track.php
 
 {"room": "Len Zimmer", "track": 1}

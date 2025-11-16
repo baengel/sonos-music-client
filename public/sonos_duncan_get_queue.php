@@ -8,20 +8,26 @@ if (!file_exists($autoloadPath)) {
 require $autoloadPath;
 
 use duncan3dc\Sonos\Network;
+use duncan3dc\Sonos\Controller;
 
-// Raumname als GET-Parameter
+// Raumname oder IP als GET-Parameter
 $room = isset($_GET['room']) ? trim($_GET['room']) : null;
-if (!$room) {
-    echo "FEHLER: Raumname muss als 'room' übergeben werden!\n";
-    echo "Debug: empfangener Wert: '" . ($room ?? '') . "'\n";
+$ip = isset($_GET['ip']) ? trim($_GET['ip']) : null;
+
+if (!$room && !$ip) {
+    echo "FEHLER: Raumname oder IP muss als 'room' oder 'ip' übergeben werden!\n";
     exit(1);
 }
 
-$sonos = new Network();
-$controller = $sonos->getControllerByRoom($room);
-if (!$controller) {
-    echo "FEHLER: Raum '$room' nicht gefunden!\n";
-    exit(1);
+if ($ip) {
+  $controller = new \duncan3dc\Sonos\Controller($ip);
+} else {
+    $sonos = new Network();
+    $controller = $sonos->getControllerByRoom($room);
+    if (!$controller) {
+        echo "FEHLER: Raum '$room' nicht gefunden!\n";
+        exit(1);
+    }
 }
 
 $queue = $controller->getQueue();
