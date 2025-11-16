@@ -17,6 +17,7 @@
       (stop)="onStop()"
       (play)="onPlay()"
       (queuePlay)="onQueuePlay()"
+      (trackRelative)="onTrackRelative($event)"
     ></seek-buttons>
     <div class="player-volume">
       <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>

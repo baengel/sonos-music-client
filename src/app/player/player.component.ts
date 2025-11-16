@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {SonosService} from '../sonos.service';
+import {SonosService, SonosStatus} from '../sonos.service';
 import {QueueService} from '../queue.service';
 import {PlaylistService} from '../playlist.service';
 import {AsyncPipe} from '@angular/common';
@@ -60,11 +60,11 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   loadPlayerStatus(): void {
     if (!this.playerIp) return;
-    this.sonosService.getStatus(this.playerIp).subscribe((data: any) => {
+    this.sonosService.getStatus(this.playerIp).subscribe((data: SonosStatus) => {
       this.track = data.track || '';
       this.title = data.title || '';
       this.position = data.position || '';
-      this.volume = data.volume || 0;
+      this.volume = Number(data.volume) || 0;
     });
   }
 
@@ -139,6 +139,18 @@ export class PlayerComponent implements OnInit, OnChanges {
     this.sonosService.playTrack(this.playerIp, track).subscribe(_ => {
       this.loadPlayerStatus();
       this.queueService.loadQueue(this.playerIp);
+    });
+  }
+
+  onTrackRelative(offset: number) {
+    this.sonosService.getStatus(this.playerIp).subscribe(status => {
+      this.queueService.getQueue(this.playerIp).subscribe(queue => {
+        let newTrackPosition = Number(status.track) + offset;
+        console.log("queue track length=" + queue.tracks.length + " >= " + newTrackPosition);
+        if (queue.tracks.length >= newTrackPosition) {
+          this.sonosService.playTrack(this.playerIp, newTrackPosition).subscribe();
+        }
+      });
     });
   }
 }

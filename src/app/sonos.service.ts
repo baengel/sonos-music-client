@@ -103,8 +103,8 @@ export class SonosService {
   /**
    * Holt den aktuellen Status des Players (Track, Titel, Position, Lautstärke)
    */
-  getStatus(ip: string): Observable<any> {
-    return this.http.get(this.apiBaseUrlService.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
+  getStatus(ip: string): Observable<SonosStatus> {
+    return this.http.get<SonosStatus>(this.apiBaseUrlService.getApiBaseUrl() + `sonos_status.php?ip=${ip}`);
   }
 
 
@@ -127,4 +127,11 @@ export interface SonosQueueTrack {
 export interface SonosQueueResponse {
   success: boolean;
   tracks: SonosQueueTrack[];
+}
+
+export interface SonosStatus {
+  track: string;
+  position: string;
+  title: string;
+  volume: string;
 }

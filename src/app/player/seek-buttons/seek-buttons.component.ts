@@ -16,6 +16,7 @@ export class SeekButtonsComponent {
   @Output() stop = new EventEmitter<void>();
   @Output() play = new EventEmitter<void>();
   @Output() queuePlay = new EventEmitter<void>();
+  @Output() trackRelative = new EventEmitter<number>();
 
   constructor() {}
 
@@ -32,6 +33,6 @@ export class SeekButtonsComponent {
   }
 
   playTrackRelative(offset: number) {
-    // Implementiere die Logik für Track-Wechsel relativ
+    this.trackRelative.emit(offset);
   }
 }
