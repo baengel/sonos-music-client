@@ -1,4 +1,3 @@
-// ...existing code...
 import {Injectable} from '@angular/core';
 import {SonosQueueResponse} from './sonos.service';
 import {BehaviorSubject, Observable} from 'rxjs';
@@ -98,7 +97,14 @@ export class QueueService {
     return this.http.post(url, body, {responseType: 'text'});
   }
 
-
+  /**
+   * Löscht die gesamte Queue des Players
+   */
+  clearQueue(playerIp: string): Observable<any> {
+    return this.http.post(
+      this.apiBaseUrlService.getApiBaseUrl() + 'sonos_duncan_clear_queue.php',
+      { ip: playerIp },
+      { responseType: 'text' }
+    );
+  }
 }
-
-

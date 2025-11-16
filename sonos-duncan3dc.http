@@ -21,6 +21,11 @@ POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www
 
 {"room": "Len Zimmer", "track": 1}
 
+### duncan3dc lib - clear queue
+POST https://relay-eu2.ezconnect.to/6e11c0a8c6e4fdd1686137c7c828e9afd5a0e0d3/www/music/sonos-music-client/sonos_duncan_clear_queue.php
+
+{"ip" :"192.168.188.34"}
+
 
 ### lib #############################################################
 #Verfügbare Methoden im Controller: Array

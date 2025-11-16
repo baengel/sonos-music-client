@@ -153,4 +153,16 @@ export class PlayerComponent implements OnInit, OnChanges {
       });
     });
   }
+
+  onClearQueue(): void {
+    if (!this.playerIp) return;
+    this.queueService.clearQueue(this.playerIp).subscribe({
+      next: () => {
+        this.queueService.loadQueue(this.playerIp);
+      },
+      error: (err) => {
+        console.error('Fehler beim Löschen der Queue:', err);
+      }
+    });
+  }
 }

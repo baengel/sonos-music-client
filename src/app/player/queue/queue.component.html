@@ -1,16 +1,24 @@
 <section class="queue-section">
   <div class="queue-header" style="display: flex; align-items: center; justify-content: space-between;">
     <h3 style="margin: 0;">Queue</h3>
-    <button class="seek-btn queue-btn"
-            (click)="onPlayQueue()"
-            [disabled]="(queueLoading$ | async)">
-      @if (queueLoading$ | async) {
-        <span class="spinner"
-              style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
-      } @else {
-        ▶️☰
-      }
-    </button>
+    <div style="display: flex; align-items: center;">
+      <button class="seek-btn queue-btn"
+              (click)="onPlayQueue()"
+              [disabled]="(queueLoading$ | async)">
+        @if (queueLoading$ | async) {
+          <span class="spinner"
+                style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+        } @else {
+          ▶️☰
+        }
+      </button>
+      <button class="clear-btn queue-btn"
+              (click)="onClearQueue()"
+              [disabled]="(queueLoading$ | async)"
+              style="margin-left: 0.5rem;">
+        🗑️
+      </button>
+    </div>
   </div>
   @if (queueLoading$ | async) {
     <div>Lade Queue...</div>
@@ -41,4 +49,3 @@
     <div>Keine Einträge in der Queue.</div>
   }
 </section>
-

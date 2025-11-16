@@ -17,6 +17,7 @@ export class QueueComponent {
   @Output() playTrack = new EventEmitter<number>();
   @Output() removeTrack = new EventEmitter<number>();
   @Output() queuePlay = new EventEmitter<number>();
+  @Output() clearQueue = new EventEmitter<void>();
 
   constructor(private queueService: QueueService) {}
 
@@ -27,5 +28,8 @@ export class QueueComponent {
   onRemoveTrack(index: number) {
     this.removeTrack.emit(index);
   }
-}
 
+  onClearQueue() {
+    this.clearQueue.emit();
+  }
+}
