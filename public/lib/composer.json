@@ -1,0 +1,11 @@
+{
+    "name": "baengel/sonos-music-client",
+    "autoload": {
+        "psr-4": {
+            "Baengel\\SonosMusicClient\\": "src/"
+        }
+    },
+    "require": {
+        "duncan3dc/sonos": "^2.3"
+    }
+}

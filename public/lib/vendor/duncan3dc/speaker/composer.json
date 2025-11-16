@@ -1,0 +1,50 @@
+{
+    "name": "duncan3dc/speaker",
+    "type": "library",
+    "description": "Convert text to speech using web services",
+    "keywords": ["text-to-speech", "tts", "speech"],
+    "homepage": "https://github.com/duncan3dc/speaker",
+    "license": "Apache-2.0",
+    "authors": [{
+        "name": "Craig Duncan",
+        "email": "git@duncanc.co.uk",
+        "homepage": "https://github.com/duncan3dc",
+        "role": "Developer"
+    }],
+    "require": {
+        "duncan3dc/exec": "^0.4 || ^1.0",
+        "guzzlehttp/guzzle": "^6.0|^7.0",
+        "php": "^7.3 || ^8.0"
+    },
+    "require-dev": {
+        "aws/aws-sdk-php": "^3.219.3",
+        "duncan3dc/uopz-expectations": "^0.3 || ^1.0",
+        "maglnet/composer-require-checker": "^2.0 || ^3.0 || ^4.0",
+        "mockery/mockery": "^1.5",
+        "nikic/php-parser": "^4.13",
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-mockery": "^0.12.14",
+        "phpstan/phpstan-phpunit": "^0.12.22",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpunit/phpunit": "^9.5"
+    },
+    "suggest": {
+        "aws/aws-sdk-php": "Allows you to use the AmazonPollyProvider"
+    },
+    "autoload": {
+        "psr-4": {"duncan3dc\\Speaker\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"duncan3dc\\Speaker\\Test\\": "tests/"}
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit",
+            "vendor/bin/composer-require-checker --config-file=.require.json",
+            "vendor/bin/phpstan analyse --level=max src",
+            "vendor/bin/phpstan analyse --level=max --configuration=phpstan-tests.neon tests",
+            "vendor/bin/phpcs --standard=phpcs.xml src tests",
+            "@composer validate --strict"
+        ]
+    }
+}

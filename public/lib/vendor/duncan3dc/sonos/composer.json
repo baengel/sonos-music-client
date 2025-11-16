@@ -1,0 +1,55 @@
+{
+    "name": "duncan3dc/sonos",
+    "type": "library",
+    "description": "Control Sonos speakers using a simple API",
+    "keywords": ["sonos","upnp","streaming"],
+    "homepage": "https://github.com/duncan3dc/sonos",
+    "license": "Apache-2.0",
+    "authors": [{
+        "name": "Craig Duncan",
+        "email": "git@duncanc.co.uk",
+        "homepage": "https://github.com/duncan3dc",
+        "role": "Developer"
+    }],
+    "require": {
+        "duncan3dc/cache": "^1.0 || ^2.0",
+        "duncan3dc/domparser": "^1.4.1 || ^2.1",
+        "duncan3dc/logger-aware-trait": "^0.2 || ^1.0",
+        "duncan3dc/sonos-common": "^1.0",
+        "duncan3dc/speaker": "^1.0",
+        "guzzlehttp/guzzle": "^6.0 || ^7.0",
+        "league/flysystem": "^1.1.4",
+        "psr/log": "^1.1 || ^2.0 || ^3.0",
+        "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
+        "ext-soap": "*",
+        "ext-sockets": "*",
+        "php": "^7.3 || ^8.0"
+    },
+    "require-dev": {
+        "duncan3dc/object-intruder": "^0.3 || ^1.0",
+        "maglnet/composer-require-checker": "^2.0 || ^3.0 || ^4.0",
+        "mockery/mockery": "^1.5",
+        "monolog/monolog": "^2.10",
+        "nikic/php-parser": "^4.13",
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-mockery": "^0.12.14",
+        "phpstan/phpstan-phpunit": "^0.12.22",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "psr-4": {"duncan3dc\\Sonos\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"duncan3dc\\SonosTests\\": "tests/"}
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phpunit",
+            "vendor/bin/composer-require-checker",
+            "vendor/bin/phpstan analyse --level=max src",
+            "vendor/bin/phpstan analyse --level=max --configuration=phpstan-tests.neon tests",
+            "vendor/bin/phpcs"
+        ]
+    }
+}
