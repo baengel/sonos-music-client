@@ -37,7 +37,7 @@ export class App implements OnInit {
     { name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer' },
     { name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer' },
     { name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer' },
-    { name: 'Kueche', ip: '192.168.188.146', room: 'Kueche' },
+    { name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)' },
     { name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer' }
   ];
 
