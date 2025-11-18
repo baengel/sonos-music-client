@@ -165,4 +165,9 @@ export class PlayerComponent implements OnInit, OnChanges {
       }
     });
   }
+
+  onMoveTrack(event: {from: number, to: number}) {
+    if (!this.playerIp) return;
+    this.queueService.moveQueueItem(this.playerIp, event.from, event.to);
+  }
 }

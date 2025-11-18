@@ -107,4 +107,24 @@ export class QueueService {
       { responseType: 'text' }
     );
   }
+
+  /**
+   * Verschiebt einen Eintrag in der Queue
+   */
+  moveQueueItem(playerIp: string, fromIndex: number, toIndex: number): void {
+    if (!playerIp || fromIndex === toIndex) return;
+    this.loadingSubject.next(true);
+    this.errorSubject.next('');
+    const url = `${this.apiBaseUrlService.getApiBaseUrl()}/sonos_duncan_move_queue.php`;
+    const body = { ip: playerIp, from: fromIndex, to: toIndex };
+    this.http.post(url, body).subscribe({
+      next: () => {
+        this.loadQueue(playerIp);
+      },
+      error: () => {
+        this.errorSubject.next('Fehler beim Verschieben des Queue-Eintrags');
+        this.loadingSubject.next(false);
+      }
+    });
+  }
 }

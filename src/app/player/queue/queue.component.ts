@@ -18,6 +18,9 @@ export class QueueComponent {
   @Output() removeTrack = new EventEmitter<number>();
   @Output() queuePlay = new EventEmitter<number>();
   @Output() clearQueue = new EventEmitter<void>();
+  @Output() moveTrack = new EventEmitter<{from: number, to: number}>();
+
+  dragIndex: number | null = null;
 
   constructor(private queueService: QueueService) {}
 
@@ -31,5 +34,21 @@ export class QueueComponent {
 
   onClearQueue() {
     this.clearQueue.emit();
+  }
+
+  onDragStart(index: number) {
+    this.dragIndex = index;
+  }
+
+  onDragOver(event: Event) {
+    event.preventDefault();
+  }
+
+  onDrop(dropIndex: number) {
+    if (this.dragIndex !== null && this.dragIndex !== dropIndex) {
+      // Event auslösen, Elternkomponente ruft Service
+      this.moveTrack.emit({from: this.dragIndex, to: dropIndex});
+    }
+    this.dragIndex = null;
   }
 }
