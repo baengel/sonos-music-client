@@ -28,7 +28,7 @@
   }
   @let queue = (queue$ | async);
   @if (!(queueLoading$ | async) && !(queueError$ | async) && queue && queue.length > 0) {
-    <ul>
+    <ul style="max-height: calc(5 * 2.5em); overflow-y: auto; margin: 0; padding: 0;">
       @for (item of queue; track item; let i = $index) {
         <li style="display: flex; align-items: center; justify-content: space-between;"
             draggable="true"
