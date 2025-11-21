@@ -1,0 +1,49 @@
+<div class="header-animated" [class.compact]="isCompactHeader">
+  <div id="expanded-header" class="header-full bg-white" [class.hide]="isCompactHeader">
+    <div class="flex flex-direction-column align-items-center">
+      <div class="header-title">
+        <h1>{{ title }}</h1>
+      </div>
+      <div class="global-player-selection">
+        <div class="player-tabs">
+          <ul class="tab-list">
+            @for (player of availablePlayers; track player.ip) {
+              <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }"
+                  (click)="selectPlayerTab(player.ip)">
+                {{ player.name }}
+              </li>
+            }
+          </ul>
+        </div>
+        <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+      </div>
+      <input
+        type="text"
+        [(ngModel)]="searchInput"
+        (ngModelChange)="onSearch()"
+        placeholder="search..."
+        class="flex m-medium w-40rem search-input"
+      />
+    </div>
+  </div>
+
+
+  <div id="compact-header" class="block bg-white" [class.hide]="!isCompactHeader">
+    <div class="bg-light-blue-2 p-small">
+      <div class="flex gap-normal">
+        <div class="search-box flex-1">
+          <input
+            type="text"
+            [(ngModel)]="searchInput"
+            (ngModelChange)="onSearch()"
+            placeholder="search..."
+            class="search-input"
+          />
+        </div>
+        <bal-tag color="info">{{getPlayerName(selectedPlayerIp)}}</bal-tag>
+        <seek-buttons [playerIp]="selectedPlayerIp"></seek-buttons>
+        <volume-control [playerIp]="selectedPlayerIp"></volume-control>
+      </div>
+    </div>
+  </div>
+</div>

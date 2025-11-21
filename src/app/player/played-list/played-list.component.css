@@ -4,11 +4,6 @@
   padding: 1em;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.played-list h3 {
-  margin-top: 0;
-  font-size: 1.2em;
-  color: #333;
-}
 .played-list ul {
   list-style: none;
   padding: 0;

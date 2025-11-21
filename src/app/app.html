@@ -1,39 +1,14 @@
-<header>
-  <bal-navbar interface="simple" [light]="true" fixed>
-    <div class="is-flex flex-direction-row">
-      <bal-heading>
-        <h1>{{ title() }}</h1>
-      </bal-heading>
+<app-header
+  [title]="'Sonos Music Client'"
+  [availablePlayers]="availablePlayers"
+  [selectedPlayerIp]="selectedPlayerIp"
+  (selectedPlayerIpChange)="selectPlayerTab($event)"
+  (refreshPlayerInfo)="refreshPlayerInfo.emit()"
+  (searchTermChange)="onSearch($event)"
+></app-header>
 
-      <div class="search-box">
-        <input
-          type="text"
-          [(ngModel)]="searchInput"
-          (ngModelChange)="onSearch()"
-          placeholder="search..."
-          class="search-input"
-        />
-      </div>
 
-      <div class="global-player-selection">
-        <div class="player-tabs">
-          <ul class="tab-list">
-            @for (player of availablePlayers; track player.ip) {
-              <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }"
-                  (click)="selectPlayerTab(player.ip)">
-                {{ player.name }}
-              </li>
-            }
-          </ul>
-        </div>
-        <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
-      </div>
-    </div>
-  </bal-navbar>
-</header>
-
-<main class="container mt-xx-large">
-  <div class="container">
+<main class="container">
 
     <div class="status">
       @if (isLoading()) {
@@ -112,5 +87,4 @@
         }
       </div>
     }
-  </div>
 </main>

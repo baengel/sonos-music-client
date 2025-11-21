@@ -1,4 +1,4 @@
-<button class="seek-btn stop-btn"
+<bal-button color="tertiary" size="small"
         (click)="stop.emit()"
         [disabled]="disabled">
   @if (loading) {
@@ -6,9 +6,9 @@
   } @else {
     ⏹️
   }
-</button>
+</bal-button>
 
-<button class="seek-btn play-btn"
+<bal-button color="tertiary" size="small"
         (click)="onPlay()"
         [disabled]="playLoading || disabled">
   @if (playLoading) {
@@ -16,4 +16,4 @@
   } @else {
     ▶️
   }
-</button>
+</bal-button>

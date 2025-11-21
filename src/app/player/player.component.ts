@@ -10,6 +10,7 @@ import {QueueComponent} from './queue/queue.component';
 
 @Component({
   selector: 'app-player',
+  standalone: true,
   imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, PlayedListComponent, AsyncPipe],
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']

@@ -1,9 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {BalContent} from '@baloise/ds-angular';
 
 @Component({
   selector: 'played-list',
   standalone: true,
   templateUrl: './played-list.component.html',
+  imports: [
+    BalContent
+  ],
   styleUrls: ['./played-list.component.css']
 })
 export class PlayedListComponent {

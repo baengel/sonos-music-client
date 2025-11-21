@@ -1,40 +1,39 @@
-<section class="queue-section">
-  <div class="queue-header" style="display: flex; align-items: center; justify-content: space-between;">
-    <h3 style="margin: 0;">Queue</h3>
-    <div style="display: flex; align-items: center;">
-      <button class="seek-btn queue-btn"
-              (click)="onPlayQueue()"
-              [disabled]="(queueLoading$ | async)">
+<bal-card-content class="flex flex-direction-column p-small  bg-grey-2 queue-section">
+  <div class="flex align-items-center justify-content-space-between">
+    <h3>Queue</h3>
+    <div class="flex align-items-center">
+      <bal-button color="tertiary" size="small"
+                  (click)="onPlayQueue()"
+                  [disabled]="(queueLoading$ | async)">
         @if (queueLoading$ | async) {
           <span class="spinner"
-                style="display: inline-block; width: 1em; height: 1em; border: 2px solid #00b; border-top: 2px solid transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                class="spinner inline-block w-1 h-1 border-2 border-top border-radius-full animate-spin"></span>
         } @else {
           ▶️☰
         }
-      </button>
-      <button class="clear-btn queue-btn"
-              (click)="onClearQueue()"
-              [disabled]="(queueLoading$ | async)"
-              style="margin-left: 0.5rem;">
+      </bal-button>
+      <bal-button color="tertiary" size="small"
+                  (click)="onClearQueue()"
+                  [disabled]="(queueLoading$ | async)">
         🗑️
-      </button>
+      </bal-button>
     </div>
   </div>
-  @if (queueLoading$ | async) {
-    <div>Lade Queue...</div>
-  }
-  @if (queueError$ | async) {
-    <div>{{ queueError$ | async }}</div>
-  }
-  @let queue = (queue$ | async);
-  @if (!(queueLoading$ | async) && !(queueError$ | async) && queue && queue.length > 0) {
-    <ul style="max-height: calc(5 * 2.5em); overflow-y: auto; margin: 0; padding: 0;">
-      @for (item of queue; track item; let i = $index) {
-        <li style="display: flex; align-items: center; justify-content: space-between;"
-            draggable="true"
-            (dragstart)="onDragStart(i+1)"
-            (dragover)="onDragOver($event)"
-            (drop)="onDrop(i+1)">
+    @if (queueLoading$ | async) {
+      <div class="is-fullwidth">Lade Queue...</div>
+    }
+    @if (queueError$ | async) {
+      <div>{{ queueError$ | async }}</div>
+    }
+    @let queue = (queue$ | async);
+    @if (!(queueLoading$ | async) && !(queueError$ | async) && queue && queue.length > 0) {
+      <ul style="max-height: calc(5 * 2.5em); overflow-y: auto; margin: 0; padding: 0;">
+        @for (item of queue; track item; let i = $index) {
+          <li style="display: flex; align-items: center; justify-content: space-between;"
+              draggable="true"
+              (dragstart)="onDragStart(i+1)"
+              (dragover)="onDragOver($event)"
+              (drop)="onDrop(i+1)">
           <span (click)="playTrack.emit(i+1)" style="cursor: pointer;">
             {{ i + 1 }}. {{ item.title || 'Unbekannt' }}
             @if (item.artist) {
@@ -44,12 +43,13 @@
               <span> ({{ item.album }})</span>
             }
           </span>
-          <button class="remove-btn" (click)="onRemoveTrack(i+1); $event.stopPropagation()">-</button>
-        </li>
-      }
-    </ul>
-  }
-  @if (!(queueLoading$ | async) && !(queueError$ | async) && (!queue || queue.length === 0)) {
-    <div>Keine Einträge in der Queue.</div>
-  }
-</section>
+            <bal-button color="tertiary" size="small" (click)="onRemoveTrack(i+1); $event.stopPropagation()">x
+            </bal-button>
+          </li>
+        }
+      </ul>
+    }
+    @if (!(queueLoading$ | async) && !(queueError$ | async) && (!queue || queue.length === 0)) {
+      <div>Keine Einträge in der Queue.</div>
+    }
+</bal-card-content>

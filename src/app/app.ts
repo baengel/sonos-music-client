@@ -4,12 +4,11 @@ import {FormsModule} from '@angular/forms';
 import {SonosService} from './sonos.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PlayerComponent} from './player/player.component';
 import {QueueService} from './queue.service';
 import {SonosServiceMock} from './sonos.service.mock';
 import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
-import {BalHeading, BalNavbar} from '@baloise/ds-angular';
+import {HeaderComponent} from './header/header.component';
 
 interface FileInfo {
   path: string;
@@ -20,7 +19,7 @@ interface FileInfo {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerComponent, BalNavbar, BalHeading],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -35,11 +34,11 @@ export class App implements OnInit {
 
   // Player-Liste
   protected readonly availablePlayers = [
-    { name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer' },
-    { name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer' },
-    { name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer' },
-    { name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)' },
-    { name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer' }
+    {name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer'},
+    {name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer'},
+    {name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer'},
+    {name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)'},
+    {name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer'}
   ];
 
   // Globale ausgewählte Player (nur eine IP für Tabs)
@@ -61,7 +60,8 @@ export class App implements OnInit {
               private queueService: QueueService,
               private apiBaseUrlService: ApiBaseUrlService,
               private router: Router,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     // URL-Parameter auslesen
@@ -139,7 +139,8 @@ export class App implements OnInit {
     this.addQueueLoadingIndex = null;
   }
 
-  protected onSearch() {
+  protected onSearch(searchInput: string) {
+    this.searchInput = searchInput;
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
@@ -151,7 +152,7 @@ export class App implements OnInit {
         // Query-Parameter per Router setzen
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: trimmedInput },
+          queryParams: {search: trimmedInput},
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
@@ -163,7 +164,7 @@ export class App implements OnInit {
         // Query-Parameter entfernen
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: null },
+          queryParams: {search: null},
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
@@ -253,11 +254,11 @@ export class App implements OnInit {
     let done = false;
 
     while (!done) {
-      const { value, done: readerDone } = await reader.read();
+      const {value, done: readerDone} = await reader.read();
       done = readerDone;
 
       if (value) {
-        const chunkText = new TextDecoder().decode(value, { stream: true });
+        const chunkText = new TextDecoder().decode(value, {stream: true});
         accumulatedText += chunkText;
 
         const lines = accumulatedText.split('\n');
@@ -383,4 +384,8 @@ export class App implements OnInit {
     // Für die Tab-Variante: gibt ein Set mit der ausgewählten IP zurück, falls vorhanden
     return new Set(this.selectedPlayerIp ? [this.selectedPlayerIp] : []);
   }
+
 }
+
+// Hier sollte die eigentliche Filterung erfolgen, z.B. aus einer Datei-Liste
+// this.filteredFiles.set(this.allFiles.filter(file => file.fileName.includes(term) || file.path.includes(term)));

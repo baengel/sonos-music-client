@@ -1,11 +1,12 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SonosService} from '../../sonos.service';
+import {BalButton} from '@baloise/ds-angular';
 
 @Component({
   selector: 'play-button',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BalButton],
   templateUrl: './play-buttons.component.html',
   styleUrls: ['./play-buttons.component.css']
 })

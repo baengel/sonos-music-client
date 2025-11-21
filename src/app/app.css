@@ -1,12 +1,13 @@
 /* Kompaktes CSS für Budget-Einhaltung */
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 200px;
   padding: 16px;
   font-family: Arial, sans-serif;
 }
 
-header {
+
+app-header {
   position: sticky;
   top: 0;
   z-index: 1000;

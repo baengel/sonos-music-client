@@ -9,6 +9,6 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class VolumeControlComponent {
   @Input() volume: number = 30;
   @Input() disabled: boolean = false;
+  @Input() playerIp: string = '';
   @Output() onVolumeChange = new EventEmitter<any>();
 }
-

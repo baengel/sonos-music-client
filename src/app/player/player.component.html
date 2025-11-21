@@ -1,5 +1,5 @@
-<div class="player-layout">
-  <div class="player-played">
+<div class="flex flex-direction-row justify-content-center p-small border-grey">
+  <div class="flex justify-content-center mt-small">
     <!-- Played List links -->
     <played-list
       [played]="played$ | async"
@@ -9,8 +9,9 @@
       (playItem)="onPlayedItemClick($event)"
     ></played-list>
   </div>
-  <div class="player-main">
+  <div >
     <seek-buttons
+      class="flex justify-content-center m-small"
       [playerIp]="playerIp"
       [fileUrl]="fileUrl"
       (seek)="onSeek($event)"
@@ -19,16 +20,15 @@
       (queuePlay)="onQueuePlay()"
       (trackRelative)="onTrackRelative($event)"
     ></seek-buttons>
-    <div class="player-volume">
+    <div class="flex justify-content-center m-small">
       <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
     </div>
 
-    <!-- Anzeige der Player-Informationen -->
-    <div class="player-info">
+    <div class="flex justify-content-center m-small">
       <div>{{ track }} - {{ title }} - {{ position }}</div>
     </div>
   </div>
-  <div class="player-queue">
+  <div class="flex justify-content-center m-small">
     <!-- Queue ausgelagert in eigene Komponente -->
     <sonos-queue
       (playTrack)="onPlayTrack($event)"

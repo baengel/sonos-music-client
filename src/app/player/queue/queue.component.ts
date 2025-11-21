@@ -1,13 +1,14 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {AsyncPipe} from '@angular/common';
 import {QueueService} from '../../queue.service';
+import {BalButton, BalCardContent} from '@baloise/ds-angular';
 
 @Component({
   selector: 'sonos-queue',
   standalone: true,
   templateUrl: './queue.component.html',
   styleUrls: [],
-  imports: [AsyncPipe]
+  imports: [AsyncPipe, BalButton, BalCardContent]
 })
 export class QueueComponent {
   queue$ = this.queueService.getQueue$();
