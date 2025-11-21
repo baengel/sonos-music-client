@@ -1,102 +1,116 @@
-<div class="container">
-  <h1>{{ title() }}</h1>
+<header>
+  <bal-navbar interface="simple" [light]="true" fixed>
+    <div class="is-flex flex-direction-row">
+      <bal-heading>
+        <h1>{{ title() }}</h1>
+      </bal-heading>
 
-  <div class="search-box">
-    <input
-      type="text"
-      [(ngModel)]="searchInput"
-      (ngModelChange)="onSearch()"
-      placeholder="search..."
-      class="search-input"
-    />
-  </div>
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="searchInput"
+          (ngModelChange)="onSearch()"
+          placeholder="search..."
+          class="search-input"
+        />
+      </div>
 
-  <div class="global-player-selection">
-    <div class="player-tabs">
-      <ul class="tab-list">
-        @for (player of availablePlayers; track player.ip) {
-          <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }" (click)="selectPlayerTab(player.ip)">
-            {{ player.name }}
-          </li>
-        }
-      </ul>
-    </div>
-    <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
-  </div>
-
-
-  <div class="status">
-    @if (isLoading()) {
-      <p class="loading">Lade und filtere Datei...</p>
-    } @else {
-      <p class="success">filter done: {{ filteredFiles().length }} files.</p>
-    }
-  </div>
-
-  <div class="results" style="display: flex; align-items: center; justify-content: space-between;">
-    <h2 style="margin: 0;">result ("{{ searchTerm() }}"):</h2>
-    <div class="sort-buttons" style="display: flex; gap: 8px;">
-      <button class="btn" (click)="sortKey === 'pfad' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('pfad')"
-              [class.btn-active]="sortKey === 'pfad'">
-        path {{ sortKey === 'pfad' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
-      </button>
-      <button class="btn" (click)="sortKey === 'name' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('name')"
-              [class.btn-active]="sortKey === 'name'">
-        name {{ sortKey === 'name' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
-      </button>
-      <button class="btn" (click)="sortKey === 'größe' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('größe')"
-              [class.btn-active]="sortKey === 'größe'">
-        size {{ sortKey === 'größe' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
-      </button>
-    </div>
-  </div>
-  @if (filteredFiles().length === 0 && !isLoading()) {
-    <p class="no-results">Keine Ergebnisse gefunden.</p>
-  } @else {
-    <div class="file-list">
-      @for (file of getSortedFiles(); track $index) {
-        <div class="file-card" [ngClass]="{ 'active-row': playedFIles.indexOf($index) !== -1 }">
-          <div class="file-content">
-            <div class="file-info">
-              <div class="file-name">
-                <strong [innerHTML]="highlightText(file.fileName, searchTerm())"></strong>
-              </div>
-              <div class="file-details">
-                <div class="file-path">
-                  <span class="label">Pfad:</span>
-                  <span class="value" [innerHTML]="highlightText(file.path, searchTerm())"></span>
-                </div>
-                <div class="file-size">
-                  <span class="label">Größe:</span>
-                  <span class="value">{{ (file.size / 1024 / 1024).toFixed(2) }} MB ({{ file.size.toLocaleString() }}
-                    Bytes)</span>
-                </div>
-              </div>
-            </div>
-            <div class="play-controls">
-              <button (click)="handlePlayClick(file, $index)"
-                      class="play-button"
-                      [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex === $index"
-                      [ngClass]="{ 'loading': playLoadingIndex === $index }">
-                <ng-container *ngIf="playLoadingIndex === $index; else playIcon">
-                  <span class="spinner"></span>
-                </ng-container>
-                <ng-template #playIcon>▶️</ng-template>
-              </button>
-              <span style="display:inline-block;width:8px;"></span>
-              <button (click)="handleAddToQueue(file, $index)"
-                      class="play-button queue-white"
-                      [disabled]="selectedPlayerIps().size === 0 || addQueueLoadingIndex === $index"
-                      [ngClass]="{ 'loading': addQueueLoadingIndex === $index }">
-                <ng-container *ngIf="addQueueLoadingIndex === $index; else queueIcon">
-                  <span class="spinner"></span>
-                </ng-container>
-                <ng-template #queueIcon><span class="queue-icon-white">➕☰</span></ng-template>
-              </button>
-            </div>
-          </div>
+      <div class="global-player-selection">
+        <div class="player-tabs">
+          <ul class="tab-list">
+            @for (player of availablePlayers; track player.ip) {
+              <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }"
+                  (click)="selectPlayerTab(player.ip)">
+                {{ player.name }}
+              </li>
+            }
+          </ul>
         </div>
+        <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+      </div>
+    </div>
+  </bal-navbar>
+</header>
+
+<main class="container mt-xx-large">
+  <div class="container">
+
+    <div class="status">
+      @if (isLoading()) {
+        <p class="loading">Lade und filtere Datei...</p>
+      } @else {
+        <p class="success">filter done: {{ filteredFiles().length }} files.</p>
       }
     </div>
-  }
-</div>
+
+    <div class="results" style="display: flex; align-items: center; justify-content: space-between;">
+      <h2 style="margin: 0;">result ("{{ searchTerm() }}"):</h2>
+      <div class="sort-buttons" style="display: flex; gap: 8px;">
+        <button class="btn"
+                (click)="sortKey === 'pfad' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('pfad')"
+                [class.btn-active]="sortKey === 'pfad'">
+          path {{ sortKey === 'pfad' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        </button>
+        <button class="btn"
+                (click)="sortKey === 'name' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('name')"
+                [class.btn-active]="sortKey === 'name'">
+          name {{ sortKey === 'name' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        </button>
+        <button class="btn"
+                (click)="sortKey === 'größe' ? setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc') : setSortKey('größe')"
+                [class.btn-active]="sortKey === 'größe'">
+          size {{ sortKey === 'größe' ? (sortDirection === 'asc' ? '⬆️' : '⬇️') : '' }}
+        </button>
+      </div>
+    </div>
+    @if (filteredFiles().length === 0 && !isLoading()) {
+      <p class="no-results">Keine Ergebnisse gefunden.</p>
+    } @else {
+      <div class="file-list">
+        @for (file of getSortedFiles(); track $index) {
+          <div class="file-card" [ngClass]="{ 'active-row': playedFIles.indexOf($index) !== -1 }">
+            <div class="file-content">
+              <div class="file-info">
+                <div class="file-name">
+                  <strong [innerHTML]="highlightText(file.fileName, searchTerm())"></strong>
+                </div>
+                <div class="file-details">
+                  <div class="file-path">
+                    <span class="label">Pfad:</span>
+                    <span class="value" [innerHTML]="highlightText(file.path, searchTerm())"></span>
+                  </div>
+                  <div class="file-size">
+                    <span class="label">Größe:</span>
+                    <span class="value">{{ (file.size / 1024 / 1024).toFixed(2) }} MB ({{ file.size.toLocaleString() }}
+                      Bytes)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="play-controls">
+                <button (click)="handlePlayClick(file, $index)"
+                        class="play-button"
+                        [disabled]="selectedPlayerIps().size === 0 || playLoadingIndex === $index"
+                        [ngClass]="{ 'loading': playLoadingIndex === $index }">
+                  <ng-container *ngIf="playLoadingIndex === $index; else playIcon">
+                    <span class="spinner"></span>
+                  </ng-container>
+                  <ng-template #playIcon>▶️</ng-template>
+                </button>
+                <span style="display:inline-block;width:8px;"></span>
+                <button (click)="handleAddToQueue(file, $index)"
+                        class="play-button queue-white"
+                        [disabled]="selectedPlayerIps().size === 0 || addQueueLoadingIndex === $index"
+                        [ngClass]="{ 'loading': addQueueLoadingIndex === $index }">
+                  <ng-container *ngIf="addQueueLoadingIndex === $index; else queueIcon">
+                    <span class="spinner"></span>
+                  </ng-container>
+                  <ng-template #queueIcon><span class="queue-icon-white">➕☰</span></ng-template>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</main>

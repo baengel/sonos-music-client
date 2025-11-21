@@ -9,6 +9,7 @@ import {QueueService} from './queue.service';
 import {SonosServiceMock} from './sonos.service.mock';
 import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
+import {BalHeading, BalNavbar} from '@baloise/ds-angular';
 
 interface FileInfo {
   path: string;
@@ -19,7 +20,7 @@ interface FileInfo {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, PlayerComponent, BalNavbar, BalHeading],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

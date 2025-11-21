@@ -1,5 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import './styles/button.css';
+@import '@baloise/ds-styles/sass/mixins.sass';
+
+@import '@baloise/ds-styles/css/normalize.css';
+@import '@baloise/ds-styles/css/structure.css';
+
+@import '@baloise/ds-styles/css/font.css';
+
+@import '@baloise/ds-styles/css/core.css';
+
+@import '@baloise/ds-styles/css/utilities/background.css';
+@import '@baloise/ds-styles/css/utilities/border.css';
+@import '@baloise/ds-styles/css/utilities/elevation.css';
+@import '@baloise/ds-styles/css/utilities/flex.css';
+@import '@baloise/ds-styles/css/utilities/interaction.css';
+@import '@baloise/ds-styles/css/utilities/layout.css';
+@import '@baloise/ds-styles/css/utilities/sizing.css';
+@import '@baloise/ds-styles/css/utilities/spacing.css';
+@import '@baloise/ds-styles/css/utilities/typography.css';
 
 /* Mobile Optimierung */
 @media (max-width: 600px) {
