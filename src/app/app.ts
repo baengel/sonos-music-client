@@ -153,11 +153,20 @@ export class App implements OnInit {
     try {
       const response = await fetch(url);
       const text = await response.text();
-      const lines = text.trim().split('\n');
-      const last20Lines = lines.slice(- LATEST_FILES_COUNT);
-      const last20Files: FileInfo[] = last20Lines
+      const lines = text.trim().split('\n')
+
+      const last20Files: FileInfo[] = lines
         .map(line => this.parseFileLine(line))
-        .filter((fileInfo): fileInfo is FileInfo => !!fileInfo);
+        .filter((fileInfo): fileInfo is FileInfo => !!fileInfo)
+        .filter((fileInfo) => fileInfo.date) // Nur Dateien mit Datum berücksichtigen
+        .filter((fileInfo) => !fileInfo.fileName.startsWith("._")) // Nur Dateien mit Datum berücksichtigen
+        .sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime(); // Neueste zuerst
+        })
+        .slice(0, LATEST_FILES_COUNT);
+
       this.filteredFiles.set(last20Files);
     } catch (error) {
       console.error('Fehler beim Laden der letzten 20 Dateien:', error);
@@ -256,6 +265,8 @@ export class App implements OnInit {
     //date
     // Extrahiere genau 10 Zeichen aus parts[6]
     const date =parts[5]?.substring(0, 10) || '';
+
+    console.log("date=" + date + " date=" + new Date(date));
 
     // Pfad beginnt ab Position 8 (kann Leerzeichen enthalten)
     const fullPath = parts.slice(8).join(' ');
