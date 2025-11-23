@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {BalTag} from '@baloise/ds-angular';
 import {PlayerComponent} from '../player/player.component';
+import {SearchInputComponent} from '../search/search-input.component';
 
 interface Player {
   name: string;
@@ -13,7 +14,7 @@ interface Player {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, PlayerComponent, BalTag],
+  imports: [CommonModule, FormsModule, PlayerComponent, BalTag, SearchInputComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
@@ -36,6 +37,11 @@ export class HeaderComponent {
 
   onSearch() {
     this.searchTermChange.emit(this.searchInput);
+  }
+
+  onSearchInputChange(value: string) {
+    this.searchInput = value;
+    this.onSearch();
   }
 
   selectPlayerTab(ip: string) {

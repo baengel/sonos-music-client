@@ -1,0 +1,7 @@
+/* Optional: Style kann angepasst werden */
+.flex {
+  display: flex;
+}
+.search-input {
+  /* Bestehende Styles übernehmen */
+}
