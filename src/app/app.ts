@@ -15,6 +15,7 @@ interface FileInfo {
   fileName: string;
   size: number;
   fullLine: string;
+  date: string;
 }
 
 export interface SearchInput {
@@ -252,6 +253,9 @@ export class App implements OnInit {
 
     // Größe ist an Position 4
     const size = parseInt(parts[4], 10);
+    //date
+    // Extrahiere genau 10 Zeichen aus parts[6]
+    const date =parts[5]?.substring(0, 10) || '';
 
     // Pfad beginnt ab Position 8 (kann Leerzeichen enthalten)
     const fullPath = parts.slice(8).join(' ');
@@ -265,7 +269,8 @@ export class App implements OnInit {
       path,
       fileName,
       size,
-      fullLine: line
+      fullLine: line,
+      date
     };
   }
 

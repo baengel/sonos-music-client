@@ -194,7 +194,7 @@ h1 {
   gap: 6px;
 }
 
-.file-path, .file-size {
+.file-path, .file-size, .file-date {
   display: flex;
   gap: 8px;
   font-size: 13px;
