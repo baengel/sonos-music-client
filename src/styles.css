@@ -45,5 +45,17 @@
     font-size: 1em;
     padding: 10px 8px;
   }
+  .player-mobile-flex {
+    flex-direction: column !important;
+  }
+  .global-player-selection {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  #compact-header > .flex {
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
 }
-
