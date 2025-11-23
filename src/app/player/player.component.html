@@ -11,7 +11,8 @@
       ></played-list>
     </bal-card>
   }
-  <div [class.flex-direction-row]="playerOnly" [class.flex-direction-column]="!playerOnly" class="flex">
+
+  <div [class.flex-direction-row]="playerOnly && !isMobile" [class.flex-direction-column]="!playerOnly || isMobile" class="flex">
     <seek-buttons
       class="flex justify-content-center" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly"
       [playerIp]="playerIp"
@@ -26,7 +27,7 @@
       <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
     </div>
 
-    <div class="flex justify-content-center" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly">
+    <div id="song-title" class="flex justify-content-center song-title" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly">
       <div>{{ track }} - {{ title }} - {{ position }}</div>
     </div>
   </div>

@@ -180,4 +180,8 @@ export class PlayerComponent implements OnInit, OnChanges {
   triggerRefresh() {
     this.refreshRequested.emit();
   }
+
+  get isMobile(): boolean {
+    return window.innerWidth <= 600;
+  }
 }
