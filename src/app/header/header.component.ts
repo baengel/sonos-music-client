@@ -2,8 +2,6 @@ import {Component, EventEmitter, HostListener, Input, Output} from '@angular/cor
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {BalTag} from '@baloise/ds-angular';
-import {SeekButtonsComponent} from '../player/seek-buttons/seek-buttons.component';
-import {VolumeControlComponent} from '../player/volume-control/volume-control.component';
 import {PlayerComponent} from '../player/player.component';
 
 interface Player {
@@ -15,7 +13,7 @@ interface Player {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, SeekButtonsComponent, VolumeControlComponent, PlayerComponent, BalTag],
+  imports: [CommonModule, FormsModule, PlayerComponent, BalTag],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })

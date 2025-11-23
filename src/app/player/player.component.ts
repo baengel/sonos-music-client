@@ -19,6 +19,8 @@ export class PlayerComponent implements OnInit, OnChanges {
   @Input() playerIp: string = '';
   @Input() refreshTrigger: number = 0;
   @Input() fileUrl: string = '';
+  @Input() playerOnly : boolean = false;
+
   track: string = '';
   title: string = '';
   position: string = '';

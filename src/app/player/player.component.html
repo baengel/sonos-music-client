@@ -1,17 +1,19 @@
-<div class="flex flex-direction-row justify-content-center p-small border-grey">
-  <div class="flex justify-content-center mt-small">
-    <!-- Played List links -->
-    <played-list
-      [played]="played$ | async"
-      [playedSorted]="playedSorted$ | async"
-      [loading]="(playedLoading$ | async) ?? false"
-      [error]="playedError$ | async"
-      (playItem)="onPlayedItemClick($event)"
-    ></played-list>
-  </div>
-  <div >
+<div class="flex flex-direction-row justify-content-center " [class.border-grey]="!playerOnly">
+  @if (!playerOnly) {
+    <div class="flex justify-content-center mt-small">
+      <!-- Played List links -->
+      <played-list
+        [played]="played$ | async"
+        [playedSorted]="playedSorted$ | async"
+        [loading]="(playedLoading$ | async) ?? false"
+        [error]="playedError$ | async"
+        (playItem)="onPlayedItemClick($event)"
+      ></played-list>
+    </div>
+  }
+  <div [class.flex-direction-row]="playerOnly" [class.flex-direction-column]="!playerOnly" class="flex">
     <seek-buttons
-      class="flex justify-content-center m-small"
+      class="flex justify-content-center" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly"
       [playerIp]="playerIp"
       [fileUrl]="fileUrl"
       (seek)="onSeek($event)"
@@ -20,21 +22,24 @@
       (queuePlay)="onQueuePlay()"
       (trackRelative)="onTrackRelative($event)"
     ></seek-buttons>
-    <div class="flex justify-content-center m-small">
+    <div class="flex justify-content-center" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly">
       <volume-control [volume]="volume" (onVolumeChange)="handleVolumeChange($event)"></volume-control>
     </div>
 
-    <div class="flex justify-content-center m-small">
+    <div class="flex justify-content-center" [class.m-small]="!playerOnly" [class.ml-small]="playerOnly">
       <div>{{ track }} - {{ title }} - {{ position }}</div>
     </div>
   </div>
-  <div class="flex justify-content-center m-small">
-    <!-- Queue ausgelagert in eigene Komponente -->
-    <sonos-queue
-      (playTrack)="onPlayTrack($event)"
-      (removeTrack)="onRemoveTrack($event)"
-      (queuePlay)="onQueuePlayItem($event)"
-      (clearQueue)="onClearQueue()"
-    ></sonos-queue>
-  </div>
+
+  @if (!playerOnly) {
+    <div class="flex justify-content-center m-small">
+      <!-- Queue ausgelagert in eigene Komponente -->
+      <sonos-queue
+        (playTrack)="onPlayTrack($event)"
+        (removeTrack)="onRemoveTrack($event)"
+        (queuePlay)="onQueuePlayItem($event)"
+        (clearQueue)="onClearQueue()"
+      ></sonos-queue>
+    </div>
+  }
 </div>
