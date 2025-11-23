@@ -160,6 +160,7 @@ export class App implements OnInit {
         .filter((fileInfo): fileInfo is FileInfo => !!fileInfo)
         .filter((fileInfo) => fileInfo.date) // Nur Dateien mit Datum berücksichtigen
         .filter((fileInfo) => !fileInfo.fileName.startsWith("._")) // Nur Dateien mit Datum berücksichtigen
+        .filter((fileInfo) => !fileInfo.path.includes('/#Recycle/'))
         .sort((a, b) => {
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
