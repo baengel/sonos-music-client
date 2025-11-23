@@ -1,6 +1,6 @@
 <div class="flex flex-direction-row justify-content-center player-mobile-flex" [class.border-grey]="!playerOnly">
   @if (!playerOnly) {
-    <div class="flex justify-content-center mt-small">
+    <bal-card [border]="false" [flat]="true">
       <!-- Played List links -->
       <played-list
         [played]="played$ | async"
@@ -9,7 +9,7 @@
         [error]="playedError$ | async"
         (playItem)="onPlayedItemClick($event)"
       ></played-list>
-    </div>
+    </bal-card>
   }
   <div [class.flex-direction-row]="playerOnly" [class.flex-direction-column]="!playerOnly" class="flex">
     <seek-buttons
@@ -32,7 +32,7 @@
   </div>
 
   @if (!playerOnly) {
-    <div class="flex justify-content-center m-small">
+    <bal-card [border]="false" [flat]="true">
       <!-- Queue ausgelagert in eigene Komponente -->
       <sonos-queue
         (playTrack)="onPlayTrack($event)"
@@ -40,6 +40,6 @@
         (queuePlay)="onQueuePlayItem($event)"
         (clearQueue)="onClearQueue()"
       ></sonos-queue>
-    </div>
+    </bal-card>
   }
 </div>

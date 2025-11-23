@@ -7,11 +7,12 @@ import {VolumeControlComponent} from './volume-control/volume-control.component'
 import {PlayedListComponent} from './played-list/played-list.component';
 import {SeekButtonsComponent} from './seek-buttons/seek-buttons.component';
 import {QueueComponent} from './queue/queue.component';
+import {BalCard} from '@baloise/ds-angular';
 
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, PlayedListComponent, AsyncPipe],
+  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, PlayedListComponent, AsyncPipe, BalCard],
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
