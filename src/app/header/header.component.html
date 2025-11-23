@@ -16,20 +16,23 @@
           </ul>
         </div>
         <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+
+        <app-search-input
+          class="m-medium"
+          [value]="searchInput"
+          (valueChange)="onSearchInputChange($event)"
+          (showLatest)="onShowLatest()"
+        ></app-search-input>
       </div>
-      <app-search-input
-        [value]="searchInput"
-        (valueChange)="onSearchInputChange($event)"
-      ></app-search-input>
     </div>
   </div>
-
 
   <div id="compact-header" class="block bg-white" [class.hide]="!isCompactHeader">
     <div class="flex justify-content-space-between bg-light-blue-2 p-small">
           <app-search-input
             [value]="searchInput"
             (valueChange)="onSearchInputChange($event)"
+            (showLatest)="onShowLatest()"
           ></app-search-input>
         <bal-tag color="info">{{ getPlayerName(selectedPlayerIp) }}</bal-tag>
         <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"

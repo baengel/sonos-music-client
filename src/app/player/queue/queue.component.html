@@ -12,10 +12,11 @@
           ▶️☰
         }
       </bal-button>
-      <bal-button color="tertiary" size="small"
+      <bal-button color="tertiary"
+                  size="small"
+                  icon="trash"
                   (click)="onClearQueue()"
                   [disabled]="(queueLoading$ | async)">
-        🗑️
       </bal-button>
     </div>
   </div>

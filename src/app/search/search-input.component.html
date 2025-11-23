@@ -1,8 +1,18 @@
-<input
-  type="text"
-  [ngModel]="value"
-  (ngModelChange)="onInputChange($event)"
-  placeholder="search..."
-  class="flex m-medium w-40rem search-input"
-/>
-
+<div class="flex">
+  <input
+    class="flex-1"
+    type="text"
+    [ngModel]="value.term"
+    (ngModelChange)="onInputChange($event)"
+    placeholder="search..."
+  />
+  <bal-button
+    type="button"
+    (click)="onShowLatest()"
+    size="small"
+    [square]="true"
+    icon="caret-up"
+    id="latest20">
+  </bal-button>
+  <bal-tooltip label="latest20" reference="latest20">latest 20</bal-tooltip>
+</div>

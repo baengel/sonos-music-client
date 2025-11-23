@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Output, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {SonosService, SonosStatus} from '../sonos.service';
 import {QueueService} from '../queue.service';
 import {PlaylistService} from '../playlist.service';
@@ -20,6 +20,7 @@ export class PlayerComponent implements OnInit, OnChanges {
   @Input() refreshTrigger: number = 0;
   @Input() fileUrl: string = '';
   @Input() playerOnly : boolean = false;
+  @Output() refreshRequested = new EventEmitter<void>();
 
   track: string = '';
   title: string = '';
@@ -172,5 +173,10 @@ export class PlayerComponent implements OnInit, OnChanges {
   onMoveTrack(event: {from: number, to: number}) {
     if (!this.playerIp) return;
     this.queueService.moveQueueItem(this.playerIp, event.from, event.to);
+  }
+
+  // Beispiel: Methode zum Auslösen des Events
+  triggerRefresh() {
+    this.refreshRequested.emit();
   }
 }

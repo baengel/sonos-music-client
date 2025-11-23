@@ -17,6 +17,13 @@ interface FileInfo {
   fullLine: string;
 }
 
+export interface SearchInput {
+  term: string;
+  latest: boolean;
+}
+
+const LATEST_FILES_COUNT = 20;
+
 @Component({
   selector: 'app-root',
   imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent],
@@ -28,7 +35,7 @@ export class App implements OnInit {
   protected readonly filteredFiles = signal<FileInfo[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly searchTerm = signal('');
-  protected searchInput = '';
+  protected searchInput: SearchInput = { term: '', latest: false };
   private searchTimeout: any = null;
   protected openDropdownIndex: number | null = null;
 
@@ -69,7 +76,7 @@ export class App implements OnInit {
     const params = new URLSearchParams(window.location.search);
     const urlSearch = params.get('search');
     if (urlSearch && urlSearch.trim().length > 0) {
-      this.searchInput = urlSearch;
+      this.searchInput.term = urlSearch;
       this.searchTerm.set(urlSearch);
       // Nur wenn Suchparameter vorhanden, initial suchen
       this.loadAndFilterFile(this.apiUrl, this.searchTerm())
@@ -139,13 +146,39 @@ export class App implements OnInit {
     this.addQueueLoadingIndex = null;
   }
 
-  protected onSearch(searchInput: string) {
-    this.searchInput = searchInput;
+  protected async loadLastFiles(url: string) {
+    this.isLoading.set(true);
+    this.filteredFiles.set([]);
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      const lines = text.trim().split('\n');
+      const last20Lines = lines.slice(- LATEST_FILES_COUNT);
+      const last20Files: FileInfo[] = last20Lines
+        .map(line => this.parseFileLine(line))
+        .filter((fileInfo): fileInfo is FileInfo => !!fileInfo);
+      this.filteredFiles.set(last20Files);
+    } catch (error) {
+      console.error('Fehler beim Laden der letzten 20 Dateien:', error);
+      this.filteredFiles.set([]);
+    }
+    this.isLoading.set(false);
+  }
+
+  protected onSearch(searchInput: SearchInput) {
+    console.log("searchinput=", searchInput);
+    if(searchInput.latest) {
+      this.loadLastFiles(this.apiUrl);
+      return;
+    }
+
+
+    this.searchInput.term = searchInput.term;
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
     this.searchTimeout = setTimeout(() => {
-      const trimmedInput = this.searchInput.trim();
+      const trimmedInput = this.searchInput.term.trim();
       if (trimmedInput.length >= 2) {
         this.playedFIles = [];
         this.searchTerm.set(trimmedInput);
