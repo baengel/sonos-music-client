@@ -1,41 +1,8 @@
-<div class="header-animated" [class.compact]="isCompactHeader">
-  <div id="expanded-header" class="header-full bg-white" [class.hide]="isCompactHeader">
-    <div class="flex flex-direction-column align-items-center">
-      <div class="header-title">
-        <h1>{{ title }}</h1>
-      </div>
-      <div class="global-player-selection">
-        <div class="player-tabs">
-          <ul class="tab-list">
-            @for (player of availablePlayers; track player.ip) {
-              <li class="tab-item" [ngClass]="{ 'active-tab': selectedPlayerIp === player.ip }"
-                  (click)="selectPlayerTab(player.ip)">
-                {{ player.name }}
-              </li>
-            }
-          </ul>
-        </div>
-        <app-player [playerIp]="selectedPlayerIp" (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
-
-        <app-search-input
-          class="m-medium"
-          [value]="searchInput"
-          (valueChange)="onSearchInputChange($event)"
-          (showLatest)="onShowLatest()"
-        ></app-search-input>
-      </div>
-    </div>
-  </div>
-
-  <div id="compact-header" class="block bg-white" [class.hide]="!isCompactHeader">
-    <div class="flex justify-content-space-between bg-light-blue-2 p-small">
-          <app-search-input
-            [value]="searchInput"
-            (valueChange)="onSearchInputChange($event)"
-            (showLatest)="onShowLatest()"
-          ></app-search-input>
-        <bal-tag color="info">{{ getPlayerName(selectedPlayerIp) }}</bal-tag>
-        <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
-                    (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
-  </div>
+<div class="flex justify-content-space-between align-items-center p-xx-small bg-light-blue-2">
+  <app-search-input
+    [value]="searchInput"
+    (valueChange)="onSearchInputChange($event)"
+    (showLatest)="onShowLatest()"
+  ></app-search-input>
+  <app-player-selection (selectedPlayerIp)="selectPlayerTab($event)"></app-player-selection>
 </div>

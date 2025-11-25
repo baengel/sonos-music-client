@@ -9,6 +9,7 @@ import {SonosServiceMock} from './sonos.service.mock';
 import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
 import {HeaderComponent} from './header/header.component';
+import {FooterComponent} from './footer/footer.component';
 
 interface FileInfo {
   path: string;
@@ -24,10 +25,18 @@ export interface SearchInput {
 }
 
 const LATEST_FILES_COUNT = 20;
+// Player-Liste
+export const  availablePlayers = [
+  {name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer'},
+  {name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer'},
+  {name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer'},
+  {name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)'},
+  {name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer'}
+];
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -40,17 +49,9 @@ export class App implements OnInit {
   private searchTimeout: any = null;
   protected openDropdownIndex: number | null = null;
 
-  // Player-Liste
-  protected readonly availablePlayers = [
-    {name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer'},
-    {name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer'},
-    {name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer'},
-    {name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)'},
-    {name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer'}
-  ];
 
   // Globale ausgewählte Player (nur eine IP für Tabs)
-  protected selectedPlayerIp: string = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : '';
+  protected selectedPlayerIp: string = availablePlayers.length > 0 ? availablePlayers[0].ip : '';
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
   addQueueLoadingIndex: number | null = null;
@@ -435,6 +436,7 @@ export class App implements OnInit {
     return new Set(this.selectedPlayerIp ? [this.selectedPlayerIp] : []);
   }
 
+  protected readonly availablePlayers = availablePlayers;
 }
 
 // Hier sollte die eigentliche Filterung erfolgen, z.B. aus einer Datei-Liste

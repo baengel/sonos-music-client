@@ -1,13 +1,13 @@
-<app-header
-  [title]="'Sonos Music Client'"
-  [availablePlayers]="availablePlayers"
-  [selectedPlayerIp]="selectedPlayerIp"
-  (selectedPlayerIpChange)="selectPlayerTab($event)"
-  (refreshPlayerInfo)="refreshPlayerInfo.emit()"
-  (searchInputChange)="onSearch($event)"
-></app-header>
-
-
+<header>
+  <app-header
+    [title]="'Sonos Music Client'"
+    [availablePlayers]="availablePlayers"
+    [selectedPlayerIp]="selectedPlayerIp"
+    (selectedPlayerIpChange)="selectPlayerTab($event)"
+    (refreshPlayerInfo)="refreshPlayerInfo.emit()"
+    (searchInputChange)="onSearch($event)"
+  ></app-header>
+</header>
 <main class="container">
 
     <div class="status">
@@ -92,3 +92,14 @@
       </div>
     }
 </main>
+
+<footer style="margin-top: auto; display: block; position: static;">
+  <app-footer
+    [title]="'Sonos Music Client'"
+    [availablePlayers]="availablePlayers"
+    [selectedPlayerIp]="selectedPlayerIp"
+    (selectedPlayerIpChange)="selectPlayerTab($event)"
+    (refreshPlayerInfo)="refreshPlayerInfo.emit()"
+    (searchInputChange)="onSearch($event)"
+  ></app-footer>
+</footer>

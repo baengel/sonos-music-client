@@ -1,0 +1,5 @@
+  <div id="compact-header" class="block bg-white" >
+    <div class="flex justify-content-space-between bg-light-blue-2 p-small">
+        <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
+                    (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+  </div>

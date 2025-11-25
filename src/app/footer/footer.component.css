@@ -1,0 +1,124 @@
+/* Header-spezifisches CSS migriert aus app.css */
+.global-player-selection {
+}
+.player-tabs {
+  margin-bottom: 0;
+}
+.tab-list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-bottom: none;
+  position: relative;
+  z-index: 2;
+  justify-content: flex-start;
+  background: transparent;
+}
+.tab-item {
+  padding: 14px 32px 12px 32px;
+  cursor: pointer;
+  background: #f4f8ff;
+  border: 1px solid #cfd8dc;
+  border-bottom: none;
+  margin-right: 4px;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  z-index: 1;
+}
+.tab-item:not(.active-tab) {
+  background: #e3eafc;
+}
+.tab-item:hover {
+  color: #007bff;
+}
+.active-tab {
+  background: #fff;
+  color: #007bff;
+  border-bottom: none;
+  z-index: 3;
+  position: relative;
+}
+.active-tab::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 12px;
+  background: #fff;
+  z-index: 2;
+}
+.search-input {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+.search-input:focus {
+  border-color: #007bff;
+}
+/* Header-Animation und konstante Höhe */
+.header-animated {
+  transition: min-height 0.3s, padding 0.3s;
+  min-height: 80px;
+  padding: 0 0 16px 0;
+}
+.header-animated.compact {
+  min-height: 56px;
+  padding: 0 0 8px 0;
+}
+.header-full {
+  display: block;
+}
+.header-compact {
+  display: block;
+}
+.hide {
+  display: none !important;
+}
+/* Umschaltung zwischen normalem und kompaktem Header mit sanfter Transition */
+.header-full,
+.header-compact {
+  transition: opacity 0.3s;
+  opacity: 1;
+  pointer-events: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+.header-full.hidden,
+.header-compact.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.header-animated {
+  position: relative;
+  min-height: 80px;
+  padding: 0 0 16px 0;
+}
+.header-animated.compact {
+  min-height: 56px;
+  padding: 0 0 8px 0;
+}
+@media (max-width: 600px) {
+  .tab-item {
+    min-width: 40px;
+    max-width: 60px;
+    padding: 10px 6px 8px 6px;
+    font-size: 1em;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tab-item .tab-label {
+    display: inline-block;
+    width: 100%;
+  }
+}

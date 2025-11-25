@@ -1,10 +1,9 @@
 import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {BalTag} from '@baloise/ds-angular';
-import {PlayerComponent} from '../player/player.component';
 import {SearchInputComponent} from '../search/search-input.component';
 import {SearchInput} from '../app';
+import {PlayerSelectionComponent} from '../player/player-selection/player-selection.component';
 
 interface Player {
   name: string;
@@ -15,7 +14,7 @@ interface Player {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule, PlayerComponent, BalTag, SearchInputComponent],
+  imports: [CommonModule, FormsModule, SearchInputComponent, PlayerSelectionComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
