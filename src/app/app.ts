@@ -10,6 +10,7 @@ import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
 import {HeaderComponent} from './header/header.component';
 import {FooterComponent} from './footer/footer.component';
+import {BalApp} from '@baloise/ds-angular';
 
 interface FileInfo {
   path: string;
@@ -36,7 +37,7 @@ export const  availablePlayers = [
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

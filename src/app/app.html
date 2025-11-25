@@ -1,14 +1,15 @@
-<header>
-  <app-header
-    [title]="'Sonos Music Client'"
-    [availablePlayers]="availablePlayers"
-    [selectedPlayerIp]="selectedPlayerIp"
-    (selectedPlayerIpChange)="selectPlayerTab($event)"
-    (refreshPlayerInfo)="refreshPlayerInfo.emit()"
-    (searchInputChange)="onSearch($event)"
-  ></app-header>
-</header>
-<main class="container">
+<bal-app class="has-sticky-footer">
+  <header>
+    <app-header
+      [title]="'Sonos Music Client'"
+      [availablePlayers]="availablePlayers"
+      [selectedPlayerIp]="selectedPlayerIp"
+      (selectedPlayerIpChange)="selectPlayerTab($event)"
+      (refreshPlayerInfo)="refreshPlayerInfo.emit()"
+      (searchInputChange)="onSearch($event)"
+    ></app-header>
+  </header>
+  <main class="container">
 
     <div class="status">
       @if (isLoading()) {
@@ -91,15 +92,16 @@
         }
       </div>
     }
-</main>
+  </main>
 
-<footer style="margin-top: auto; display: block; position: static;">
-  <app-footer
-    [title]="'Sonos Music Client'"
-    [availablePlayers]="availablePlayers"
-    [selectedPlayerIp]="selectedPlayerIp"
-    (selectedPlayerIpChange)="selectPlayerTab($event)"
-    (refreshPlayerInfo)="refreshPlayerInfo.emit()"
-    (searchInputChange)="onSearch($event)"
-  ></app-footer>
-</footer>
+  <footer style="position: sticky; bottom: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; z-index: 10; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
+    <app-footer
+      [title]="'Sonos Music Client'"
+      [availablePlayers]="availablePlayers"
+      [selectedPlayerIp]="selectedPlayerIp"
+      (selectedPlayerIpChange)="selectPlayerTab($event)"
+      (refreshPlayerInfo)="refreshPlayerInfo.emit()"
+      (searchInputChange)="onSearch($event)"
+    ></app-footer>
+  </footer>
+</bal-app>
