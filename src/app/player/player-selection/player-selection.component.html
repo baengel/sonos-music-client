@@ -1,6 +1,6 @@
 <bal-radio-group interface="button" value="{{getIp('Len')}}">
   @for (player of availablePlayers; track player.ip) {
-    <bal-radio name="player" [value]="player.ip" (balChange)="onPlayerSelected(player.ip)">
+    <bal-radio name="player" [value]="player.ip" (click)="onPlayerSelected(player.ip)">
       {{ player.name }}
     </bal-radio>
   }

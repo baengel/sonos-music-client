@@ -427,6 +427,7 @@ export class App implements OnInit {
 
   // Methode zum Auswählen eines Players per Tab
   selectPlayerTab(ip: string) {
+    console.log("selectPlayerTab ip=" + ip);
     this.selectedPlayerIp = ip;
   }
 
