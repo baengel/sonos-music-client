@@ -1,7 +1,20 @@
-<bal-radio-group interface="button" value="{{getIp('Len')}}">
-  @for (player of availablePlayers; track player.ip) {
-    <bal-radio name="player" [value]="player.ip" (click)="onPlayerSelected(player.ip)">
-      {{ player.name }}
-    </bal-radio>
-  }
-</bal-radio-group>
+@if (isMobile) {
+  <bal-dropdown  [value]="getIp('Len')">
+    @for (player of availablePlayers; track player.ip) {
+      <bal-option
+        [value]="player.ip"
+        [label]="player.name"
+        (click)="onPlayerSelected(player.ip)">{{ player.name }}</bal-option>
+    }
+  </bal-dropdown>
+} @else {
+  <bal-segment [value]="getIp('Len')">
+    @for (player of availablePlayers; track player.ip) {
+      <bal-segment-item
+        [value]="player.ip"
+        [label]="player.name"
+        (click)="onPlayerSelected(player.ip)"></bal-segment-item>
+    }
+  </bal-segment>
+}
+
