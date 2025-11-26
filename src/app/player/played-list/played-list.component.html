@@ -7,7 +7,7 @@
   } @else {
     <ul>
       @for (item of playedSorted; track item) {
-        <li (click)="playItem.emit(item)" class="played-item">
+        <li (click)="onPlayItem(item)" class="played-item">
           {{ item.count }}x {{ item.title }} - {{ item.artist }}
         </li>
       }

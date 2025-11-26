@@ -1,5 +1,40 @@
-  <div id="compact-header" class="block bg-white" >
-    <div class="flex justify-content-space-between bg-light-blue-2 p-small">
-        <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
-                    (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+<div id="compact-header" class="block bg-white">
+  <div class="flex bg-light-blue-2 gap-medium p-small">
+    <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
+                (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+
+    <bal-button class="queue-sidebar-btn right-0" (click)="showQueueSidebar = !showQueueSidebar">Queue</bal-button>
+    <bal-button class="queue-sidebar-btn left-0" (click)="showPlayedSidebar = !showPlayedSidebar">Played List</bal-button>
   </div>
+
+  @if (showQueueSidebar) {
+    <div class="queue-sidebar">
+      <div class="queue-sidebar-header">
+        <span>Queue</span>
+        <button class="queue-sidebar-close" (click)="showQueueSidebar = false">×</button>
+      </div>
+      <div class="queue-sidebar-content">
+        <bal-card [border]="false" [flat]="true">
+          <sonos-queue
+            [playerIp]="selectedPlayerIp"
+          ></sonos-queue>
+        </bal-card>
+      </div>
+    </div>
+  }
+
+  @if (showPlayedSidebar) {
+    <div class="queue-sidebar">
+      <div class="queue-sidebar-header">
+        <span>Played List</span>
+        <button class="queue-sidebar-close" (click)="showPlayedSidebar = false">×</button>
+      </div>
+      <div class="queue-sidebar-content">
+        <bal-card [border]="false" [flat]="true">
+          <played-list
+            [playerIp]="selectedPlayerIp"
+          ></played-list>
+        </bal-card>
+      </div>
+    </div>
+  }

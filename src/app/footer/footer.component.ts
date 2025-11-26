@@ -3,6 +3,9 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {PlayerComponent} from '../player/player.component';
 import {SearchInput} from '../app';
+import {BalButton, BalCard} from '@baloise/ds-angular';
+import {PlayedListComponent} from '../player/played-list/played-list.component';
+import {QueueComponent} from '../player/queue/queue.component';
 
 interface Player {
   name: string;
@@ -13,7 +16,7 @@ interface Player {
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, FormsModule, PlayerComponent],
+  imports: [CommonModule, FormsModule, PlayerComponent, BalButton, BalCard, PlayedListComponent, QueueComponent],
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
@@ -26,6 +29,8 @@ export class FooterComponent {
   @Output() refreshPlayerInfo = new EventEmitter<void>();
   @Output() searchInputChange = new EventEmitter<SearchInput>();
 
+  showQueueSidebar: boolean = false;
+  showPlayedSidebar: boolean = false;
 
   selectPlayerTab(ip: string) {
     this.selectedPlayerIpChange.emit(ip);

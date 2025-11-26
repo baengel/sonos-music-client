@@ -10,8 +10,7 @@ import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
 import {HeaderComponent} from './header/header.component';
 import {FooterComponent} from './footer/footer.component';
-import {BalApp, BalCard} from '@baloise/ds-angular';
-import {QueueComponent} from './player/queue/queue.component';
+import {BalApp} from '@baloise/ds-angular';
 
 interface FileInfo {
   path: string;
@@ -28,7 +27,7 @@ export interface SearchInput {
 
 const LATEST_FILES_COUNT = 20;
 // Player-Liste
-export const  availablePlayers = [
+export const availablePlayers = [
   {name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer'},
   {name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer'},
   {name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer'},
@@ -38,7 +37,7 @@ export const  availablePlayers = [
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp, QueueComponent, BalCard],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -47,7 +46,7 @@ export class App implements OnInit {
   protected readonly filteredFiles = signal<FileInfo[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly searchTerm = signal('');
-  protected searchInput: SearchInput = { term: '', latest: false };
+  protected searchInput: SearchInput = {term: '', latest: false};
   private searchTimeout: any = null;
   protected openDropdownIndex: number | null = null;
 
@@ -63,7 +62,6 @@ export class App implements OnInit {
   sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
   sortDirection: 'asc' | 'desc' = 'asc';
   playerRefreshCounter: number = 0;
-  showQueueSidebar: boolean = false;
 
   // EventEmitter für Player-Info-Refresh
   refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();
@@ -182,7 +180,7 @@ export class App implements OnInit {
 
   protected onSearch(searchInput: SearchInput) {
     console.log("searchinput=", searchInput);
-    if(searchInput.latest) {
+    if (searchInput.latest) {
       this.loadLastFiles(this.apiUrl);
       return;
     }
@@ -269,7 +267,7 @@ export class App implements OnInit {
     const size = parseInt(parts[4], 10);
     //date
     // Extrahiere genau 10 Zeichen aus parts[6]
-    const date =parts[5]?.substring(0, 10) || '';
+    const date = parts[5]?.substring(0, 10) || '';
 
     console.log("date=" + date + " date=" + new Date(date));
 
