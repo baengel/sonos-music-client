@@ -1,13 +1,13 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {BalDropdown, BalOption, BalRadio, BalRadioGroup, BalSegment, BalSegmentItem} from '@baloise/ds-angular';
+import {BalDropdown, BalOption, BalSegment, BalSegmentItem} from '@baloise/ds-angular';
 import {availablePlayers} from '../../app';
 
 @Component({
   selector: 'app-player-selection',
   standalone: true,
-  imports: [CommonModule, FormsModule, BalRadioGroup, BalRadio, BalSegment, BalSegmentItem, BalDropdown, BalOption],
+  imports: [CommonModule, FormsModule, BalSegment, BalSegmentItem, BalDropdown, BalOption],
   templateUrl: './player-selection.component.html',
   styleUrls: ['./player-selection.component.css']
 })

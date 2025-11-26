@@ -10,7 +10,8 @@ import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
 import {HeaderComponent} from './header/header.component';
 import {FooterComponent} from './footer/footer.component';
-import {BalApp} from '@baloise/ds-angular';
+import {BalApp, BalCard} from '@baloise/ds-angular';
+import {QueueComponent} from './player/queue/queue.component';
 
 interface FileInfo {
   path: string;
@@ -37,7 +38,7 @@ export const  availablePlayers = [
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp, QueueComponent, BalCard],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -62,6 +63,7 @@ export class App implements OnInit {
   sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
   sortDirection: 'asc' | 'desc' = 'asc';
   playerRefreshCounter: number = 0;
+  showQueueSidebar: boolean = false;
 
   // EventEmitter für Player-Info-Refresh
   refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();

@@ -94,6 +94,25 @@
     }
   </main>
 
+  <!-- Rechts einschieben Button für Queue -->
+  <button class="queue-sidebar-btn" (click)="showQueueSidebar = true">Queue</button>
+
+  <!-- Rechts einschiebbares Panel für Queue -->
+  <div class="queue-sidebar" *ngIf="showQueueSidebar">
+    <div class="queue-sidebar-header">
+      <span>Queue</span>
+      <button class="queue-sidebar-close" (click)="showQueueSidebar = false">×</button>
+    </div>
+    <div class="queue-sidebar-content">
+      <bal-card [border]="false" [flat]="true">
+        <!-- Queue ausgelagert in eigene Komponente -->
+        <sonos-queue
+          [playerIp]="selectedPlayerIp"
+        ></sonos-queue>
+      </bal-card>
+    </div>
+  </div>
+
   <footer style="position: sticky; bottom: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; z-index: 10; box-shadow: 0 -2px 8px rgba(0,0,0,0.04);">
     <app-footer
       [title]="'Sonos Music Client'"

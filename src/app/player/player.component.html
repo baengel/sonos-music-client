@@ -35,12 +35,12 @@
   @if (!playerOnly) {
     <bal-card [border]="false" [flat]="true">
       <!-- Queue ausgelagert in eigene Komponente -->
-      <sonos-queue
-        (playTrack)="onPlayTrack($event)"
-        (removeTrack)="onRemoveTrack($event)"
-        (queuePlay)="onQueuePlayItem($event)"
-        (clearQueue)="onClearQueue()"
-      ></sonos-queue>
+      <sonos-queue>
+<!--        (playTrack)="onPlayTrack($event)"-->
+<!--        (removeTrack)="onRemoveTrack($event)"-->
+<!--        (queuePlay)="onQueuePlayItem($event)"-->
+<!--        (clearQueue)="onClearQueue()"-->
+      </sonos-queue>
     </bal-card>
   }
 </div>
