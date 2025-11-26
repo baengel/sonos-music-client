@@ -3,8 +3,8 @@
     <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
                 (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
 
-    <bal-button class="queue-sidebar-btn right-0" (click)="showQueueSidebar = !showQueueSidebar">Queue</bal-button>
-    <bal-button class="queue-sidebar-btn left-0" (click)="showPlayedSidebar = !showPlayedSidebar">Played List</bal-button>
+    <bal-button [flat]="true" size="small" class="queue-sidebar-btn right-0" (click)="showQueueSidebar = !showQueueSidebar">Queue</bal-button>
+    <bal-button [flat]="true" size="small" class="queue-sidebar-btn left-0" (click)="showPlayedSidebar = !showPlayedSidebar">Played List</bal-button>
   </div>
 
   @if (showQueueSidebar) {
