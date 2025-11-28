@@ -62,6 +62,7 @@ export class App implements OnInit {
   sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
   sortDirection: 'asc' | 'desc' = 'asc';
   playerRefreshCounter: number = 0;
+  page = 1;
 
   // EventEmitter für Player-Info-Refresh
   refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();
@@ -149,7 +150,7 @@ export class App implements OnInit {
     this.addQueueLoadingIndex = null;
   }
 
-  protected async loadLastFiles(url: string) {
+  protected async loadLastFiles(url: string, page: number = 1) {
     this.isLoading.set(true);
     this.filteredFiles.set([]);
     try {
@@ -157,22 +158,25 @@ export class App implements OnInit {
       const text = await response.text();
       const lines = text.trim().split('\n')
 
-      const last20Files: FileInfo[] = lines
+      const files: FileInfo[] = lines
         .map(line => this.parseFileLine(line))
         .filter((fileInfo): fileInfo is FileInfo => !!fileInfo)
-        .filter((fileInfo) => fileInfo.date) // Nur Dateien mit Datum berücksichtigen
-        .filter((fileInfo) => !fileInfo.fileName.startsWith("._")) // Nur Dateien mit Datum berücksichtigen
+        .filter((fileInfo) => fileInfo.date)
+        .filter((fileInfo) => !fileInfo.fileName.startsWith("._"))
         .filter((fileInfo) => !fileInfo.path.includes('/#Recycle/'))
         .sort((a, b) => {
           const dateA = new Date(a.date);
           const dateB = new Date(b.date);
-          return dateB.getTime() - dateA.getTime(); // Neueste zuerst
-        })
-        .slice(0, LATEST_FILES_COUNT);
+          return dateB.getTime() - dateA.getTime();
+        });
 
-      this.filteredFiles.set(last20Files);
+      const start = (page - 1) * LATEST_FILES_COUNT;
+      const end = start + LATEST_FILES_COUNT;
+      const pagedFiles = files.slice(start, end);
+
+      this.filteredFiles.set(pagedFiles);
     } catch (error) {
-      console.error('Fehler beim Laden der letzten 20 Dateien:', error);
+      console.error('Fehler beim Laden der letzten Dateien:', error);
       this.filteredFiles.set([]);
     }
     this.isLoading.set(false);
@@ -181,11 +185,11 @@ export class App implements OnInit {
   protected onSearch(searchInput: SearchInput) {
     console.log("searchinput=", searchInput);
     if (searchInput.latest) {
-      this.loadLastFiles(this.apiUrl);
+      this.loadLastFiles(this.apiUrl, this.page++);
       return;
     }
 
-
+    this.page = 1;
     this.searchInput.term = searchInput.term;
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
