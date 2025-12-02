@@ -1,10 +1,8 @@
-import {Component, EventEmitter, Output, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {SonosService, SonosStatus} from '../sonos.service';
 import {QueueService} from '../queue.service';
 import {PlaylistService} from '../playlist.service';
-import {AsyncPipe} from '@angular/common';
 import {VolumeControlComponent} from './volume-control/volume-control.component';
-import {PlayedListComponent} from './played-list/played-list.component';
 import {SeekButtonsComponent} from './seek-buttons/seek-buttons.component';
 import {QueueComponent} from './queue/queue.component';
 import {BalCard} from '@baloise/ds-angular';
@@ -12,7 +10,7 @@ import {BalCard} from '@baloise/ds-angular';
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, PlayedListComponent, AsyncPipe, BalCard],
+  imports: [VolumeControlComponent, SeekButtonsComponent, QueueComponent, BalCard],
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
@@ -27,10 +25,6 @@ export class PlayerComponent implements OnInit, OnChanges {
   title: string = '';
   position: string = '';
   volume: number = 0;
-  played$ = this.playlistService.getPlayed$();
-  playedSorted$ = this.playlistService.getPlayedSorted$();
-  playedLoading$ = this.playlistService.getLoading$();
-  playedError$ = this.playlistService.getError$();
 
   constructor(
     private sonosService: SonosService,

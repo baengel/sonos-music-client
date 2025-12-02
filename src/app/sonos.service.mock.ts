@@ -11,7 +11,8 @@ export class SonosServiceMock {
     { title: 'Jump', artist: 'Tatana', album: 'Mock Album', uri: 'mock.mp3' }
   ];
   private playedList: any[] = [
-    { title: 'Mock Song', artist: 'Mock Artist', album: 'Mock Album', fileUrl: 'mock.mp3', count: 5 }
+    { title: 'Mock Song', artist: 'Mock Artist', album: 'Mock Album', fileUrl: 'mock.mp3', count: 5 },
+    { title: 'Played Song', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 5 }
   ];
 
   getApiBaseUrl(): string {

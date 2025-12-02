@@ -33,7 +33,9 @@ export class PlaylistService {
     this.sonosService.getPlayedTitles().subscribe({
       next: (data) => {
         this.playedSubject.next(data);
-        this.playedSortedSubject.next([...data].sort((a, b) => b.count - a.count));
+        let sortedData = [...data]
+          .sort((a, b) => (b.count || 0) - (a.count || 0));
+        this.playedSortedSubject.next(sortedData);
         this.loadingSubject.next(false);
       },
       error: (err) => {

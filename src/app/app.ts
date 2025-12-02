@@ -273,7 +273,7 @@ export class App implements OnInit {
     // Extrahiere genau 10 Zeichen aus parts[6]
     const date = parts[5]?.substring(0, 10) || '';
 
-    console.log("date=" + date + " date=" + new Date(date));
+    //console.log("date=" + date + " date=" + new Date(date));
 
     // Pfad beginnt ab Position 8 (kann Leerzeichen enthalten)
     const fullPath = parts.slice(8).join(' ');
