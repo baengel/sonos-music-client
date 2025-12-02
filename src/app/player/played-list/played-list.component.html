@@ -5,7 +5,7 @@
   } @else if (error) {
     <div class="error">{{ error }}</div>
   } @else {
-    <ul>
+    <ul class="is-full">
       @for (item of playedSorted | async; track item) {
         <li (click)="onPlayItem(item)" class="played-item">
           {{ item.count }}x {{ item.title }} - {{ item.artist }}
