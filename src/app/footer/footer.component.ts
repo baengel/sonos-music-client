@@ -31,6 +31,13 @@ export class FooterComponent {
 
   showQueueSidebar: boolean = false;
   showPlayedSidebar: boolean = false;
+  isMobile: boolean = window.innerWidth <= 600;
+
+  constructor() {
+    window.addEventListener('resize', () => {
+      this.isMobile = window.innerWidth <= 600;
+    });
+  }
 
   selectPlayerTab(ip: string) {
     this.selectedPlayerIpChange.emit(ip);
