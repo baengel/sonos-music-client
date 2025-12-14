@@ -1,20 +1,21 @@
 @if (isMobile) {
-  <bal-dropdown  [value]="getIp('Len')">
+  <bal-dropdown [value]="selectedPlayer">
     @for (player of availablePlayers; track player.ip) {
       <bal-option
         [value]="player.ip"
         [label]="player.name"
-        (click)="onPlayerSelected(player.ip)">{{ player.name }}</bal-option>
+        (click)="onPlayerSelected(player.ip)"
+      >{{ player.name }}</bal-option>
     }
   </bal-dropdown>
 } @else {
-  <bal-segment [value]="getIp('Len')">
+  <bal-segment [value]="selectedPlayer">
     @for (player of availablePlayers; track player.ip) {
       <bal-segment-item
         [value]="player.ip"
         [label]="player.name"
-        (click)="onPlayerSelected(player.ip)"></bal-segment-item>
+        (click)="onPlayerSelected(player.ip)"
+      ></bal-segment-item>
     }
   </bal-segment>
 }
-
