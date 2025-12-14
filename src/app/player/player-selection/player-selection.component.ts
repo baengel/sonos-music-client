@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { BalDropdown, BalOption, BalSegment, BalSegmentItem } from '@baloise/ds-angular';
-import { availablePlayers } from '../../app';
-import { ActivatedRoute } from '@angular/router';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule} from '@angular/forms';
+import {BalDropdown, BalOption, BalSegment, BalSegmentItem} from '@baloise/ds-angular';
+import {availablePlayers} from '../../app';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-player-selection',
@@ -16,23 +16,28 @@ export class PlayerSelectionComponent {
   @Output() selectedPlayerIp = new EventEmitter<string>();
   availablePlayers = availablePlayers;
   isMobile = window.innerWidth < 600;
-  selectedPlayer: string | null = null;
+  selectedPlayer: string =  this.availablePlayers[0].ip;
 
   constructor(private route: ActivatedRoute) {
     window.addEventListener('resize', () => {
       this.isMobile = window.innerWidth < 600;
     });
     this.route.queryParams.subscribe(params => {
-      const param = params['player']?.toLowerCase();
+      const paramsLoc = new URLSearchParams(window.location.search);
+      let param = params['player']?.toLowerCase().trim();
+      if (!param) {
+        param = paramsLoc.get('player')?.toLowerCase().trim() || '';
+      }
       if (param) {
+        console.log('select:', param);
         const found = this.availablePlayers.find(
-          p => p.ip.toLowerCase() === param || p.name.toLowerCase() === param
+          p => p.ip.toLowerCase().trim() === param || p.name.toLowerCase().trim() === param
         );
         this.selectedPlayer = found ? found.ip : this.availablePlayers[0].ip;
       } else {
-        const len = this.availablePlayers.find(p => p.name.toLowerCase() === 'len');
-        this.selectedPlayer = len ? len.ip : this.availablePlayers[0].ip;
+        this.selectedPlayer = this.availablePlayers[0].ip;
       }
+      this.selectedPlayerIp.emit(this.selectedPlayer);
     });
   }
 
