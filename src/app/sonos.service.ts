@@ -56,6 +56,12 @@ export class SonosService {
     });
   }
 
+  playRandom(ip: string): Observable<any> {
+    return this.http.get(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_play_random_from_filelist.php', {
+      params: {ip}
+    });
+  }
+
   seek(ip: string, seconds: number): Promise<void> {
     return new Promise((resolve, reject) => {
       this.http.post(this.apiBaseUrlService.getApiBaseUrl() + 'sonos_soap_seek.php', {

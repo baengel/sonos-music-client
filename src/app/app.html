@@ -5,6 +5,7 @@
       [availablePlayers]="availablePlayers"
       [selectedPlayerIp]="selectedPlayerIp"
       (selectedPlayerIpChange)="selectPlayerTab($event)"
+      (playRandom)="onPlayRandom()"
       (refreshPlayerInfo)="refreshPlayerInfo.emit()"
       (searchInputChange)="onSearch($event)"
     ></app-header>

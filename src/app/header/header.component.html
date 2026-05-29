@@ -3,6 +3,7 @@
     [value]="searchInput"
     (valueChange)="onSearchInputChange($event)"
     (showLatest)="onShowLatest()"
+    (playRandom)="onPlayRandom()"
   ></app-search-input>
   <app-player-selection (selectedPlayerIp)="selectPlayerTab($event)"></app-player-selection>
 </div>

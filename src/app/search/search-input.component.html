@@ -11,8 +11,18 @@
     (click)="onShowLatest()"
     size="small"
     [square]="true"
-    icon="caret-up"
     id="latest20">
+    <img src="./icons/latest-20.svg" alt="Latest 20" class="random-icon" />
   </bal-button>
   <bal-tooltip label="latest20" reference="latest20">latest 20</bal-tooltip>
+
+  <bal-button
+    type="button"
+    (click)="onPlayRandom()"
+    size="small"
+    [square]="true"
+    id="playRandom">
+    <img src="./icons/random-play.svg" alt="Random" class="random-icon" />
+  </bal-button>
+  <bal-tooltip label="playRandom" reference="playRandom">random</bal-tooltip>
 </div>

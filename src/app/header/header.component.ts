@@ -25,6 +25,7 @@ export class HeaderComponent {
   @Input() searchInput: SearchInput = { term: '', latest: false };
   @Output() selectedPlayerIpChange = new EventEmitter<string>();
   @Output() refreshPlayerInfo = new EventEmitter<void>();
+  @Output() playRandom = new EventEmitter<void>();
   @Output() searchInputChange = new EventEmitter<SearchInput>();
 
   isCompactHeader: boolean = false;
@@ -63,6 +64,10 @@ export class HeaderComponent {
   onShowLatest() {
     this.searchInput = { ...this.searchInput, latest: true };
     this.searchInputChange.emit(this.searchInput);
+  }
+
+  onPlayRandom() {
+    this.playRandom.emit();
   }
 
 }

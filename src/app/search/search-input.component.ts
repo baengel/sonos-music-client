@@ -18,6 +18,7 @@ export class SearchInputComponent {
   @Input() value: SearchInput = { term: '', latest: false };
   @Output() valueChange = new EventEmitter<SearchInput>();
   @Output() showLatest = new EventEmitter<SearchInput>();
+  @Output() playRandom = new EventEmitter<void>();
 
   onInputChange(newValue: string) {
     this.value = { ...this.value, term: newValue, latest: false };
@@ -27,5 +28,9 @@ export class SearchInputComponent {
   onShowLatest() {
     this.value = { ...this.value, latest: true };
     this.showLatest.emit(this.value);
+  }
+
+  onPlayRandom() {
+    this.playRandom.emit();
   }
 }

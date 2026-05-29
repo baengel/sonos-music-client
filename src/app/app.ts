@@ -436,6 +436,13 @@ export class App implements OnInit {
     this.selectedPlayerIp = ip;
   }
 
+  onPlayRandom() {
+    this.sonosService.playRandom(this.selectedPlayerIp).subscribe({
+      next: () => console.log('Random play started'),
+      error: (err) => console.error('Error starting random play', err)
+    });
+  }
+
   // Hilfsmethode für Template-Kompatibilität
   selectedPlayerIps() {
     // Für die Tab-Variante: gibt ein Set mit der ausgewählten IP zurück, falls vorhanden
