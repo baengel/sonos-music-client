@@ -1,0 +1,28 @@
+<div class="flex">
+  <input
+    class="flex-1"
+    type="text"
+    [ngModel]="value.term"
+    (ngModelChange)="onInputChange($event)"
+    placeholder="search..."
+  />
+  <bal-button
+    type="button"
+    (click)="onShowLatest()"
+    size="small"
+    [square]="true"
+    id="latest20">
+    <img src="./icons/latest-20.svg" alt="Latest 20" class="random-icon" />
+  </bal-button>
+  <bal-tooltip label="latest20" reference="latest20">latest 20</bal-tooltip>
+
+  <bal-button
+    type="button"
+    (click)="onPlayRandom()"
+    size="small"
+    [square]="true"
+    id="playRandom">
+    <img src="./icons/random-play.svg" alt="Random" class="random-icon" />
+  </bal-button>
+  <bal-tooltip label="playRandom" reference="playRandom">random</bal-tooltip>
+</div>

@@ -1,0 +1,16 @@
+/* Optional: Style kann angepasst werden */
+.flex {
+  display: flex;
+}
+.search-input {
+  /* Bestehende Styles übernehmen */
+}
+
+.random-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  /* Forces dark SVG strokes to render white on blue button background */
+  filter: brightness(0) invert(1);
+}
+

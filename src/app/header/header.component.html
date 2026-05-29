@@ -1,0 +1,9 @@
+<div class="flex justify-content-space-between align-items-center p-xx-small bg-light-blue-2">
+  <app-search-input
+    [value]="searchInput"
+    (valueChange)="onSearchInputChange($event)"
+    (showLatest)="onShowLatest()"
+    (playRandom)="onPlayRandom()"
+  ></app-search-input>
+  <app-player-selection (selectedPlayerIp)="selectPlayerTab($event)"></app-player-selection>
+</div>

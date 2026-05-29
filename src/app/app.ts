@@ -4,22 +4,40 @@ import {FormsModule} from '@angular/forms';
 import {SonosService} from './sonos.service';
 import {HttpClientModule} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PlayerComponent} from './player/player.component';
 import {QueueService} from './queue.service';
 import {SonosServiceMock} from './sonos.service.mock';
 import {forkJoin} from 'rxjs';
 import {ApiBaseUrlService} from './api-base-url.service';
+import {HeaderComponent} from './header/header.component';
+import {FooterComponent} from './footer/footer.component';
+import {BalApp} from '@baloise/ds-angular';
 
 interface FileInfo {
   path: string;
   fileName: string;
   size: number;
   fullLine: string;
+  date: string;
 }
+
+export interface SearchInput {
+  term: string;
+  latest: boolean;
+}
+
+const LATEST_FILES_COUNT = 20;
+// Player-Liste
+export const availablePlayers = [
+  {name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer'},
+  {name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer'},
+  {name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer'},
+  {name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)'},
+  {name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer'}
+];
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, FormsModule, HttpClientModule, PlayerComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, HeaderComponent, FooterComponent, BalApp],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -28,21 +46,13 @@ export class App implements OnInit {
   protected readonly filteredFiles = signal<FileInfo[]>([]);
   protected readonly isLoading = signal(false);
   protected readonly searchTerm = signal('');
-  protected searchInput = '';
+  protected searchInput: SearchInput = {term: '', latest: false};
   private searchTimeout: any = null;
   protected openDropdownIndex: number | null = null;
 
-  // Player-Liste
-  protected readonly availablePlayers = [
-    { name: 'Len', ip: '192.168.188.34', room: 'Len Zimmer' },
-    { name: 'Juna', ip: '192.168.188.43', room: 'Juna Zimmer' },
-    { name: 'Maxim', ip: '192.168.188.35', room: 'Maxim Zimmer' },
-    { name: 'Kueche', ip: '192.168.188.146', room: 'Kueche (L)' },
-    { name: 'Wohnzimmer', ip: '192.168.188.86', room: 'Wohnzimmer' }
-  ];
 
   // Globale ausgewählte Player (nur eine IP für Tabs)
-  protected selectedPlayerIp: string = this.availablePlayers.length > 0 ? this.availablePlayers[0].ip : '';
+  protected selectedPlayerIp: string = availablePlayers.length > 0 ? availablePlayers[0].ip : '';
   private apiUrl: string = '';
   playLoadingIndex: number | null = null;
   addQueueLoadingIndex: number | null = null;
@@ -52,6 +62,7 @@ export class App implements OnInit {
   sortKey: 'pfad' | 'name' | 'größe' = 'pfad';
   sortDirection: 'asc' | 'desc' = 'asc';
   playerRefreshCounter: number = 0;
+  page = 1;
 
   // EventEmitter für Player-Info-Refresh
   refreshPlayerInfo: EventEmitter<void> = new EventEmitter<void>();
@@ -60,7 +71,8 @@ export class App implements OnInit {
               private queueService: QueueService,
               private apiBaseUrlService: ApiBaseUrlService,
               private router: Router,
-              private route: ActivatedRoute) {}
+              private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     // URL-Parameter auslesen
@@ -68,7 +80,7 @@ export class App implements OnInit {
     const params = new URLSearchParams(window.location.search);
     const urlSearch = params.get('search');
     if (urlSearch && urlSearch.trim().length > 0) {
-      this.searchInput = urlSearch;
+      this.searchInput.term = urlSearch;
       this.searchTerm.set(urlSearch);
       // Nur wenn Suchparameter vorhanden, initial suchen
       this.loadAndFilterFile(this.apiUrl, this.searchTerm())
@@ -138,19 +150,59 @@ export class App implements OnInit {
     this.addQueueLoadingIndex = null;
   }
 
-  protected onSearch() {
+  protected async loadLastFiles(url: string, page: number = 1) {
+    this.isLoading.set(true);
+    this.filteredFiles.set([]);
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      const lines = text.trim().split('\n')
+
+      const files: FileInfo[] = lines
+        .map(line => this.parseFileLine(line))
+        .filter((fileInfo): fileInfo is FileInfo => !!fileInfo)
+        .filter((fileInfo) => fileInfo.date)
+        .filter((fileInfo) => !fileInfo.fileName.startsWith("._"))
+        .filter((fileInfo) => !fileInfo.path.includes('/#Recycle/'))
+        .sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime();
+        });
+
+      const start = (page - 1) * LATEST_FILES_COUNT;
+      const end = start + LATEST_FILES_COUNT;
+      const pagedFiles = files.slice(start, end);
+
+      this.filteredFiles.set(pagedFiles);
+    } catch (error) {
+      console.error('Fehler beim Laden der letzten Dateien:', error);
+      this.filteredFiles.set([]);
+    }
+    this.isLoading.set(false);
+  }
+
+  protected onSearch(searchInput: SearchInput) {
+    console.log("searchinput=", searchInput);
+    if (searchInput.latest) {
+      this.loadLastFiles(this.apiUrl, this.page++);
+      return;
+    }
+
+    this.page = 1;
+    this.searchInput.term = searchInput.term;
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
     this.searchTimeout = setTimeout(() => {
-      const trimmedInput = this.searchInput.trim();
+      const trimmedInput = this.searchInput.term.trim();
       if (trimmedInput.length >= 2) {
         this.playedFIles = [];
         this.searchTerm.set(trimmedInput);
         // Query-Parameter per Router setzen
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: trimmedInput },
+          queryParams: {search: trimmedInput},
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
@@ -162,7 +214,7 @@ export class App implements OnInit {
         // Query-Parameter entfernen
         this.router.navigate([], {
           relativeTo: this.route,
-          queryParams: { search: null },
+          queryParams: {search: null},
           queryParamsHandling: 'merge',
           replaceUrl: true
         });
@@ -217,6 +269,11 @@ export class App implements OnInit {
 
     // Größe ist an Position 4
     const size = parseInt(parts[4], 10);
+    //date
+    // Extrahiere genau 10 Zeichen aus parts[6]
+    const date = parts[5]?.substring(0, 10) || '';
+
+    //console.log("date=" + date + " date=" + new Date(date));
 
     // Pfad beginnt ab Position 8 (kann Leerzeichen enthalten)
     const fullPath = parts.slice(8).join(' ');
@@ -230,7 +287,8 @@ export class App implements OnInit {
       path,
       fileName,
       size,
-      fullLine: line
+      fullLine: line,
+      date
     };
   }
 
@@ -252,11 +310,11 @@ export class App implements OnInit {
     let done = false;
 
     while (!done) {
-      const { value, done: readerDone } = await reader.read();
+      const {value, done: readerDone} = await reader.read();
       done = readerDone;
 
       if (value) {
-        const chunkText = new TextDecoder().decode(value, { stream: true });
+        const chunkText = new TextDecoder().decode(value, {stream: true});
         accumulatedText += chunkText;
 
         const lines = accumulatedText.split('\n');
@@ -374,7 +432,15 @@ export class App implements OnInit {
 
   // Methode zum Auswählen eines Players per Tab
   selectPlayerTab(ip: string) {
+    console.log("selectPlayerTab ip=" + ip);
     this.selectedPlayerIp = ip;
+  }
+
+  onPlayRandom() {
+    this.sonosService.playRandom(this.selectedPlayerIp).subscribe({
+      next: () => console.log('Random play started'),
+      error: (err) => console.error('Error starting random play', err)
+    });
   }
 
   // Hilfsmethode für Template-Kompatibilität
@@ -382,4 +448,9 @@ export class App implements OnInit {
     // Für die Tab-Variante: gibt ein Set mit der ausgewählten IP zurück, falls vorhanden
     return new Set(this.selectedPlayerIp ? [this.selectedPlayerIp] : []);
   }
+
+  protected readonly availablePlayers = availablePlayers;
 }
+
+// Hier sollte die eigentliche Filterung erfolgen, z.B. aus einer Datei-Liste
+// this.filteredFiles.set(this.allFiles.filter(file => file.fileName.includes(term) || file.path.includes(term)));

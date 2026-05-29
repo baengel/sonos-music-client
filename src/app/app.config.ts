@@ -8,9 +8,12 @@ import {SonosServiceMock} from './sonos.service.mock';
 import {environment} from '../environments/environment';
 import {QueueService} from './queue.service';
 import {QueueServiceMock} from './queue.service.mock';
+import { provideBaloiseDesignSystem } from '@baloise/ds-angular'
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideBaloiseDesignSystem(),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

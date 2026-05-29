@@ -1,5 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import './styles/button.css';
+@import '@baloise/ds-styles/sass/mixins.sass';
+
+@import '@baloise/ds-styles/css/normalize.css';
+@import '@baloise/ds-styles/css/structure.css';
+
+@import '@baloise/ds-styles/css/font.css';
+
+@import '@baloise/ds-styles/css/core.css';
+
+@import '@baloise/ds-styles/css/utilities/background.css';
+@import '@baloise/ds-styles/css/utilities/border.css';
+@import '@baloise/ds-styles/css/utilities/elevation.css';
+@import '@baloise/ds-styles/css/utilities/flex.css';
+@import '@baloise/ds-styles/css/utilities/interaction.css';
+@import '@baloise/ds-styles/css/utilities/layout.css';
+@import '@baloise/ds-styles/css/utilities/sizing.css';
+@import '@baloise/ds-styles/css/utilities/spacing.css';
+@import '@baloise/ds-styles/css/utilities/typography.css';
 
 /* Mobile Optimierung */
 @media (max-width: 600px) {
@@ -27,5 +45,31 @@
     font-size: 1em;
     padding: 10px 8px;
   }
+  .player-mobile-flex {
+    flex-direction: column !important;
+  }
+  .global-player-selection {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  #compact-header > .flex {
+    flex-direction: column-reverse;
+    gap: 8px;
+    align-items: stretch;
+  }
 }
 
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+main {
+  margin-top: 72px; /* Platz für festen Header, ggf. Höhe anpassen */
+}

@@ -1,50 +1,18 @@
-.player-container {
+.flex-direction-column {
   display: flex;
-  flex-flow: column nowrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column !important;
 }
 
-.player-layout {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 32px;
-  width: 100%;
+@media (max-width: 600px) {
+  .flex-direction-column {
+    display: flex;
+    flex-direction: column !important;
+  }
 }
 
-.player-main {
-  flex: 1 1 0;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.player-queue {
-  flex: 0 0 350px;
-  min-width: 250px;
-  max-width: 400px;
-}
-
-.player-volume {
-  margin-top: 16px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.player-info {
-  margin-top: 1em;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.seek-buttons {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+.song-title {
+  white-space: nowrap;
+  overflow-x: auto;
+  text-overflow: ellipsis;
+  display: block;
 }

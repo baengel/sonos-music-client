@@ -1,9 +1,17 @@
 /* Kompaktes CSS für Budget-Einhaltung */
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 200px;
   padding: 16px;
   font-family: Arial, sans-serif;
+}
+
+
+
+app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 h1, h2 {
@@ -187,7 +195,7 @@ h1 {
   gap: 6px;
 }
 
-.file-path, .file-size {
+.file-path, .file-size, .file-date {
   display: flex;
   gap: 8px;
   font-size: 13px;
@@ -406,3 +414,4 @@ mark {
   background: #0056b3 !important;
   border-color: #0056b3 !important;
 }
+

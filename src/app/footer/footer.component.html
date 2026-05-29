@@ -1,0 +1,42 @@
+<div id="compact-header" class="block bg-white">
+  <div class="flex flex-direction-row bg-light-blue-2 gap-medium p-small">
+    <app-player [playerOnly]="true" [playerIp]="selectedPlayerIp"
+                (refreshRequested)="refreshPlayerInfo.emit()"></app-player>
+    <div [ngClass]="isMobile ? 'flex flex-direction-column gap-small' : 'flex flex-direction-row gap-small'">
+      <bal-button [flat]="true" size="small" class="right-0" icon="menu-bars" [square]="isMobile" (click)="showQueueSidebar = !showQueueSidebar"></bal-button>
+      <bal-button [flat]="true" size="small" class="left-0" icon="caret-left" [square]="isMobile" (click)="showPlayedSidebar = !showPlayedSidebar"></bal-button>
+    </div>
+  </div>
+
+  @if (showQueueSidebar) {
+    <div class="queue-sidebar">
+      <div class="queue-sidebar-header">
+        <span>Queue</span>
+        <button class="queue-sidebar-close" (click)="showQueueSidebar = false">×</button>
+      </div>
+      <div class="queue-sidebar-content">
+        <bal-card [border]="false" [flat]="true">
+          <sonos-queue
+            [playerIp]="selectedPlayerIp"
+          ></sonos-queue>
+        </bal-card>
+      </div>
+    </div>
+  }
+
+  @if (showPlayedSidebar) {
+    <div class="queue-sidebar">
+      <div class="queue-sidebar-header">
+        <span>Played List</span>
+        <button class="queue-sidebar-close" (click)="showPlayedSidebar = false">×</button>
+      </div>
+      <div class="queue-sidebar-content">
+        <bal-card [border]="false" [flat]="true">
+          <played-list
+            [playerIp]="selectedPlayerIp"
+          ></played-list>
+        </bal-card>
+      </div>
+    </div>
+  }
+</div>

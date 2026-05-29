@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {PlayButtonsComponent} from '../play-buttons/play-buttons.component';
+import {BalButton} from '@baloise/ds-angular';
 
 @Component({
   selector: 'seek-buttons',
   standalone: true,
-  imports: [PlayButtonsComponent],
+  imports: [PlayButtonsComponent, BalButton],
   templateUrl: './seek-buttons.component.html',
   styleUrls: ['./seek-buttons.component.css']
 })

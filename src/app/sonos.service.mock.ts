@@ -11,7 +11,25 @@ export class SonosServiceMock {
     { title: 'Jump', artist: 'Tatana', album: 'Mock Album', uri: 'mock.mp3' }
   ];
   private playedList: any[] = [
-    { title: 'Mock Song', artist: 'Mock Artist', album: 'Mock Album', fileUrl: 'mock.mp3', count: 5 }
+    { title: 'Mock Song', artist: 'Mock Artist', album: 'Mock Album', fileUrl: 'mock.mp3', count: 5 },
+    { title: 'Played Song', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song1', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 3 },
+    { title: 'Played Song2', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 5 },
+    { title: 'Played Song3', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song4', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 2 },
+    { title: 'Played Song5', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song6', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song7', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song8', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song9', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song10', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song11', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song12', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song13', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song14', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song15', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song14', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 },
+    { title: 'Played Song15', artist: 'Played Artist', album: 'Played Album', fileUrl: 'Played.mp3', count: 1 }
   ];
 
   getApiBaseUrl(): string {

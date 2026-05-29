@@ -38,6 +38,12 @@ export class QueueServiceMock {
     this.queueSubject.next([...current, { title: 'Neuer Mock Song', artist: 'Mock Artist', album: 'Mock Album', uri: trackUri }]);
   }
 
+  clearQueue(playerIp: string): Observable<any> {
+    console.log("cleare queue");
+    this.queueSubject.next([]);
+    return of('OK');
+  }
+
   removeFromQueue(playerIp: string, trackIndex: number): void {
     const current = this.queueSubject.value;
     if (trackIndex >= 0 && trackIndex < current.length) {
@@ -59,4 +65,3 @@ export class QueueServiceMock {
     return of('OK');
   }
 }
-
