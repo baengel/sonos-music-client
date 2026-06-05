@@ -61,6 +61,12 @@ function extractTrackPath(string $line): ?string
     return null;
 }
 
+function isIgnoredTrackPath(string $path): bool
+{
+    // Ignoriere Hoerspiel-Pfade, damit random nur Musik-Titel beruecksichtigt.
+    return preg_match('/h(?:oerspiel|o\x{0308}rspiel|\x{00F6}rspiel)/iu', $path) === 1;
+}
+
 function parseTracks(string $content): array
 {
     $rows = preg_split('/\r\n|\r|\n/', $content);
@@ -68,7 +74,7 @@ function parseTracks(string $content): array
 
     foreach ($rows as $row) {
         $track = extractTrackPath($row);
-        if ($track !== null && $track !== '') {
+        if ($track !== null && $track !== '' && !isIgnoredTrackPath($track)) {
             $tracks[] = $track;
         }
     }
